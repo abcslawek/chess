@@ -21,12 +21,14 @@ public class Field {
     }
 
     public String getFieldName(){
-//        if(this.piece.isPieceBlack() && this.piece != null) return "b" + this.piece.getName();
-//        else if(!this.piece.isPieceBlack() && this.piece != null)return "w" + this.piece.getName();
-//        else if(this.isFieldBlack && this.piece == null) return "" + this.column + Integer.toString(this.row);
-//        else if(!this.isFieldBlack && this.piece == null) return ("" + this.column + Integer.toString(this.row)).toLowerCase(Locale.ROOT);
-//        else return "x";
-        return this.piece.getName();
+        try {
+            if(this.piece.isPieceBlack()) return this.piece.getName().toUpperCase(Locale.ROOT);
+            else return this.piece.getName().toLowerCase(Locale.ROOT);
+        }catch(NullPointerException e){ //jeśli na polu nie ma bierki
+            if(this.isFieldBlack) return ("" + this.column + Integer.toString(this.row)).toUpperCase(Locale.ROOT);
+            else return ("" + this.column + Integer.toString(this.row)).toLowerCase(Locale.ROOT);
+        }
+
     }
 
 }

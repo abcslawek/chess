@@ -4,13 +4,9 @@ import com.slaweklida.Piece;
 
 public class Knight extends Piece {
 
-    private String name = "N";
-    private int range = 2;
-    private boolean isPieceBlack;
-
     public Knight(boolean isPieceBlack){
-        this.isPieceBlack = isPieceBlack;
-        System.out.println("Stworzono skoczka");
+        super("N", isPieceBlack); //przekazujemy tylko czy knight jest biały czy czarny
+        System.out.println("Stworzono gońca");
     }
 
     public void move(){

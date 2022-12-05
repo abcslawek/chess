@@ -3,19 +3,18 @@ package com.slaweklida.pieces;
 import com.slaweklida.Piece;
 
 public class Bishop extends Piece {
-    private String name = "B";
-    private int range = 7;
-    private boolean isPieceBlack;
 
     public Bishop(boolean isPieceBlack){
-        this.isPieceBlack = isPieceBlack;
+        super("B", isPieceBlack); //przekazujemy tylko czy goniec jest biały czy czarny
         System.out.println("Stworzono gońca");
     }
 
+    @Override
     public void move(){
         System.out.println("Wykonano ruch gońcem");
     }
 
+    @Override
     public void attack(){
         System.out.println("Zaatakowano gońcem");
     }

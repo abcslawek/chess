@@ -3,12 +3,9 @@ package com.slaweklida.pieces;
 import com.slaweklida.Piece;
 
 public class Queen extends Piece {
-    private String name = "Q";
-    private int range = 7;
-    private boolean isPieceBlack;
 
     public Queen(boolean isPieceBlack){
-        this.isPieceBlack = isPieceBlack;
+        super("Q", isPieceBlack); //przekazujemy tylko czy królowa jest biały czy czarny
         System.out.println("Stworzono królową");
     }
 

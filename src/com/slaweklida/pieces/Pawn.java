@@ -4,12 +4,8 @@ import com.slaweklida.Piece;
 
 public class Pawn extends Piece {
 
-    private String name = "P";
-    private int range = 1;
-    private boolean isPieceBlack;
-
     public Pawn(boolean isPieceBlack){
-        this.isPieceBlack = isPieceBlack;
+        super("P", isPieceBlack); //przekazujemy tylko czy pion jest biały czy czarny
         System.out.println("Stworzono piona");
     }
 

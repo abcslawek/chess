@@ -3,12 +3,9 @@ package com.slaweklida.pieces;
 import com.slaweklida.Piece;
 
 public class Rook extends Piece {
-    private String name = "R";
-    private int range = 7;
-    private boolean isPieceBlack;
 
     public Rook(boolean isPieceBlack){
-        this.isPieceBlack = isPieceBlack;
+        super("R", isPieceBlack); //przekazujemy tylko czy wieża jest biały czy czarny
         System.out.println("Stworzono wieżę");
     }
 

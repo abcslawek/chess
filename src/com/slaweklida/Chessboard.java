@@ -34,13 +34,15 @@ public class Chessboard {
                 char letter = (char) (c + 65);
                 this.fields[c][r] = new Field(null, letter, r + 1, true);
                 c++;
+                letter = (char) (c + 65); //musimy zaktualizować literę kolumny
                 this.fields[c][r] = new Field(null, letter, r + 1, false);
             }
             r++;
-            for (int c = 0; c < 8; c++) {
+            for (int c = 0; c < 8; c++) { //drugi for ze zmienioną kolejnością koloru pól
                 char letter = (char) (c + 65);
                 this.fields[c][r] = new Field(null, letter, r + 1, false);
                 c++;
+                letter = (char) (c + 65); //musimy zaktualizować literę kolumny
                 this.fields[c][r] = new Field(null, letter, r + 1, true);
             }
         }
@@ -67,7 +69,7 @@ public class Chessboard {
     public void showChessboard() {
         for (int r = fields.length - 1; r >= 0; r--) {
             for (int c = 0; c < fields.length; c++) {
-                System.out.print(this.fields[c][r].getFieldName() + " ");
+                System.out.print(this.fields[c][r].getFieldName() + "\t");
             }
             System.out.println();
         }
