@@ -5,17 +5,10 @@ import com.slaweklida.Piece;
 public class Bishop extends Piece {
 
     public Bishop(boolean isPieceBlack){
-        super("B", isPieceBlack); //przekazujemy tylko czy goniec jest biały czy czarny
+        super("B",0,0,0,7, isPieceBlack); //przekazujemy tylko czy goniec jest biały czy czarny
         System.out.println("Stworzono gońca");
     }
 
-    @Override
-    public void move(){
-        System.out.println("Wykonano ruch gońcem");
-    }
 
-    @Override
-    public void attack(){
-        System.out.println("Zaatakowano gońcem");
-    }
+
 }

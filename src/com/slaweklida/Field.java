@@ -20,7 +20,7 @@ public class Field {
         return piece;
     }
 
-    public String getFieldName(){
+    public String getFieldNameOrPiece(){
         try {
             if(this.piece.isPieceBlack()) return this.piece.getName().toUpperCase(Locale.ROOT);
             else return this.piece.getName().toLowerCase(Locale.ROOT);
@@ -28,7 +28,10 @@ public class Field {
             if(this.isFieldBlack) return ("" + this.column + Integer.toString(this.row)).toUpperCase(Locale.ROOT);
             else return ("" + this.column + Integer.toString(this.row)).toLowerCase(Locale.ROOT);
         }
+    }
 
+    public String getFieldName(){
+        return "" + this.column + Integer.toString(this.row);
     }
 
 }

@@ -2,7 +2,7 @@ package com.slaweklida;
 
 import com.slaweklida.pieces.*;
 
-import java.util.Arrays;
+import java.util.Locale;
 
 public class Chessboard {
 
@@ -69,11 +69,65 @@ public class Chessboard {
     public void showChessboard() {
         for (int r = fields.length - 1; r >= 0; r--) {
             for (int c = 0; c < fields.length; c++) {
-                System.out.print(this.fields[c][r].getFieldName() + "\t");
+                System.out.print(this.fields[c][r].getFieldNameOrPiece() + "\t");
             }
             System.out.println();
         }
 
     }
+
+    public void makeMove(String move){
+        //np. d3, Ra4, Nc3 (Nac3), Bb2, Qf6 (Qcd3), Kh4
+        String piece = "";
+        String startColumnOrRow = "";
+        String column = "";
+        int row;
+
+        if(move.length() == 2) { //jeśli d3, czyli pion
+            column = "" + move.charAt(0);
+            row = Integer.parseInt("" + move.charAt(1));
+
+            Field tempField = this.fields[columnToNumber(column)][row - 1];
+            System.out.println("Wybrane pole to: " + tempField.getFieldName());
+        }
+
+        if(move.length() == 3){ //jeśli np. Ra4
+            piece = "" + move.charAt(0);
+            column = ("" + move.charAt(1)).toUpperCase(Locale.ROOT);
+            row = Integer.parseInt("" + move.charAt(2));
+        }
+
+        if(move.length() == 4){ //jeśli np. Nac3
+            piece = "" + move.charAt(0);
+            startColumnOrRow = ("" + move.charAt(1)).toUpperCase(Locale.ROOT);
+            column = ("" + move.charAt(2)).toUpperCase(Locale.ROOT);
+            row = Integer.parseInt("" + move.charAt(3));
+        }
+
+        //pawn
+
+
+
+    }
+
+    public int columnToNumber(String column){
+        if (column.equals("A")) return 0;
+        if (column.equals("B")) return 1;
+        if (column.equals("C")) return 2;
+        if (column.equals("D")) return 3;
+        if (column.equals("E")) return 4;
+        if (column.equals("F")) return 5;
+        if (column.equals("G")) return 6;
+        else return 7; //H
+    }
+
+    public Field[][] getFields() {
+        return this.fields;
+    }
+
+    public Field getField(int c, int r){
+        return this.fields[c][r];
+    }
+
 
 }

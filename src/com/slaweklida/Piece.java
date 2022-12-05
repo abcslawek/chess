@@ -2,19 +2,21 @@ package com.slaweklida;
 
 public abstract class Piece {
     protected String name;
-    protected int range;
+
+    protected int sidewaysRange;
+    protected int forwardRange;
+    protected int backwardRange;
+    protected int diagonallyRange;
+
     protected boolean isPieceBlack;
 
-    public Piece(String name, boolean isPieceBlack){
+    public Piece(String name, int sidewaysRange, int forwardRange, int backwardRange, int diagonallyRange, boolean isPieceBlack){
         this.name = name;
+        this.sidewaysRange = sidewaysRange;
+        this.forwardRange = forwardRange;
+        this.backwardRange = backwardRange;
+        this.diagonallyRange = diagonallyRange;
         this.isPieceBlack = isPieceBlack;
-    }
-
-    public void move(){
-        System.out.println("Piece moved");
-    }
-    public void attack(){
-        System.out.println("Piece attacked");
     }
 
     public String getName() {
