@@ -16,10 +16,17 @@ public class Field {
         this.isFieldBlack = isFieldBlack;
     }
 
-    public String getFieldName(){
-        if(this.isFieldBlack) return "B";//("" + this.column + Integer.toString(this.row)).toLowerCase(Locale.ROOT);
-        else return "W";//"" + this.column + Integer.toString(this.row);
+    public Piece getPiece() {
+        return piece;
+    }
 
+    public String getFieldName(){
+//        if(this.piece.isPieceBlack() && this.piece != null) return "b" + this.piece.getName();
+//        else if(!this.piece.isPieceBlack() && this.piece != null)return "w" + this.piece.getName();
+//        else if(this.isFieldBlack && this.piece == null) return "" + this.column + Integer.toString(this.row);
+//        else if(!this.isFieldBlack && this.piece == null) return ("" + this.column + Integer.toString(this.row)).toLowerCase(Locale.ROOT);
+//        else return "x";
+        return this.piece.getName();
     }
 
 }

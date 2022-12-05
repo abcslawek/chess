@@ -3,7 +3,7 @@ package com.slaweklida.pieces;
 import com.slaweklida.Piece;
 
 public class Queen extends Piece {
-    private String name = "Queen";
+    private String name = "Q";
     private int range = 7;
     private boolean isPieceBlack;
 

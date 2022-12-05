@@ -4,7 +4,7 @@ import com.slaweklida.Piece;
 
 public class Pawn extends Piece {
 
-    private String name = "Pawn";
+    private String name = "P";
     private int range = 1;
     private boolean isPieceBlack;
 
