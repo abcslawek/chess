@@ -25,6 +25,7 @@ public class Chessboard {
             char letter = (char) (c + 65);
             this.fields[c][1] = new Field(new Pawn(false), letter, 2, false);
             c++;
+            letter = (char) (c + 65);
             this.fields[c][1] = new Field(new Pawn(false), letter, 2, true);
         }
 
@@ -52,6 +53,7 @@ public class Chessboard {
             char letter = (char) (c + 65);
             this.fields[c][6] = new Field(new Pawn(true), letter, 7, true);
             c++;
+            letter = (char) (c + 65);
             this.fields[c][6] = new Field(new Pawn(true), letter, 7, false);
         }
 
@@ -76,7 +78,7 @@ public class Chessboard {
 
     }
 
-    public void makeMove(String move, boolean whitesMove) {
+    public boolean makeMove(String move, boolean whitesMove) {
         //np. d3, Ra4, Nc3 (Nac3), Bb2, Qf6 (Qcd3), Kh4
         String piece = "";
         String startColumnOrRow = "";
@@ -87,41 +89,69 @@ public class Chessboard {
             column = "" + move.charAt(0);
             row = Integer.parseInt("" + move.charAt(1));
 
-            int arrayColumn = columnToNumber(column); //zmieniamy numer kolumny na odpowiadający tabeli
-            int arrayRow = row - 1; //zmieniamy numer rzędu na odpowiadający tabeli
+            int arrayColumn = columnToNumber(column); //zmieniamy numer kolumny na numer odpowiadający tabeli
+            int arrayRow = row - 1; //zmieniamy numer rzędu na numer odpowiadający tabeli
 
-            Field tempField = this.fields[arrayColumn][arrayRow];
-            System.out.println("Wybrane pole to: " + tempField.getFieldName());
+            //tymczasowe sprawdzanie wprowadzonego pola przez gracza
+            try {
+                Field tempField = this.fields[arrayColumn][arrayRow];
+                System.out.println("Wybrane pole to: " + tempField.getFieldName());
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.out.println("Wybrane pole to: ---");
+            }
 
-            if (whitesMove) {
-                for (int r = 0; r < 8; r++) {
-                    try {
-                        if (this.fields[arrayColumn][r].getPiece() != null && !this.fields[arrayColumn][r].getPiece().isPieceBlack() && this.fields[arrayColumn][r].getPiece().getName().equals("P")) {
-                            System.out.println("znaleziono białego piona w kolumnie " + column + " i w rzędzie " + (r + 1));
+
+            if (whitesMove && row < 9) { //jest tylko 8 rzędów
+                for (int r = 0; r < 8; r++) { //szuka czy w podanej kolumnie znajduje się pion
+                    if (this.fields[arrayColumn][r].getPiece() != null && // i jeśli znalezione pole posiada bierkę
+                            !this.fields[arrayColumn][r].getPiece().isPieceBlack() && // i jeśli bierka jest biała
+                            this.fields[arrayColumn][r].getPiece().getName().equals("P")) { // i jeśli ta bierka to pion
+                        System.out.println("Znaleziono białego piona w kolumnie " + column + " i w rzędzie " + (r + 1)); // ERROR: PRZY PODANIU D7 WYSKAKUJE C7
+
+                        if (arrayRow - r <= this.fields[arrayColumn][r].getPiece().getForwardRange() && arrayRow - r <= 1) { //czy pole jest w zasięgu piona
+                            System.out.println("Pole jest w zasięgu piona");
+                            if (this.fields[arrayColumn][arrayRow].getPiece() != null && !this.fields[arrayColumn][arrayRow].getPiece().isPieceBlack) { //WARIANT GDY NA WSKAZANYM POLU JEST NASZA BIERKA
+                                System.out.println("Na tym polu znajduje się nasza bierka, jeszcze raz");
+                                return false;
+                            } else if (this.fields[arrayColumn][arrayRow].getPiece() == null) { //WARIANT GDY WSKAZANE POLE JEST PUSTE
+                                System.out.println("Pole jest puste, wskakuj byku");
+                                this.fields[arrayColumn][arrayRow].setPiece(this.fields[arrayColumn][r].getPiece()); //we wskazanym miejscu wstawiamy piona ze starego pola
+                                this.fields[arrayColumn][r].setPiece(null); //kasujemy piona ze starego piona
+                                return true;
+                            }else if(this.fields[arrayColumn][arrayRow].getPiece() != null && this.fields[arrayColumn][arrayRow].getPiece().isPieceBlack) { //WARIANT GDY NA WSKAZANYM POLU JEST BIERKA PRZECIWNIKA
+                                System.out.println("Na tym polu znajduje się bierka przeciwnika, wjeżdżaj w nią");
+                                this.fields[arrayColumn][arrayRow].setPiece(this.fields[arrayColumn][r].getPiece()); //we wskazanym miejscu wstawiamy piona ze starego pola
+                                this.fields[arrayColumn][r].setPiece(null); //kasujemy piona ze starego piona
+                                return true;
+                            }
+                        } else {
+                            System.out.println("Błędny ruch, pole poza zasięgiem piona");
+                            return false;
                         }
-                    }catch (NullPointerException e){
-                        e.printStackTrace();
                     }
                 }
+                System.out.println("Błędny ruch, jeszcze raz");
+                return false;
             }
-        }
+            if (!whitesMove && row < 9) {
+                System.out.println("Ruchy czarnych w budowie");
+                return true;
+            }
 
+        }
         if (move.length() == 3) { //jeśli np. Ra4
             piece = "" + move.charAt(0);
             column = ("" + move.charAt(1)).toUpperCase(Locale.ROOT);
             row = Integer.parseInt("" + move.charAt(2));
         }
-
         if (move.length() == 4) { //jeśli np. Nac3
             piece = "" + move.charAt(0);
             startColumnOrRow = ("" + move.charAt(1)).toUpperCase(Locale.ROOT);
             column = ("" + move.charAt(2)).toUpperCase(Locale.ROOT);
             row = Integer.parseInt("" + move.charAt(3));
         }
-
-        //pawn
-
-
+        System.out.println("Błędny ruch, jeszcze raz");
+        return false;
     }
 
 

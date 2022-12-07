@@ -23,19 +23,24 @@ public class Game {
                 boolean shouldContinue = false;
 
                 while (!shouldContinue) {
+                    chessboard.showChessboard();
                     System.out.println("1. Wykonaj ruch");
                     System.out.println("2. Wyświetl szachownicę");
                     System.out.println("3. Wyjdź z gry");
                     int option = scanner.nextInt();
+                    boolean correctMove = false;
                     scanner.nextLine();
                     switch (option) {
                         case 1:
-                            String move = scanner.nextLine();
-                            chessboard.makeMove(move, whitesMove);
-                            chessboard.showChessboard();
+                            while(!correctMove) { //sprawdza czy ruch jest poprawny
+                                String move = scanner.nextLine();
+                                correctMove = chessboard.makeMove(move, whitesMove);
+                            }
                             //zmiana zawodnika
+                            //trzeba ustalić, że jeśli nie da się wykonać takiego ruchu np. białymi to trzeba próbować aż do skutku
                             if (!whitesMove) whitesMove = true;
                             else whitesMove = false;
+                            System.out.println("Zmiana zawodnika na " + (whitesMove ? "białego" : "czarnego"));
                             break;
                         case 2:
                             chessboard.showChessboard();
