@@ -76,28 +76,43 @@ public class Chessboard {
 
     }
 
-    public void makeMove(String move){
+    public void makeMove(String move, boolean whitesMove) {
         //np. d3, Ra4, Nc3 (Nac3), Bb2, Qf6 (Qcd3), Kh4
         String piece = "";
         String startColumnOrRow = "";
         String column = "";
         int row;
 
-        if(move.length() == 2) { //jeśli d3, czyli pion
+        if (move.length() == 2) { //jeśli d3, czyli pion
             column = "" + move.charAt(0);
             row = Integer.parseInt("" + move.charAt(1));
 
-            Field tempField = this.fields[columnToNumber(column)][row - 1];
+            int arrayColumn = columnToNumber(column); //zmieniamy numer kolumny na odpowiadający tabeli
+            int arrayRow = row - 1; //zmieniamy numer rzędu na odpowiadający tabeli
+
+            Field tempField = this.fields[arrayColumn][arrayRow];
             System.out.println("Wybrane pole to: " + tempField.getFieldName());
+
+            if (whitesMove) {
+                for (int r = 0; r < 8; r++) {
+                    try {
+                        if (this.fields[arrayColumn][r].getPiece() != null && !this.fields[arrayColumn][r].getPiece().isPieceBlack() && this.fields[arrayColumn][r].getPiece().getName().equals("P")) {
+                            System.out.println("znaleziono białego piona w kolumnie " + column + " i w rzędzie " + (r + 1));
+                        }
+                    }catch (NullPointerException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
 
-        if(move.length() == 3){ //jeśli np. Ra4
+        if (move.length() == 3) { //jeśli np. Ra4
             piece = "" + move.charAt(0);
             column = ("" + move.charAt(1)).toUpperCase(Locale.ROOT);
             row = Integer.parseInt("" + move.charAt(2));
         }
 
-        if(move.length() == 4){ //jeśli np. Nac3
+        if (move.length() == 4) { //jeśli np. Nac3
             piece = "" + move.charAt(0);
             startColumnOrRow = ("" + move.charAt(1)).toUpperCase(Locale.ROOT);
             column = ("" + move.charAt(2)).toUpperCase(Locale.ROOT);
@@ -107,10 +122,10 @@ public class Chessboard {
         //pawn
 
 
-
     }
 
-    public int columnToNumber(String column){
+
+    public int columnToNumber(String column) {
         if (column.equals("A")) return 0;
         if (column.equals("B")) return 1;
         if (column.equals("C")) return 2;
@@ -125,7 +140,7 @@ public class Chessboard {
         return this.fields;
     }
 
-    public Field getField(int c, int r){
+    public Field getField(int c, int r) {
         return this.fields[c][r];
     }
 

@@ -15,11 +15,13 @@ public class Game {
         System.out.println("2. Gra czarnymi");
         Scanner scanner = new Scanner(System.in);
         int choice = scanner.nextInt();
+        boolean whitesMove = true;
 
         switch (choice) {
             case 1:
                 Chessboard chessboard = new Chessboard(true);
                 boolean shouldContinue = false;
+
                 while (!shouldContinue) {
                     System.out.println("1. Wykonaj ruch");
                     System.out.println("2. Wyświetl szachownicę");
@@ -29,8 +31,11 @@ public class Game {
                     switch (option) {
                         case 1:
                             String move = scanner.nextLine();
-                            chessboard.makeMove(move);
+                            chessboard.makeMove(move, whitesMove);
                             chessboard.showChessboard();
+                            //zmiana zawodnika
+                            if (!whitesMove) whitesMove = true;
+                            else whitesMove = false;
                             break;
                         case 2:
                             chessboard.showChessboard();
