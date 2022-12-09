@@ -8,8 +8,10 @@ public class Chessboard {
 
     private Field[][] fields;
 
+    //constructor
     public Chessboard(boolean whitesFirst) {
         this.fields = new Field[8][8];
+        //REMEMBER THAT e.g. D5 is [3][4] in arrays
         //making whites
         this.fields[0][0] = new Field(new Rook(false), 'A', 1, true);
         this.fields[1][0] = new Field(new Knight(false), 'B', 1, false);
@@ -20,7 +22,7 @@ public class Chessboard {
         this.fields[6][0] = new Field(new Knight(false), 'G', 1, true);
         this.fields[7][0] = new Field(new Rook(false), 'H', 1, false);
 
-        //making white paws, row loop starts from 0
+        //making white paws
         for (int c = 0; c < 8; c++) {
             char letter = (char) (c + 65);
             this.fields[c][1] = new Field(new Pawn(false), letter, 2, false);
@@ -68,6 +70,16 @@ public class Chessboard {
         this.fields[7][7] = new Field(new Rook(true), 'H', 8, true);
     }
 
+    //getters
+    public Field[][] getFields() {
+        return this.fields;
+    }
+
+    public Field getField(int c, int r) {
+        return this.fields[c][r];
+    }
+
+    //other methods
     public void showChessboard() {
         for (int r = fields.length - 1; r >= 0; r--) {
             for (int c = 0; c < fields.length; c++) {
@@ -80,80 +92,99 @@ public class Chessboard {
 
     public boolean makeMove(String move, boolean whitesMove) {
         //np. d3, Ra4, Nc3 (Nac3), Bb2, Qf6 (Qcd3), Kh4
-        String piece = "";
-        String startColumnOrRow = "";
-        String column = "";
-        int row;
 
         if (move.length() == 2) { //jeśli d3, czyli pion
-            column = "" + move.charAt(0);
-            row = Integer.parseInt("" + move.charAt(1));
-
-            int arrayColumn = columnToNumber(column); //zmieniamy numer kolumny na numer odpowiadający tabeli
-            int arrayRow = row - 1; //zmieniamy numer rzędu na numer odpowiadający tabeli
-
-            //tymczasowe sprawdzanie wprowadzonego pola przez gracza
-            try {
-                Field tempField = this.fields[arrayColumn][arrayRow];
-                System.out.println("Wybrane pole to: " + tempField.getFieldName());
-            } catch (ArrayIndexOutOfBoundsException e) {
-                System.out.println("Wybrane pole to: ---");
-            }
-
-
-            if (whitesMove && row < 9) { //jest tylko 8 rzędów
-                for (int r = 0; r < 8; r++) { //szuka czy w podanej kolumnie znajduje się pion
-                    if (this.fields[arrayColumn][r].getPiece() != null && // i jeśli znalezione pole posiada bierkę
-                            !this.fields[arrayColumn][r].getPiece().isPieceBlack() && // i jeśli bierka jest biała
-                            this.fields[arrayColumn][r].getPiece().getName().equals("P")) { // i jeśli ta bierka to pion
-                        System.out.println("Znaleziono białego piona w kolumnie " + column + " i w rzędzie " + (r + 1)); // ERROR: PRZY PODANIU D7 WYSKAKUJE C7
-
-                        if (arrayRow - r <= this.fields[arrayColumn][r].getPiece().getForwardRange() && arrayRow - r <= 1) { //czy pole jest w zasięgu piona
-                            System.out.println("Pole jest w zasięgu piona");
-                            if (this.fields[arrayColumn][arrayRow].getPiece() != null && !this.fields[arrayColumn][arrayRow].getPiece().isPieceBlack) { //WARIANT GDY NA WSKAZANYM POLU JEST NASZA BIERKA
-                                System.out.println("Na tym polu znajduje się nasza bierka, jeszcze raz");
-                                return false;
-                            } else if (this.fields[arrayColumn][arrayRow].getPiece() == null) { //WARIANT GDY WSKAZANE POLE JEST PUSTE
-                                System.out.println("Pole jest puste, wskakuj byku");
-                                this.fields[arrayColumn][arrayRow].setPiece(this.fields[arrayColumn][r].getPiece()); //we wskazanym miejscu wstawiamy piona ze starego pola
-                                this.fields[arrayColumn][r].setPiece(null); //kasujemy piona ze starego piona
-                                return true;
-                            }else if(this.fields[arrayColumn][arrayRow].getPiece() != null && this.fields[arrayColumn][arrayRow].getPiece().isPieceBlack) { //WARIANT GDY NA WSKAZANYM POLU JEST BIERKA PRZECIWNIKA
-                                System.out.println("Na tym polu znajduje się bierka przeciwnika, wjeżdżaj w nią");
-                                this.fields[arrayColumn][arrayRow].setPiece(this.fields[arrayColumn][r].getPiece()); //we wskazanym miejscu wstawiamy piona ze starego pola
-                                this.fields[arrayColumn][r].setPiece(null); //kasujemy piona ze starego piona
-                                return true;
-                            }
-                        } else {
-                            System.out.println("Błędny ruch, pole poza zasięgiem piona");
-                            return false;
-                        }
-                    }
-                }
-                System.out.println("Błędny ruch, jeszcze raz");
-                return false;
-            }
-            if (!whitesMove && row < 9) {
-                System.out.println("Ruchy czarnych w budowie");
-                return true;
-            }
-
+            return movePawn(move, whitesMove);
+        } else if (move.length() == 3) { //jeśli np. Ra4
+            String piece = "" + move.charAt(0);
+            String column = ("" + move.charAt(1)).toUpperCase(Locale.ROOT);
+            int row = Integer.parseInt("" + move.charAt(2));
+        } else if (move.length() == 4) { //jeśli wieloznaczne np. Nac3
+            String piece = "" + move.charAt(0);
+            String startColumnOrRow = ("" + move.charAt(1)).toUpperCase(Locale.ROOT);
+            String column = ("" + move.charAt(2)).toUpperCase(Locale.ROOT);
+            int row = Integer.parseInt("" + move.charAt(3));
+        } else {
+            System.out.println("makeMove() -> nie weszło do żadnej kategorii metody (move.length() == ?)");
+            return false;
         }
-        if (move.length() == 3) { //jeśli np. Ra4
-            piece = "" + move.charAt(0);
-            column = ("" + move.charAt(1)).toUpperCase(Locale.ROOT);
-            row = Integer.parseInt("" + move.charAt(2));
-        }
-        if (move.length() == 4) { //jeśli np. Nac3
-            piece = "" + move.charAt(0);
-            startColumnOrRow = ("" + move.charAt(1)).toUpperCase(Locale.ROOT);
-            column = ("" + move.charAt(2)).toUpperCase(Locale.ROOT);
-            row = Integer.parseInt("" + move.charAt(3));
-        }
-        System.out.println("Błędny ruch, jeszcze raz");
         return false;
     }
 
+    public boolean movePawn(String move, boolean whitesMove) {
+        //spliting "move"
+        String column = "" + move.charAt(0);
+        int row = Integer.parseInt("" + move.charAt(1));
+
+        //checking indicated row
+        if (row < 1 || row > 8) { //jest 1,...,8 rzędów
+            System.out.println("Jest tylko 8 rzędów, jeszcze raz");
+            return false;
+        }
+
+        if(whitesMove){
+            int ourPiecesRow = whitePiecesRowInIndicatedColumn(column, "P");
+            if(ourPiecesRow != 0 && isIndicatedFieldInRangeOfPiece(column, ourPiecesRow, row)){
+                if(hasIndicatedFieldOurWhitePiece(column, row)) return false;
+                else if (moveOrFight(column, row, ourPiecesRow)) return true;
+            }
+        }
+
+        if (!whitesMove) {
+            System.out.println("Ruchy czarnych w budowie");
+            return true;
+        }
+
+        return false;
+    }
+
+    public int whitePiecesRowInIndicatedColumn(String column, String name) {
+        for (int r = 0; r < 8; r++) { //szuka czy w podanej kolumnie znajduje się pion
+            if (this.fields[columnToNumber(column)][r].getPiece() != null && // i jeśli znalezione pole posiada bierkę
+                    !this.fields[columnToNumber(column)][r].getPiece().isPieceBlack() && // i jeśli bierka jest biała
+                    this.fields[columnToNumber(column)][r].getPiece().getName().equals(name)) { // i jeśli ta bierka to pion
+                System.out.println("Znaleziono białą bierkę w kolumnie " + column + " i w rzędzie " + (r + 1));
+                return r;
+            }
+        }
+        System.out.println("whitePiecesRowInIndicatedColumn() -> Nie znaleziono, return 0");
+        return 0;
+    }
+
+    public boolean isIndicatedFieldInRangeOfPiece(String column, int ourPiecesRow, int row) {
+        //wskazany odjąć wyszukany
+        if (rowToArrayRow(row) - ourPiecesRow <= this.fields[columnToNumber(column)][ourPiecesRow].getPiece().getForwardRange() && rowToArrayRow(row) - ourPiecesRow > 0) { //czy pole jest w zasięgu piona
+            System.out.println("Pole jest w zasięgu bierki");
+            return true;
+        }else{
+            System.out.println("Pole nie jest w zasięgu bierki");
+            return false;
+        }
+    }
+
+    public boolean hasIndicatedFieldOurWhitePiece(String column, int row){
+        return this.fields[columnToNumber(column)][rowToArrayRow(row)].getPiece() != null && !this.fields[columnToNumber(column)][rowToArrayRow(row)].getPiece().isPieceBlack;
+    }
+
+    public boolean isIndicatedFieldEmpty(String column, int row){
+        return this.fields[columnToNumber(column)][rowToArrayRow(row)].getPiece() == null;
+    }
+
+    public boolean hasIndicatedFieldOpponentsBlackPiece(String column, int row){
+        return this.fields[columnToNumber(column)][rowToArrayRow(row)].getPiece() != null && this.fields[columnToNumber(column)][rowToArrayRow(row)].getPiece().isPieceBlack;
+    }
+
+    public boolean moveOrFight(String column, int row, int ourPiecesRow){
+        if(isIndicatedFieldEmpty(column, row)) {
+            this.fields[columnToNumber(column)][rowToArrayRow(row)].setPiece(this.fields[columnToNumber(column)][ourPiecesRow].getPiece()); //we wskazanym miejscu wstawiamy piona ze starego pola
+            this.fields[columnToNumber(column)][ourPiecesRow].setPiece(null); //kasujemy piona ze starego piona
+            return true;
+        }else if(hasIndicatedFieldOpponentsBlackPiece(column, row)){
+            this.fields[columnToNumber(column)][rowToArrayRow(row)].setPiece(this.fields[columnToNumber(column)][ourPiecesRow].getPiece()); //we wskazanym miejscu wstawiamy piona ze starego pola
+            this.fields[columnToNumber(column)][ourPiecesRow].setPiece(null); //kasujemy piona ze starego piona
+            return true;
+        }else return false;
+    }
 
     public int columnToNumber(String column) {
         if (column.equals("A")) return 0;
@@ -166,12 +197,8 @@ public class Chessboard {
         else return 7; //H
     }
 
-    public Field[][] getFields() {
-        return this.fields;
-    }
-
-    public Field getField(int c, int r) {
-        return this.fields[c][r];
+    public int rowToArrayRow(int row){
+        return row - 1;
     }
 
 

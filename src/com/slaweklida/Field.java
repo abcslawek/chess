@@ -10,7 +10,7 @@ public class Field {
     private boolean isFieldBlack;
 
     //constructor
-    public Field(Piece piece, char column, int row, boolean isFieldBlack){
+    public Field(Piece piece, char column, int row, boolean isFieldBlack) {
         this.piece = piece;
         this.column = column;
         this.row = row;
@@ -40,17 +40,17 @@ public class Field {
     }
 
     //other methods
-    public String getFieldNameOrPiece(){
+    public String getFieldNameOrPiece() {
         try {
-            if(this.piece.isPieceBlack()) return this.piece.getName().toUpperCase(Locale.ROOT);
+            if (this.piece.isPieceBlack()) return this.piece.getName().toUpperCase(Locale.ROOT);
             else return this.piece.getName().toLowerCase(Locale.ROOT);
-        }catch(NullPointerException e){ //jeśli na polu nie ma bierki
-            if(this.isFieldBlack) return ("" + this.column + Integer.toString(this.row)).toUpperCase(Locale.ROOT);
+        } catch (NullPointerException e) { //jeśli na polu nie ma bierki
+            if (this.isFieldBlack) return ("" + this.column + Integer.toString(this.row)).toUpperCase(Locale.ROOT);
             else return ("" + this.column + Integer.toString(this.row)).toLowerCase(Locale.ROOT);
         }
     }
 
-    public String getFieldName(){
+    public String getFieldName() {
         return "" + this.column + Integer.toString(this.row);
     }
 
