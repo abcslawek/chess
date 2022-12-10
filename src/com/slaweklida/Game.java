@@ -24,7 +24,7 @@ public class Game {
 
                 while (!shouldContinue) {
                     if (whitesMove) chessboard.showChessboard();
-                    else chessboard.showReverseChessboard();
+                    else chessboard.showChessboard();
                     System.out.println("1. Wykonaj ruch");
                     System.out.println("2. Wyświetl szachownicę");
                     System.out.println("3. Wyjdź z gry");

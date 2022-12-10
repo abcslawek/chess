@@ -1,0 +1,6 @@
+na czym stoimy:
+- pion bije na ukos
+- porusza się do przodu
+- gdy są dwa piony w jednej kolumnie to jest zonk gdy jest jakaś akcja
+- nie wiadomo czy pion dalej bije w przód
+- przetestuj różne sytuacje i popraw
