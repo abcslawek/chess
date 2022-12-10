@@ -23,7 +23,8 @@ public class Game {
                 boolean shouldContinue = false;
 
                 while (!shouldContinue) {
-                    chessboard.showChessboard();
+                    if (whitesMove) chessboard.showChessboard();
+                    else chessboard.showReverseChessboard();
                     System.out.println("1. Wykonaj ruch");
                     System.out.println("2. Wyświetl szachownicę");
                     System.out.println("3. Wyjdź z gry");

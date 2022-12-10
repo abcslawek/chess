@@ -89,6 +89,15 @@ public class Chessboard {
         }
     }
 
+    public void showReverseChessboard(){
+        for (int r = 0; r <= fields.length - 1; r++) {
+            for (int c = fields.length-1; c >= 0; c--) {
+                System.out.print(this.fields[c][r].getFieldNameOrPiece() + "\t");
+            }
+            System.out.println();
+        }
+    }
+
     public boolean makeMove(String move, boolean whitesMove) {
         //np. d3, Ra4, Nc3 (Nac3), Bb2, Qf6 (Qcd3), Kh4
 
