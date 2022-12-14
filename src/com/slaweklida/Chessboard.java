@@ -2,6 +2,8 @@ package com.slaweklida;
 
 import com.slaweklida.pieces.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class Chessboard {
@@ -89,9 +91,9 @@ public class Chessboard {
         }
     }
 
-    public void showReverseChessboard(){
+    public void showReverseChessboard() {
         for (int r = 0; r <= fields.length - 1; r++) {
-            for (int c = fields.length-1; c >= 0; c--) {
+            for (int c = fields.length - 1; c >= 0; c--) {
                 System.out.print(this.fields[c][r].getFieldNameOrPiece() + "\t");
             }
             System.out.println();
@@ -128,11 +130,11 @@ public class Chessboard {
 
         boolean pawnFights = false;
 
-        if(move.length() == 2) {
+        if (move.length() == 2) {
             ourColumn = "" + move.charAt(0);
             opponentsColumn = ourColumn;
             opponentsRow = Integer.parseInt("" + move.charAt(1));
-        }else {
+        } else {
             System.out.println("Pion będzie bił");
             pawnFights = true;
             ourColumn = "" + move.charAt(0);
@@ -147,61 +149,77 @@ public class Chessboard {
         }
 
         if (whitesMove && !pawnFights) {
-            ourRow = whitePiecesRowInIndicatedColumn(ourColumn, "P");
+            ourRow = whitePiecesClosestRowInIndicatedColumn(ourColumn, opponentsRow, "P");
             if (isIndicatedFieldInRangeOfPiece(ourColumn, ourRow, opponentsRow)) {
                 if (hasIndicatedFieldOurWhitePiece(opponentsColumn, opponentsRow)) return false;
                 else if (pawnMoves(opponentsColumn, opponentsRow, ourColumn, ourRow)) return true;
             }
-        }else if(whitesMove && pawnFights){ //D(column):E(opponentsColumn)5(opponentsRow)
+        } else if (whitesMove && pawnFights) { //D(column):E(opponentsColumn)5(opponentsRow)
             System.out.println("Pion będzie bił (weszliśmy)");
-            ourRow = whitePiecesRowInIndicatedColumn(ourColumn, "P");
-            if (ourRow != 0 && isIndicatedOpponentInRangeOfOurPawn(ourColumn, ourRow, opponentsColumn, opponentsRow)){
+            ourRow = whitePiecesClosestRowInIndicatedColumn(ourColumn, opponentsRow, "P");
+            if (ourRow != 0 && isIndicatedOpponentInRangeOfOurPawn(ourColumn, ourRow, opponentsColumn, opponentsRow)) {
                 if (hasIndicatedFieldOurWhitePiece(opponentsColumn, opponentsRow)) return false;
                 else if (pawnKills(opponentsColumn, opponentsRow, ourColumn, ourRow)) return true;
             }
-        }else if (!whitesMove && !pawnFights) {
-            ourRow = blackPiecesRowInIndicatedColumn(ourColumn, "P");
+        } else if (!whitesMove && !pawnFights) {
+            ourRow = blackPiecesClosestRowInIndicatedColumn(ourColumn, opponentsRow, "P");
             if (isIndicatedFieldInRangeOfPiece(ourColumn, ourRow, opponentsRow)) {
                 if (hasIndicatedFieldOurBlackPiece(opponentsColumn, opponentsRow)) return false;
                 else if (pawnMoves(opponentsColumn, opponentsRow, ourColumn, ourRow)) return true;
             }
-        }else if(!whitesMove && pawnFights){ //D(column):E(opponentsColumn)5(opponentsRow)
+        } else if (!whitesMove && pawnFights) { //D(column):E(opponentsColumn)5(opponentsRow)
             System.out.println("Pion będzie bił (weszliśmy)");
-            ourRow = blackPiecesRowInIndicatedColumn(ourColumn, "P");
-            if (ourRow != 0 && isIndicatedOpponentInRangeOfOurPawn(ourColumn, ourRow, opponentsColumn, opponentsRow)){
+            ourRow = blackPiecesClosestRowInIndicatedColumn(ourColumn, opponentsRow, "P");
+            if (ourRow != 0 && isIndicatedOpponentInRangeOfOurPawn(ourColumn, ourRow, opponentsColumn, opponentsRow)) {
                 if (hasIndicatedFieldOurBlackPiece(opponentsColumn, opponentsRow)) return false;
                 else if (pawnKills(opponentsColumn, opponentsRow, ourColumn, ourRow)) return true;
             }
         }
-
-
         return false;
     }
 
-    public int whitePiecesRowInIndicatedColumn(String column, String name) {
-        for (int r = 0; r < 8; r++) { //szuka czy w podanej kolumnie znajduje się pion
-            if (this.fields[columnToNumber(column)][r].getPiece() != null && // i jeśli znalezione pole posiada bierkę
-                    !this.fields[columnToNumber(column)][r].getPiece().isPieceBlack() && // i jeśli bierka jest biała
-                    this.fields[columnToNumber(column)][r].getPiece().getName().equals(name)) { // i jeśli ta bierka to pion
-                System.out.println("Znaleziono białą bierkę w kolumnie " + column + " i w rzędzie " + (r + 1));
-                return r + 1;
+    public int whitePiecesClosestRowInIndicatedColumn(String ourColumn, int opponentsRow, String name) { //zwraca listę wszystkich rzędów na których występuje dana figura w danej kolumnie
+        int closestRow = Integer.MAX_VALUE;
+        int r = 0; //rząd z naszą bierką najbliższy rzędowi przeciwnika
+        for (r = 0; r < 8; r++) { //szuka czy w podanej kolumnie znajduje się pion
+            if (this.fields[columnToNumber(ourColumn)][r].getPiece() != null && // i jeśli znalezione pole posiada bierkę
+                    !this.fields[columnToNumber(ourColumn)][r].getPiece().isPieceBlack() && // i jeśli bierka jest biała
+                    this.fields[columnToNumber(ourColumn)][r].getPiece().getName().equals(name)) {// i jeśli ta bierka to bierka którą chcemy
+                if (Math.abs(rowToArrayRow(opponentsRow) - r) < Math.abs(rowToArrayRow(opponentsRow) - closestRow)) {
+                    closestRow = r;
+                }
+                System.out.println("Znaleziono białą bierkę w kolumnie " + ourColumn + " i w rzędzie " + (r + 1));
             }
         }
-        System.out.println("whitePiecesRowInIndicatedColumn() -> Nie znaleziono, return 0");
-        return 0;
+        if (closestRow == Integer.MAX_VALUE) {
+            System.out.println("whitePiecesClosestRowInIndicatedColumn() -> Nie znaleziono, return 0");
+            return 0;
+        } else {
+            System.out.println("Najbliższa bierka to ta w rzędzie " + (closestRow + 1));
+            return closestRow + 1;
+        }
     }
 
-    public int blackPiecesRowInIndicatedColumn(String column, String name) {
-        for (int r = 0; r < 8; r++) { //szuka czy w podanej kolumnie znajduje się pion
+    public int blackPiecesClosestRowInIndicatedColumn(String column, int opponentsRow, String name) { //zwraca listę wszystkich rzędów na których występuje dana figura w danej kolumnie
+        int closestRow = Integer.MAX_VALUE;
+        int r = 0; //rząd z naszą bierką najbliższy rzędowi przeciwnika
+        for (r = 0; r < 8; r++) { //szuka czy w podanej kolumnie znajduje się pion
             if (this.fields[columnToNumber(column)][r].getPiece() != null && // i jeśli znalezione pole posiada bierkę
                     this.fields[columnToNumber(column)][r].getPiece().isPieceBlack() && // i jeśli bierka jest czarna
-                    this.fields[columnToNumber(column)][r].getPiece().getName().equals(name)) { // i jeśli ta bierka to pion
+                    this.fields[columnToNumber(column)][r].getPiece().getName().equals(name)){ // i jeśli ta bierka to pion
+                if (Math.abs(rowToArrayRow(opponentsRow) - r) < Math.abs(rowToArrayRow(opponentsRow) - closestRow)) {
+                    closestRow = r;
+                }
                 System.out.println("Znaleziono czarną bierkę w kolumnie " + column + " i w rzędzie " + (r + 1));
-                return r + 1;
             }
         }
-        System.out.println("blackPiecesRowInIndicatedColumn() -> Nie znaleziono, return 0");
-        return 0;
+        if (closestRow == Integer.MAX_VALUE) {
+            System.out.println("blackPiecesClosestRowInIndicatedColumn() -> Nie znaleziono, return 0");
+            return 0;
+        } else {
+            System.out.println("Najbliższa bierka to ta w rzędzie " + (closestRow + 1));
+            return closestRow + 1;
+        }
     }
 
     public boolean isIndicatedFieldInRangeOfPiece(String ourColumn, int ourRow, int opponentsRow) {
@@ -215,8 +233,8 @@ public class Chessboard {
         }
     }
 
-    public boolean isIndicatedOpponentInRangeOfOurPawn(String ourColumn, int ourRow, String opponentsColumn, int opponentsRow){
-            return (Math.abs(columnToNumber(ourColumn) - columnToNumber(opponentsColumn)) == 1 && Math.abs(rowToArrayRow(ourRow) - rowToArrayRow(opponentsRow)) == 1);
+    public boolean isIndicatedOpponentInRangeOfOurPawn(String ourColumn, int ourRow, String opponentsColumn, int opponentsRow) {
+        return (Math.abs(columnToNumber(ourColumn) - columnToNumber(opponentsColumn)) == 1 && Math.abs(rowToArrayRow(ourRow) - rowToArrayRow(opponentsRow)) == 1);
     }
 
     public boolean hasIndicatedFieldOurWhitePiece(String opponentsColumn, int opponentsRow) {
@@ -248,15 +266,16 @@ public class Chessboard {
     }
 
     //pawn moves (wyjątkowa metoda tylko dla piona)
-    public boolean pawnMoves(String opponentsColumn, int opponentsRow, String ourColumn, int ourRow){
+    public boolean pawnMoves(String opponentsColumn, int opponentsRow, String ourColumn, int ourRow) {
         if (isIndicatedFieldEmpty(opponentsColumn, opponentsRow)) {
             this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].setPiece(this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece()); //we wskazanym miejscu wstawiamy piona ze starego pola
             this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].setPiece(null); //kasujemy piona ze starego piona
             return true;
         } else return false;
     }
+
     //(wyjątkowa metoda tylko dla piona)
-    public boolean pawnKills(String opponentsColumn, int opponentsRow, String ourColumn, int ourRow){
+    public boolean pawnKills(String opponentsColumn, int opponentsRow, String ourColumn, int ourRow) {
         if (hasIndicatedFieldOpponentsBlackPiece(opponentsColumn, opponentsRow) || hasIndicatedFieldOpponentsWhitePiece(opponentsColumn, opponentsRow)) {
             this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].setPiece(this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece()); //we wskazanym miejscu wstawiamy piona ze starego pola
             this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].setPiece(null); //kasujemy piona ze starego piona
