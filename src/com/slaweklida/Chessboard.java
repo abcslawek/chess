@@ -104,7 +104,7 @@ public class Chessboard {
         //np. d3, Ra4, Nc3 (Nac3), Bb2, Qf6 (Qcd3), Kh4
 
         if (move.length() == 2 || move.length() == 4) { //jeśli d3, czyli pion
-            return movePawn(move, whitesMove);
+            return movePawn(move.toUpperCase(Locale.ROOT), whitesMove);
         } else if (move.length() == 3) { //jeśli np. Ra4
             String piece = "" + move.charAt(0);
             String column = ("" + move.charAt(1)).toUpperCase(Locale.ROOT);
@@ -150,6 +150,10 @@ public class Chessboard {
 
         if (whitesMove && !pawnFights) {
             ourRow = whitePiecesClosestRowInIndicatedColumn(ourColumn, opponentsRow, "P");
+            if (opponentsRow < ourRow) { //czy pion porusza się w tył?
+                System.out.println("Pion porusza się tylko do przodu");
+                return false;
+            }
             if (isIndicatedFieldInRangeOfPiece(ourColumn, ourRow, opponentsRow)) {
                 if (hasIndicatedFieldOurWhitePiece(opponentsColumn, opponentsRow)) return false;
                 else if (pawnMoves(opponentsColumn, opponentsRow, ourColumn, ourRow)) {
@@ -160,12 +164,20 @@ public class Chessboard {
         } else if (whitesMove && pawnFights) { //D(column):E(opponentsColumn)5(opponentsRow)
             System.out.println("Pion będzie bił (weszliśmy)");
             ourRow = whitePiecesClosestRowInIndicatedColumn(ourColumn, opponentsRow, "P");
+            if (opponentsRow < ourRow) { //czy pion porusza się w tył?
+                System.out.println("Pion porusza się tylko do przodu");
+                return false;
+            }
             if (ourRow != 0 && isIndicatedOpponentInRangeOfOurPawn(ourColumn, ourRow, opponentsColumn, opponentsRow)) {
                 if (hasIndicatedFieldOurWhitePiece(opponentsColumn, opponentsRow)) return false;
                 else if (pawnKills(opponentsColumn, opponentsRow, ourColumn, ourRow)) return true;
             }
         } else if (!whitesMove && !pawnFights) {
             ourRow = blackPiecesClosestRowInIndicatedColumn(ourColumn, opponentsRow, "P");
+            if (opponentsRow > ourRow) { //czy pion porusza się w tył?
+                System.out.println("Pion porusza się tylko do przodu");
+                return false;
+            }
             if (isIndicatedFieldInRangeOfPiece(ourColumn, ourRow, opponentsRow)) {
                 if (hasIndicatedFieldOurBlackPiece(opponentsColumn, opponentsRow)) return false;
                 else if (pawnMoves(opponentsColumn, opponentsRow, ourColumn, ourRow))  {
@@ -176,6 +188,10 @@ public class Chessboard {
         } else if (!whitesMove && pawnFights) { //D(column):E(opponentsColumn)5(opponentsRow)
             System.out.println("Pion będzie bił (weszliśmy)");
             ourRow = blackPiecesClosestRowInIndicatedColumn(ourColumn, opponentsRow, "P");
+            if (opponentsRow > ourRow) { //czy pion porusza się w tył?
+                System.out.println("Pion porusza się tylko do przodu");
+                return false;
+            }
             if (ourRow != 0 && isIndicatedOpponentInRangeOfOurPawn(ourColumn, ourRow, opponentsColumn, opponentsRow)) {
                 if (hasIndicatedFieldOurBlackPiece(opponentsColumn, opponentsRow)) return false;
                 else if (pawnKills(opponentsColumn, opponentsRow, ourColumn, ourRow)) return true;
@@ -288,6 +304,11 @@ public class Chessboard {
             return true;
         } else return false;
     }
+
+//    public boolean whitePawnGoesBackward(int ourRow, int opponentsRow){
+//        if (opponentsRow < ourRow) return false;
+//
+//    }
 
     public int columnToNumber(String column) {
         if (column.equals("A")) return 0;
