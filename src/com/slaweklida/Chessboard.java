@@ -152,7 +152,10 @@ public class Chessboard {
             ourRow = whitePiecesClosestRowInIndicatedColumn(ourColumn, opponentsRow, "P");
             if (isIndicatedFieldInRangeOfPiece(ourColumn, ourRow, opponentsRow)) {
                 if (hasIndicatedFieldOurWhitePiece(opponentsColumn, opponentsRow)) return false;
-                else if (pawnMoves(opponentsColumn, opponentsRow, ourColumn, ourRow)) return true;
+                else if (pawnMoves(opponentsColumn, opponentsRow, ourColumn, ourRow)) {
+                    this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].getPiece().setForwardRange(1);
+                    return true;
+                }
             }
         } else if (whitesMove && pawnFights) { //D(column):E(opponentsColumn)5(opponentsRow)
             System.out.println("Pion będzie bił (weszliśmy)");
@@ -165,7 +168,10 @@ public class Chessboard {
             ourRow = blackPiecesClosestRowInIndicatedColumn(ourColumn, opponentsRow, "P");
             if (isIndicatedFieldInRangeOfPiece(ourColumn, ourRow, opponentsRow)) {
                 if (hasIndicatedFieldOurBlackPiece(opponentsColumn, opponentsRow)) return false;
-                else if (pawnMoves(opponentsColumn, opponentsRow, ourColumn, ourRow)) return true;
+                else if (pawnMoves(opponentsColumn, opponentsRow, ourColumn, ourRow))  {
+                    this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].getPiece().setForwardRange(1);
+                    return true;
+                }
             }
         } else if (!whitesMove && pawnFights) { //D(column):E(opponentsColumn)5(opponentsRow)
             System.out.println("Pion będzie bił (weszliśmy)");

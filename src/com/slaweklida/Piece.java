@@ -44,4 +44,9 @@ public abstract class Piece {
     public boolean isPieceBlack() {
         return isPieceBlack;
     }
+
+    //setters
+    public void setForwardRange(int forwardRange) {
+        this.forwardRange = forwardRange;
+    }
 }
