@@ -2,9 +2,7 @@ package com.slaweklida;
 
 import com.slaweklida.pieces.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class Chessboard {
 
@@ -94,19 +92,11 @@ public class Chessboard {
             }
         }
 
-        this.fields[3][4].setPiece(new Queen(false));
-        this.fields[3][2].setPiece(new Pawn(false));
-        this.fields[3][1].setPiece(new Bishop(false));
-        this.fields[5][6].setPiece(new Pawn(true));
-        this.fields[6][7].setPiece(new Bishop(true));
-        this.fields[1][4].setPiece(new Knight(true));
-        this.fields[7][4].setPiece(new Knight(false));
-        this.fields[5][2].setPiece(new Knight(true));
-        this.fields[6][1].setPiece(new Knight(true));
-        this.fields[3][5].setPiece(new Bishop(true));
-        this.fields[2][3].setPiece(new Rook(false));
-        this.fields[1][7].setPiece(new King(true));
-        this.fields[1][0].setPiece(new King(false));
+        this.fields[0][0].setPiece(new Queen(true));
+        this.fields[0][2].setPiece(new Rook(false));
+        this.fields[2][2].setPiece(new Rook(false));
+        this.fields[2][0].setPiece(new Rook(false));
+
 
 
     }
@@ -128,7 +118,7 @@ public class Chessboard {
             }
             System.out.println();
         }
-        availableQueensMoves("Q", true);
+        availableQueensMoves("Q", false);
     }
 
     public void showReverseChessboard() {
@@ -162,63 +152,33 @@ public class Chessboard {
         return false;
     }
 
-    public List<Field> availableQueensMoves(String piece, boolean whitesMove) { //bierki z ourColumn i ourRow
+    public Set<Field> availableQueensMoves(String piece, boolean whitesMove) { //bierki z ourColumn i ourRow
         List<Field> availableHorizontalFields = new ArrayList<>();
         List<Field> availableVerticalFields = new ArrayList<>();
         List<Field> availableRisingDiagonalFields = new ArrayList<>();
         List<Field> availableFallingDiagonalFields = new ArrayList<>();
-        List<Field> availableFields = new ArrayList<>();
-
+        Set<Field> availableFields = new HashSet<>(); //używamy setu aby wyeliminować powtarzające się pola królowej
+        int ourColumn = 0, ourRow = 0; //współrzędne królowej
         //whitesMove
         for (int c = 0; c < 8; c++) {
             for (int r = 0; r < 8; r++) {
-                //boolean encounteredBlack = false;
-                if (this.fields[c][r].getPiece() != null && this.fields[c][r].getPiece().getName().equals(piece) && !this.fields[c][r].getPiece().isPieceBlack) {
-                    Piece temp = this.fields[c][r].getPiece();
-                    System.out.println("Znaleziona biała królowa: " + temp.getName() + " na polu: " + this.fields[c][r].getFieldName() + " może wykonać ruchy: ");
-
+                if (this.fields[c][r].getPiece() != null && this.fields[c][r].getPiece().getName().equals(piece) && whitesMove != this.fields[c][r].getPiece().isPieceBlack) {
+                    System.out.println("Znaleziona biała królowa: " + this.fields[c][r].getPiece().getName() + " na polu: " + this.fields[c][r].getFieldName() + " może wykonać ruchy: ");
+                    ourColumn = c;
+                    ourRow = r;
                     //poziomo
                     for (int cc = 0; cc < 8; cc++)
                         availableHorizontalFields.add(this.fields[cc][r]); //dodajemy wszystkie poziome pola do listy
                     //ustalamy zakres dostępnych pól z poziomych pól
-                    int leftBeginning = 0;
-                    int rightEnd = 7;
-                    for (int i = 0; i < c; i++)
-                        if (availableHorizontalFields.get(i).getPiece() != null) leftBeginning = i;
-                    for (int i = 7; i > c; i--)
-                        if (availableHorizontalFields.get(i).getPiece() != null) rightEnd = i;
-
-                    if (availableHorizontalFields.get(leftBeginning).getPiece() != null && !availableHorizontalFields.get(leftBeginning).getPiece().isPieceBlack)
-                        leftBeginning += 1;
-                    if (availableHorizontalFields.get(rightEnd).getPiece() != null && !availableHorizontalFields.get(rightEnd).getPiece().isPieceBlack)
-                        rightEnd -= 1;
-
-                    availableHorizontalFields = availableHorizontalFields.subList(leftBeginning, rightEnd + 1); //ustala nowy zakres dostępnych pól
-                    availableHorizontalFields.remove(this.fields[c][r]); //usuwa królową z listy
+                    availableHorizontalFields = skippingObstacles(this.fields[c][r], availableHorizontalFields, c, 7, whitesMove);
 
                     //pionowo
                     for (int rr = 0; rr < 8; rr++) availableVerticalFields.add(this.fields[c][rr]);
                     //ustalamy zakres dostępnych pól z pionowych pól
-                    int downBeginning = 0;
-                    int upEnd = 7;
-                    for (int i = 0; i < r; i++)
-                        if (availableVerticalFields.get(i).getPiece() != null) downBeginning = i;
-
-                    for (int i = 7; i > r; i--)
-                        if (availableVerticalFields.get(i).getPiece() != null) upEnd = i;
-
-                    if (availableVerticalFields.get(downBeginning).getPiece() != null && !availableVerticalFields.get(downBeginning).getPiece().isPieceBlack)
-                        downBeginning += 1;
-                    if (availableVerticalFields.get(upEnd).getPiece() != null && !availableVerticalFields.get(upEnd).getPiece().isPieceBlack)
-                        upEnd -= 1;
-
-                    availableVerticalFields = availableVerticalFields.subList(downBeginning, upEnd + 1); //ustala nowy zakres dostępnych pól
-                    availableVerticalFields.remove(this.fields[c][r]); //usuwa królową z listy
-
-                    //BYKU OGARNIJ TE RÓŻNICE ŻE JAK NA POCZĄTKU I KOŃCU JEST FIGURA CZARNA TO USUWA Z ZAKRESU ALBO NIE ITD, GENERALNIE POZIOMO/PIONOWO/SKOSY DO UZUPEŁNIENIA
+                    availableVerticalFields = skippingObstacles(this.fields[c][r], availableVerticalFields, r, 7, whitesMove);
 
                     //skośnie rosnąco
-                    int counter = 0;
+                    int counter = 0; //zmienna ta opisuje liczbę pól w ukosie, która nie zawsze jest taka sama
                     int ourPositionInTheList = 0;
                     for (int cc = 0; cc < 8; cc++) {
                         for (int rr = 0; rr < 8; rr++) {
@@ -232,26 +192,14 @@ public class Chessboard {
                     }
                     counter--; //musimy skonwertować counter na tablicowy counter :)
                     //ustalamy zakres dostępnych pól z skośnie rosnących pól
-                    int downLeftBeginning = 0;
-                    int upRightEnd = counter;
-                    for (int i = 0; i < ourPositionInTheList; i++)
-                        if (availableRisingDiagonalFields.get(i).getPiece() != null) downLeftBeginning = i;
-                    for (int i = counter; i > ourPositionInTheList; i--)
-                        if (availableRisingDiagonalFields.get(i).getPiece() != null) upRightEnd = i;
-                    if (availableRisingDiagonalFields.get(downLeftBeginning).getPiece() != null && !availableRisingDiagonalFields.get(downLeftBeginning).getPiece().isPieceBlack)
-                        downLeftBeginning += 1;
-                    if (availableRisingDiagonalFields.get(upRightEnd).getPiece() != null && !availableRisingDiagonalFields.get(upRightEnd).getPiece().isPieceBlack)
-                        upRightEnd -= 1;
-
-                    availableRisingDiagonalFields = availableRisingDiagonalFields.subList(downLeftBeginning, upRightEnd + 1); //ustala nowy zakres dostępnych pól
-                    availableRisingDiagonalFields.remove(this.fields[c][r]); //usuwa królową z listy
+                    availableRisingDiagonalFields = skippingObstacles(this.fields[c][r], availableRisingDiagonalFields, ourPositionInTheList, counter, whitesMove);
 
                     //skośnie opadająco
                     counter = 0;
                     ourPositionInTheList = 0;
                     for (int cc = 0; cc < 8; cc++) {
                         for (int rr = 0; rr < 8; rr++) {
-                            if ((Math.abs(cc - c) == Math.abs(rr - r)) && ((cc < c && rr > r) || (cc > c && rr < r))) { //z tw. talesa oraz w konkretnych ćwiartkach układu wsp
+                            if ((Math.abs(cc - c) == Math.abs(rr - r)) && ((cc <= c && rr >= r) || (cc >= c && rr <= r))) { //z tw. talesa oraz w konkretnych ćwiartkach układu wsp
                                 availableFallingDiagonalFields.add(this.fields[cc][rr]);
                                 if (this.fields[cc][rr] == this.fields[c][r])
                                     ourPositionInTheList = counter; //jeśli trafimy na królową to zapamiętujemy jej położenie na liście
@@ -261,33 +209,45 @@ public class Chessboard {
                     }
                     counter--; //musimy skonwertować counter na tablicowy counter :)
                     //ustalamy zakres dostępnych pól z skośnie opadających pól
-                    int upLeftBeginning = 0;
-                    int downRightEnd = counter;
-                    for (int i = 0; i < ourPositionInTheList; i++)
-                        if (availableFallingDiagonalFields.get(i).getPiece() != null) upLeftBeginning = i;
-                    for (int i = counter; i > ourPositionInTheList; i--)
-                        if (availableFallingDiagonalFields.get(i).getPiece() != null) downRightEnd = i;
-
-                    if (availableFallingDiagonalFields.get(upLeftBeginning).getPiece() != null && !availableFallingDiagonalFields.get(upLeftBeginning).getPiece().isPieceBlack)
-                        upLeftBeginning += 1;
-                    if (availableFallingDiagonalFields.get(downRightEnd).getPiece() != null && !availableFallingDiagonalFields.get(downRightEnd).getPiece().isPieceBlack)
-                        downRightEnd -= 1;
-                    availableFallingDiagonalFields = availableFallingDiagonalFields.subList(upLeftBeginning, downRightEnd + 1); //ustala nowy zakres dostępnych pól
-                    availableFallingDiagonalFields.remove(this.fields[c][r]); //usuwa królową z listy
+                    availableFallingDiagonalFields = skippingObstacles(this.fields[c][r], availableFallingDiagonalFields, ourPositionInTheList, counter, whitesMove);
                 }
             }
         }
 
-        //blacksMove...
 
         //finally
         availableFields.addAll(availableHorizontalFields);
         availableFields.addAll(availableVerticalFields);
         availableFields.addAll(availableRisingDiagonalFields);
         availableFields.addAll(availableFallingDiagonalFields);
+
         for (Field i : availableFields) System.out.println(i.getFieldName());
+        System.out.println("Wszystkich możliwych ruchów: " + availableFields.size());
+        return availableFields;
+        //gdy czarne zaczynają z "qr4bk/5p2/3b4/1n5N/2R5/3P1n2/3B2n1/1K6 b - - 0 1" to królowa nie może bić wieży na B8 a u nas bije
+        //poupraszczaj te funkcje byq
+    }
+
+    public List<Field> skippingObstacles(Field ourField, List<Field> availableFields, int ourPositionInTheList, int counter, boolean whitesMove) {
+        int begin = 0;
+        int end = counter; //poziomo i pionowo end = 7
+        for (int i = 0; i < ourPositionInTheList; i++)
+            if (availableFields.get(i).getPiece() != null) begin = i;
+        for (int i = counter; i > ourPositionInTheList; i--)
+            if (availableFields.get(i).getPiece() != null) end = i;
+        if (availableFields.get(begin).getPiece() != null && availableFields.get(begin) != ourField && whitesMove != availableFields.get(begin).getPiece().isPieceBlack) //środkowy warunek w razie gdyby królowa była na skraju
+            begin += 1;
+        if (availableFields.get(end).getPiece() != null && availableFields.get(end) != ourField && whitesMove != availableFields.get(end).getPiece().isPieceBlack) //środkowy warunek w razie gdyby królowa była na skraju
+            end -= 1;
+        if (begin > end){ //gdyby z prawej skrajnej strony była po ukosie nasza królowa
+            availableFields.clear();
+            return availableFields;
+        }
+        availableFields = availableFields.subList(begin, end + 1); //ustala nowy zakres dostępnych pól
+        availableFields.remove(ourField);
         return availableFields;
     }
+
 
     public boolean movePawn(String move, boolean whitesMove) {
         //spliting "move"
