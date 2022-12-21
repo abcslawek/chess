@@ -6,75 +6,55 @@ import java.util.*;
 
 public class Chessboard {
 
+    public static final String ANSI_BLACK_BACKGROUND = "\033[40m";  // BLACK
+    public static final String ANSI_RED_BACKGROUND = "\033[41m";    // RED
+    public static final String ANSI_GREEN_BACKGROUND = "\033[42m";  // GREEN
+    public static final String ANSI_YELLOW_BACKGROUND = "\033[43m"; // YELLOW
+    public static final String ANSI_BLUE_BACKGROUND = "\033[44m";   // BLUE
+    public static final String ANSI_PURPLE_BACKGROUND = "\033[45m"; // PURPLE
+    public static final String ANSI_CYAN_BACKGROUND = "\033[46m";   // CYAN
+    public static final String ANSI_WHITE_BACKGROUND = "\033[47m";  // WHITE
+    public static final String ANSI_RESET = "\033[0m";
+    public static final String ANSI_BLACK = "\033[0;30m";   // BLACK
+    public static final String ANSI_RED = "\033[0;31m";     // RED
+    public static final String ANSI_GREEN = "\033[0;32m";   // GREEN
+    public static final String ANSI_YELLOW = "\033[0;33m";  // YELLOW
+    public static final String ANSI_BLUE = "\033[0;34m";    // BLUE
+    public static final String ANSI_PURPLE = "\033[0;35m";  // PURPLE
+    public static final String ANSI_CYAN = "\033[0;36m";    // CYAN
+    public static final String ANSI_WHITE = "\033[0;37m";   // WHITE
+    //bold high intensity
+    public static final String BLACK_BOLD_BRIGHT = "\033[1;90m"; // BLACK
+    //high intensity backgrounds
+    public static final String BLACK_BACKGROUND_BRIGHT = "\033[0;100m";// BLACK
+
     private Field[][] fields;
 
-    //constructor
-//    public Chessboard(boolean whitesFirst) {
-//        this.fields = new Field[8][8];
-//        //REMEMBER THAT e.g. D5 is [3][4] in arrays
-//        //making whites
-//        this.fields[0][0] = new Field(new Rook(false), 'A', 1, true);
-//        this.fields[1][0] = new Field(new Knight(false), 'B', 1, false);
-//        this.fields[2][0] = new Field(new Bishop(false), 'C', 1, true);
-//        this.fields[3][0] = new Field(new Queen(false), 'D', 1, false);
-//        this.fields[4][0] = new Field(new King(false), 'E', 1, true);
-//        this.fields[5][0] = new Field(new Bishop(false), 'F', 1, false);
-//        this.fields[6][0] = new Field(new Knight(false), 'G', 1, true);
-//        this.fields[7][0] = new Field(new Rook(false), 'H', 1, false);
-//
-//        //making white paws
-//        for (int c = 0; c < 8; c++) {
-//            char letter = (char) (c + 65);
-//            this.fields[c][1] = new Field(new Pawn(false), letter, 2, false);
-//            c++;
-//            letter = (char) (c + 65);
-//            this.fields[c][1] = new Field(new Pawn(false), letter, 2, true);
-//        }
-//
-//        //making battlefield
-//        for (int r = 2; r < 6; r++) {
-//            for (int c = 0; c < 8; c++) {
-//                char letter = (char) (c + 65);
-//                this.fields[c][r] = new Field(null, letter, r + 1, true);
-//                c++;
-//                letter = (char) (c + 65); //musimy zaktualizować literę kolumny
-//                this.fields[c][r] = new Field(null, letter, r + 1, false);
-//            }
-//            r++;
-//            for (int c = 0; c < 8; c++) { //drugi for ze zmienioną kolejnością koloru pól
-//                char letter = (char) (c + 65);
-//                this.fields[c][r] = new Field(null, letter, r + 1, false);
-//                c++;
-//                letter = (char) (c + 65); //musimy zaktualizować literę kolumny
-//                this.fields[c][r] = new Field(null, letter, r + 1, true);
-//            }
-//        }
-//
-//        //making black paws, row loop starts from 0
-//        for (int c = 0; c < 8; c++) {
-//            char letter = (char) (c + 65);
-//            this.fields[c][6] = new Field(new Pawn(true), letter, 7, true);
-//            c++;
-//            letter = (char) (c + 65);
-//            this.fields[c][6] = new Field(new Pawn(true), letter, 7, false);
-//        }
-//
-//        //making blacks
-//        this.fields[0][7] = new Field(new Rook(true), 'A', 8, false);
-//        this.fields[1][7] = new Field(new Knight(true), 'B', 8, true);
-//        this.fields[2][7] = new Field(new Bishop(true), 'C', 8, false);
-//        this.fields[3][7] = new Field(new Queen(true), 'D', 8, true);
-//        this.fields[4][7] = new Field(new King(true), 'E', 8, false);
-//        this.fields[5][7] = new Field(new Bishop(true), 'F', 8, true);
-//        this.fields[6][7] = new Field(new Knight(true), 'G', 8, false);
-//        this.fields[7][7] = new Field(new Rook(true), 'H', 8, true);
-//    }
-
-    //test chessboard
+//    constructor
     public Chessboard(boolean whitesFirst) {
         this.fields = new Field[8][8];
+        //REMEMBER THAT e.g. D5 is [3][4] in arrays
+        //making whites
+        this.fields[0][0] = new Field(new Rook(false), 'A', 1, true);
+        this.fields[1][0] = new Field(new Knight(false), 'B', 1, false);
+        this.fields[2][0] = new Field(new Bishop(false), 'C', 1, true);
+        this.fields[3][0] = new Field(new Queen(false), 'D', 1, false);
+        this.fields[4][0] = new Field(new King(false), 'E', 1, true);
+        this.fields[5][0] = new Field(new Bishop(false), 'F', 1, false);
+        this.fields[6][0] = new Field(new Knight(false), 'G', 1, true);
+        this.fields[7][0] = new Field(new Rook(false), 'H', 1, false);
+
+        //making white paws
+        for (int c = 0; c < 8; c++) {
+            char letter = (char) (c + 65);
+            this.fields[c][1] = new Field(new Pawn(false), letter, 2, false);
+            c++;
+            letter = (char) (c + 65);
+            this.fields[c][1] = new Field(new Pawn(false), letter, 2, true);
+        }
+
         //making battlefield
-        for (int r = 0; r < 8; r++) {
+        for (int r = 2; r < 6; r++) {
             for (int c = 0; c < 8; c++) {
                 char letter = (char) (c + 65);
                 this.fields[c][r] = new Field(null, letter, r + 1, true);
@@ -92,14 +72,55 @@ public class Chessboard {
             }
         }
 
-        this.fields[0][0].setPiece(new Queen(true));
-        this.fields[0][2].setPiece(new Rook(false));
-        this.fields[2][2].setPiece(new Rook(false));
-        this.fields[2][0].setPiece(new Rook(false));
+        //making black paws, row loop starts from 0
+        for (int c = 0; c < 8; c++) {
+            char letter = (char) (c + 65);
+            this.fields[c][6] = new Field(new Pawn(true), letter, 7, true);
+            c++;
+            letter = (char) (c + 65);
+            this.fields[c][6] = new Field(new Pawn(true), letter, 7, false);
+        }
 
-
-
+        //making blacks
+        this.fields[0][7] = new Field(new Rook(true), 'A', 8, false);
+        this.fields[1][7] = new Field(new Knight(true), 'B', 8, true);
+        this.fields[2][7] = new Field(new Bishop(true), 'C', 8, false);
+        this.fields[3][7] = new Field(new Queen(true), 'D', 8, true);
+        this.fields[4][7] = new Field(new King(true), 'E', 8, false);
+        this.fields[5][7] = new Field(new Bishop(true), 'F', 8, true);
+        this.fields[6][7] = new Field(new Knight(true), 'G', 8, false);
+        this.fields[7][7] = new Field(new Rook(true), 'H', 8, true);
     }
+
+//    //test chessboard
+//    public Chessboard(boolean whitesFirst) {
+//        this.fields = new Field[8][8];
+//        //making battlefield
+//        for (int r = 0; r < 8; r++) {
+//            for (int c = 0; c < 8; c++) {
+//                char letter = (char) (c + 65);
+//                this.fields[c][r] = new Field(null, letter, r + 1, true);
+//                c++;
+//                letter = (char) (c + 65); //musimy zaktualizować literę kolumny
+//                this.fields[c][r] = new Field(null, letter, r + 1, false);
+//            }
+//            r++;
+//            for (int c = 0; c < 8; c++) { //drugi for ze zmienioną kolejnością koloru pól
+//                char letter = (char) (c + 65);
+//                this.fields[c][r] = new Field(null, letter, r + 1, false);
+//                c++;
+//                letter = (char) (c + 65); //musimy zaktualizować literę kolumny
+//                this.fields[c][r] = new Field(null, letter, r + 1, true);
+//            }
+//        }
+//
+//        this.fields[0][0].setPiece(new Queen(false));
+//        this.fields[0][2].setPiece(new Rook(true));
+//        this.fields[2][2].setPiece(new Rook(true));
+//        this.fields[2][0].setPiece(new Rook(true));
+//
+//
+//    }
 
     //getters
     public Field[][] getFields() {
@@ -114,11 +135,19 @@ public class Chessboard {
     public void showChessboard() {
         for (int r = fields.length - 1; r >= 0; r--) {
             for (int c = 0; c < fields.length; c++) {
-                System.out.print(this.fields[c][r].getFieldNameOrPiece() + "\t");
+                System.out.print(ANSI_BLACK+ANSI_BLUE_BACKGROUND+ this.fields[c][r].getFieldNameOrPiece() + "\t" + ANSI_RESET);
+                c++;
+                System.out.print(ANSI_BLACK+BLACK_BACKGROUND_BRIGHT + this.fields[c][r].getFieldNameOrPiece() + "\t" + ANSI_RESET);
+            }
+            System.out.println();
+            r--; //pola muszą być pokolorowane naprzemiennie
+            for (int c = 0; c < fields.length; c++) {
+                System.out.print(ANSI_BLACK+BLACK_BACKGROUND_BRIGHT + this.fields[c][r].getFieldNameOrPiece() + "\t" + ANSI_RESET);
+                c++;
+                System.out.print(ANSI_BLACK+ANSI_BLUE_BACKGROUND+ this.fields[c][r].getFieldNameOrPiece() + "\t" + ANSI_RESET);
             }
             System.out.println();
         }
-        availableQueensMoves("Q", false);
     }
 
     public void showReverseChessboard() {
@@ -132,88 +161,105 @@ public class Chessboard {
 
     public boolean makeMove(String move, boolean whitesMove) {
         //np. d3, Ra4, Nc3 (Nac3), Bb2, Qf6 (Qcd3), Kh4
+        System.out.println(ANSI_CYAN_BACKGROUND + "ehe" + ANSI_RESET);
 
         if (move.length() == 2 || move.length() == 4) { //jeśli d3, czyli pion
             return movePawn(move.toUpperCase(Locale.ROOT), whitesMove);
-        } else if (move.length() == 3) { //jeśli np. Ra4
-            String piece = "" + move.charAt(0);
-            String column = ("" + move.charAt(1)).toUpperCase(Locale.ROOT);
-            int row = Integer.parseInt("" + move.charAt(2));
-            //List<Field> availableMoves = availableMoves(piece, whitesMove);
-        } else if (move.length() == 5) { //jeśli wieloznaczne np. Nac3
-            String piece = "" + move.charAt(0);
-            String startColumnOrRow = ("" + move.charAt(1)).toUpperCase(Locale.ROOT);
-            String column = ("" + move.charAt(2)).toUpperCase(Locale.ROOT);
-            int row = Integer.parseInt("" + move.charAt(3));
+        } else if (move.length() == 5) { //jeśli np. A4:C7 (figura z A4 idzie na C7)
+            String ourColumn = ("" + move.charAt(0)).toUpperCase(Locale.ROOT);
+            int ourRow = Integer.parseInt("" + move.charAt(1));
+            String opponentsColumn = ("" + move.charAt(3)).toUpperCase(Locale.ROOT);
+            int opponentsRow = Integer.parseInt("" + move.charAt(4));
+            String piece = this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece().getName();
+
+            if (piece.equals("Q") && availableQueensMoves(ourColumn, ourRow, whitesMove).contains(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)]))
+                return moveOrFight(ourColumn, ourRow, opponentsColumn, opponentsRow);
+            if (piece.equals("B") && availableBishopsMoves(ourColumn, ourRow, whitesMove).contains(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)]))
+                return moveOrFight(ourColumn, ourRow, opponentsColumn, opponentsRow);
+            if (piece.equals("R") && availableRooksMoves(ourColumn, ourRow, whitesMove).contains(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)]))
+                return moveOrFight(ourColumn, ourRow, opponentsColumn, opponentsRow);
+
+            return false;
         } else {
             System.out.println("makeMove() -> nie weszło do żadnej kategorii metody (move.length() == ?)");
             return false;
         }
-        return false;
     }
 
-    public Set<Field> availableQueensMoves(String piece, boolean whitesMove) { //bierki z ourColumn i ourRow
+    public Set<Field> availableQueensMoves(String ourColumn, int ourRow, boolean whitesMove) { //bierki z ourColumn i ourRow
+        return availableMoves(ourColumn, ourRow, true, true, true, "Q", whitesMove);
+    }
+
+    public Set<Field> availableBishopsMoves(String ourColumn, int ourRow, boolean whitesMove) { //bierki z ourColumn i ourRow
+        return availableMoves(ourColumn, ourRow, false, false, true, "B", whitesMove);
+    }
+
+    public Set<Field> availableRooksMoves(String ourColumn, int ourRow, boolean whitesMove) { //bierki z ourColumn i ourRow
+        return availableMoves(ourColumn, ourRow, true, true, false, "R", whitesMove);
+    }
+
+    public Set<Field> availableMoves(String ourColumn, int ourRow, boolean horizontal, boolean vertical, boolean diagonal, String piece, boolean whitesMove) {
         List<Field> availableHorizontalFields = new ArrayList<>();
         List<Field> availableVerticalFields = new ArrayList<>();
         List<Field> availableRisingDiagonalFields = new ArrayList<>();
         List<Field> availableFallingDiagonalFields = new ArrayList<>();
         Set<Field> availableFields = new HashSet<>(); //używamy setu aby wyeliminować powtarzające się pola królowej
-        int ourColumn = 0, ourRow = 0; //współrzędne królowej
-        //whitesMove
-        for (int c = 0; c < 8; c++) {
-            for (int r = 0; r < 8; r++) {
-                if (this.fields[c][r].getPiece() != null && this.fields[c][r].getPiece().getName().equals(piece) && whitesMove != this.fields[c][r].getPiece().isPieceBlack) {
-                    System.out.println("Znaleziona biała królowa: " + this.fields[c][r].getPiece().getName() + " na polu: " + this.fields[c][r].getFieldName() + " może wykonać ruchy: ");
-                    ourColumn = c;
-                    ourRow = r;
-                    //poziomo
-                    for (int cc = 0; cc < 8; cc++)
-                        availableHorizontalFields.add(this.fields[cc][r]); //dodajemy wszystkie poziome pola do listy
-                    //ustalamy zakres dostępnych pól z poziomych pól
-                    availableHorizontalFields = skippingObstacles(this.fields[c][r], availableHorizontalFields, c, 7, whitesMove);
 
-                    //pionowo
-                    for (int rr = 0; rr < 8; rr++) availableVerticalFields.add(this.fields[c][rr]);
-                    //ustalamy zakres dostępnych pól z pionowych pól
-                    availableVerticalFields = skippingObstacles(this.fields[c][r], availableVerticalFields, r, 7, whitesMove);
+        if (this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece() != null && this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece().getName().equals(piece) && whitesMove != this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece().isPieceBlack) {
+            System.out.println("Znaleziona: " + this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece().getName() + " na polu: " + this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getFieldName() + " może wykonać ruchy: ");
 
-                    //skośnie rosnąco
-                    int counter = 0; //zmienna ta opisuje liczbę pól w ukosie, która nie zawsze jest taka sama
-                    int ourPositionInTheList = 0;
-                    for (int cc = 0; cc < 8; cc++) {
-                        for (int rr = 0; rr < 8; rr++) {
-                            if ((Math.abs(cc - c) == Math.abs(rr - r)) && ((cc <= c && rr <= r) || (cc >= c && rr >= r))) { //z tw. talesa oraz w konkretnych ćwiartkach układu wsp
-                                availableRisingDiagonalFields.add(this.fields[cc][rr]);
-                                if (this.fields[cc][rr] == this.fields[c][r])
-                                    ourPositionInTheList = counter; //jeśli trafimy na królową to zapamiętujemy jej położenie na liście
-                                counter++;
-                            }
+            //poziomo
+            if (horizontal) {
+                for (int cc = 0; cc < 8; cc++)
+                    availableHorizontalFields.add(this.fields[cc][rowToArrayRow(ourRow)]); //dodajemy wszystkie poziome pola do listy
+                //ustalamy zakres dostępnych pól z poziomych pól
+                availableHorizontalFields = skippingObstacles(this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)], availableHorizontalFields, columnToNumber(ourColumn), 7, whitesMove);
+            }
+
+            //pionowo
+            if (vertical) {
+                for (int rr = 0; rr < 8; rr++) availableVerticalFields.add(this.fields[columnToNumber(ourColumn)][rr]);
+                //ustalamy zakres dostępnych pól z pionowych pól
+                availableVerticalFields = skippingObstacles(this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)], availableVerticalFields, rowToArrayRow(ourRow), 7, whitesMove);
+            }
+
+            //skośnie
+            if (diagonal) {
+                //skośnie rosnąco
+                int counter = 0; //zmienna ta opisuje liczbę pól w ukosie, która nie zawsze jest taka sama
+                int ourPositionInTheList = 0;
+                for (int cc = 0; cc < 8; cc++) {
+                    for (int rr = 0; rr < 8; rr++) {
+                        if ((Math.abs(cc - columnToNumber(ourColumn)) == Math.abs(rr - rowToArrayRow(ourRow))) && ((cc <= columnToNumber(ourColumn) && rr <= rowToArrayRow(ourRow)) || (cc >= columnToNumber(ourColumn) && rr >= rowToArrayRow(ourRow)))) { //z tw. talesa oraz w konkretnych ćwiartkach układu wsp
+                            availableRisingDiagonalFields.add(this.fields[cc][rr]);
+                            if (this.fields[cc][rr] == this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)])
+                                ourPositionInTheList = counter; //jeśli trafimy na królową to zapamiętujemy jej położenie na liście
+                            counter++;
                         }
                     }
-                    counter--; //musimy skonwertować counter na tablicowy counter :)
-                    //ustalamy zakres dostępnych pól z skośnie rosnących pól
-                    availableRisingDiagonalFields = skippingObstacles(this.fields[c][r], availableRisingDiagonalFields, ourPositionInTheList, counter, whitesMove);
-
-                    //skośnie opadająco
-                    counter = 0;
-                    ourPositionInTheList = 0;
-                    for (int cc = 0; cc < 8; cc++) {
-                        for (int rr = 0; rr < 8; rr++) {
-                            if ((Math.abs(cc - c) == Math.abs(rr - r)) && ((cc <= c && rr >= r) || (cc >= c && rr <= r))) { //z tw. talesa oraz w konkretnych ćwiartkach układu wsp
-                                availableFallingDiagonalFields.add(this.fields[cc][rr]);
-                                if (this.fields[cc][rr] == this.fields[c][r])
-                                    ourPositionInTheList = counter; //jeśli trafimy na królową to zapamiętujemy jej położenie na liście
-                                counter++;
-                            }
-                        }
-                    }
-                    counter--; //musimy skonwertować counter na tablicowy counter :)
-                    //ustalamy zakres dostępnych pól z skośnie opadających pól
-                    availableFallingDiagonalFields = skippingObstacles(this.fields[c][r], availableFallingDiagonalFields, ourPositionInTheList, counter, whitesMove);
                 }
+                counter--; //musimy skonwertować counter na tablicowy counter :)
+                //ustalamy zakres dostępnych pól z skośnie rosnących pól
+                availableRisingDiagonalFields = skippingObstacles(this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)], availableRisingDiagonalFields, ourPositionInTheList, counter, whitesMove);
+
+                //skośnie opadająco
+                counter = 0;
+                ourPositionInTheList = 0;
+                for (int cc = 0; cc < 8; cc++) {
+                    for (int rr = 0; rr < 8; rr++) {
+                        if ((Math.abs(cc - columnToNumber(ourColumn)) == Math.abs(rr - rowToArrayRow(ourRow))) && ((cc <= columnToNumber(ourColumn) && rr >= rowToArrayRow(ourRow)) || (cc >= columnToNumber(ourColumn) && rr <= rowToArrayRow(ourRow)))) { //z tw. talesa oraz w konkretnych ćwiartkach układu wsp
+                            availableFallingDiagonalFields.add(this.fields[cc][rr]);
+                            if (this.fields[cc][rr] == this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)])
+                                ourPositionInTheList = counter; //jeśli trafimy na królową to zapamiętujemy jej położenie na liście
+                            counter++;
+                        }
+                    }
+                }
+                counter--; //musimy skonwertować counter na tablicowy counter :)
+                //ustalamy zakres dostępnych pól z skośnie opadających pól
+                availableFallingDiagonalFields = skippingObstacles(this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)], availableFallingDiagonalFields, ourPositionInTheList, counter, whitesMove);
             }
         }
-
 
         //finally
         availableFields.addAll(availableHorizontalFields);
@@ -221,11 +267,9 @@ public class Chessboard {
         availableFields.addAll(availableRisingDiagonalFields);
         availableFields.addAll(availableFallingDiagonalFields);
 
-        for (Field i : availableFields) System.out.println(i.getFieldName());
+//        for (Field i : availableFields) System.out.println(i.getFieldName());
         System.out.println("Wszystkich możliwych ruchów: " + availableFields.size());
         return availableFields;
-        //gdy czarne zaczynają z "qr4bk/5p2/3b4/1n5N/2R5/3P1n2/3B2n1/1K6 b - - 0 1" to królowa nie może bić wieży na B8 a u nas bije
-        //poupraszczaj te funkcje byq
     }
 
     public List<Field> skippingObstacles(Field ourField, List<Field> availableFields, int ourPositionInTheList, int counter, boolean whitesMove) {
@@ -239,7 +283,7 @@ public class Chessboard {
             begin += 1;
         if (availableFields.get(end).getPiece() != null && availableFields.get(end) != ourField && whitesMove != availableFields.get(end).getPiece().isPieceBlack) //środkowy warunek w razie gdyby królowa była na skraju
             end -= 1;
-        if (begin > end){ //gdyby z prawej skrajnej strony była po ukosie nasza królowa
+        if (begin > end) { //gdyby z prawej skrajnej strony była po ukosie nasza królowa
             availableFields.clear();
             return availableFields;
         }
@@ -408,12 +452,11 @@ public class Chessboard {
         return this.fields[columnToNumber(column)][rowToArrayRow(row)].getPiece() != null && !this.fields[columnToNumber(column)][rowToArrayRow(row)].getPiece().isPieceBlack;
     }
 
-    public boolean moveOrFight(String ourColumn, int opponentsRow, int ourRow) {
-        if (isIndicatedFieldEmpty(ourColumn, opponentsRow) || hasIndicatedFieldOpponentsBlackPiece(ourColumn, opponentsRow) || hasIndicatedFieldOpponentsWhitePiece(ourColumn, opponentsRow)) {
-            this.fields[columnToNumber(ourColumn)][rowToArrayRow(opponentsRow)].setPiece(this.fields[columnToNumber(ourColumn)][ourRow].getPiece()); //we wskazanym miejscu wstawiamy piona ze starego pola
-            this.fields[columnToNumber(ourColumn)][ourRow].setPiece(null); //kasujemy piona ze starego piona
-            return true;
-        } else return false;
+    public boolean moveOrFight(String ourColumn, int ourRow, String opponentsColumn, int opponentsRow) {
+        System.out.println("Weszliśśmy do moveOrFight()");
+        this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].setPiece(this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece()); //we wskazanym miejscu wstawiamy piona ze starego pola
+        this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].setPiece(null); //kasujemy piona ze starego piona
+        return true;
     }
 
     //pawn moves (wyjątkowa metoda tylko dla piona)
