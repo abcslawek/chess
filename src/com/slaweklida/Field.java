@@ -54,4 +54,15 @@ public class Field {
         return "" + this.column + Integer.toString(this.row);
     }
 
+    public String getPieceName(){
+        try {
+            if (this.piece.isPieceBlack()) return this.piece.getName().toUpperCase(Locale.ROOT);
+            else return this.piece.getName().toLowerCase(Locale.ROOT);
+        } catch (NullPointerException e) { //jeśli na polu nie ma bierki
+            return "";
+        }
+    }
+
+
+
 }

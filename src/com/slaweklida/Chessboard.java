@@ -30,7 +30,7 @@ public class Chessboard {
 
     private Field[][] fields;
 
-//    constructor
+    //    constructor
     public Chessboard(boolean whitesFirst) {
         this.fields = new Field[8][8];
         //REMEMBER THAT e.g. D5 is [3][4] in arrays
@@ -133,21 +133,24 @@ public class Chessboard {
 
     //other methods
     public void showChessboard() {
-        for (int r = fields.length - 1; r >= 0; r--) {
+        for (int r = this.fields.length - 1; r >= 0; r--) {
+            System.out.print(r + 1); //numery rzędów
             for (int c = 0; c < fields.length; c++) {
-                System.out.print(ANSI_BLACK+ANSI_BLUE_BACKGROUND+ this.fields[c][r].getFieldNameOrPiece() + "\t" + ANSI_RESET);
+                System.out.print(ANSI_BLACK + ANSI_BLUE_BACKGROUND + " " + this.fields[c][r].getPieceName() + "\t" + ANSI_RESET);
                 c++;
-                System.out.print(ANSI_BLACK+BLACK_BACKGROUND_BRIGHT + this.fields[c][r].getFieldNameOrPiece() + "\t" + ANSI_RESET);
+                System.out.print(ANSI_BLACK + BLACK_BACKGROUND_BRIGHT + " " + this.fields[c][r].getPieceName() + "\t" + ANSI_RESET);
             }
             System.out.println();
             r--; //pola muszą być pokolorowane naprzemiennie
-            for (int c = 0; c < fields.length; c++) {
-                System.out.print(ANSI_BLACK+BLACK_BACKGROUND_BRIGHT + this.fields[c][r].getFieldNameOrPiece() + "\t" + ANSI_RESET);
+            System.out.print(r + 1); //numery rzędów
+            for (int c = 0; c < this.fields.length; c++) {
+                System.out.print(ANSI_BLACK + BLACK_BACKGROUND_BRIGHT + " " + this.fields[c][r].getPieceName() + "\t" + ANSI_RESET);
                 c++;
-                System.out.print(ANSI_BLACK+ANSI_BLUE_BACKGROUND+ this.fields[c][r].getFieldNameOrPiece() + "\t" + ANSI_RESET);
+                System.out.print(ANSI_BLACK + ANSI_BLUE_BACKGROUND + " " + this.fields[c][r].getPieceName() + "\t" + ANSI_RESET);
             }
             System.out.println();
         }
+        System.out.println("  A\t B\t C\t D\t E\t F\t G\t H");
     }
 
     public void showReverseChessboard() {
