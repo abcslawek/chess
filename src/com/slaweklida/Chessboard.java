@@ -6,27 +6,78 @@ import java.util.*;
 
 public class Chessboard {
 
-    public static final String ANSI_BLACK_BACKGROUND = "\033[40m";  // BLACK
-    public static final String ANSI_RED_BACKGROUND = "\033[41m";    // RED
-    public static final String ANSI_GREEN_BACKGROUND = "\033[42m";  // GREEN
-    public static final String ANSI_YELLOW_BACKGROUND = "\033[43m"; // YELLOW
-    public static final String ANSI_BLUE_BACKGROUND = "\033[44m";   // BLUE
-    public static final String ANSI_PURPLE_BACKGROUND = "\033[45m"; // PURPLE
-    public static final String ANSI_CYAN_BACKGROUND = "\033[46m";   // CYAN
-    public static final String ANSI_WHITE_BACKGROUND = "\033[47m";  // WHITE
-    public static final String ANSI_RESET = "\033[0m";
-    public static final String ANSI_BLACK = "\033[0;30m";   // BLACK
-    public static final String ANSI_RED = "\033[0;31m";     // RED
-    public static final String ANSI_GREEN = "\033[0;32m";   // GREEN
-    public static final String ANSI_YELLOW = "\033[0;33m";  // YELLOW
-    public static final String ANSI_BLUE = "\033[0;34m";    // BLUE
-    public static final String ANSI_PURPLE = "\033[0;35m";  // PURPLE
-    public static final String ANSI_CYAN = "\033[0;36m";    // CYAN
-    public static final String ANSI_WHITE = "\033[0;37m";   // WHITE
-    //bold high intensity
+    // Reset
+    public static final String RESET = "\033[0m";  // Text Reset
+
+    // Regular Colors
+    public static final String BLACK = "\033[0;30m";   // BLACK
+    public static final String RED = "\033[0;31m";     // RED
+    public static final String GREEN = "\033[0;32m";   // GREEN
+    public static final String YELLOW = "\033[0;33m";  // YELLOW
+    public static final String BLUE = "\033[0;34m";    // BLUE
+    public static final String PURPLE = "\033[0;35m";  // PURPLE
+    public static final String CYAN = "\033[0;36m";    // CYAN
+    public static final String WHITE = "\033[0;37m";   // WHITE
+
+    // Bold
+    public static final String BLACK_BOLD = "\033[1;30m";  // BLACK
+    public static final String RED_BOLD = "\033[1;31m";    // RED
+    public static final String GREEN_BOLD = "\033[1;32m";  // GREEN
+    public static final String YELLOW_BOLD = "\033[1;33m"; // YELLOW
+    public static final String BLUE_BOLD = "\033[1;34m";   // BLUE
+    public static final String PURPLE_BOLD = "\033[1;35m"; // PURPLE
+    public static final String CYAN_BOLD = "\033[1;36m";   // CYAN
+    public static final String WHITE_BOLD = "\033[1;37m";  // WHITE
+
+    // Underline
+    public static final String BLACK_UNDERLINED = "\033[4;30m";  // BLACK
+    public static final String RED_UNDERLINED = "\033[4;31m";    // RED
+    public static final String GREEN_UNDERLINED = "\033[4;32m";  // GREEN
+    public static final String YELLOW_UNDERLINED = "\033[4;33m"; // YELLOW
+    public static final String BLUE_UNDERLINED = "\033[4;34m";   // BLUE
+    public static final String PURPLE_UNDERLINED = "\033[4;35m"; // PURPLE
+    public static final String CYAN_UNDERLINED = "\033[4;36m";   // CYAN
+    public static final String WHITE_UNDERLINED = "\033[4;37m";  // WHITE
+
+    // Background
+    public static final String BLACK_BACKGROUND = "\033[40m";  // BLACK
+    public static final String RED_BACKGROUND = "\033[41m";    // RED
+    public static final String GREEN_BACKGROUND = "\033[42m";  // GREEN
+    public static final String YELLOW_BACKGROUND = "\033[43m"; // YELLOW
+    public static final String BLUE_BACKGROUND = "\033[44m";   // BLUE
+    public static final String PURPLE_BACKGROUND = "\033[45m"; // PURPLE
+    public static final String CYAN_BACKGROUND = "\033[46m";   // CYAN
+    public static final String WHITE_BACKGROUND = "\033[47m";  // WHITE
+
+    // High Intensity
+    public static final String BLACK_BRIGHT = "\033[0;90m";  // BLACK
+    public static final String RED_BRIGHT = "\033[0;91m";    // RED
+    public static final String GREEN_BRIGHT = "\033[0;92m";  // GREEN
+    public static final String YELLOW_BRIGHT = "\033[0;93m"; // YELLOW
+    public static final String BLUE_BRIGHT = "\033[0;94m";   // BLUE
+    public static final String PURPLE_BRIGHT = "\033[0;95m"; // PURPLE
+    public static final String CYAN_BRIGHT = "\033[0;96m";   // CYAN
+    public static final String WHITE_BRIGHT = "\033[0;97m";  // WHITE
+
+    // Bold High Intensity
     public static final String BLACK_BOLD_BRIGHT = "\033[1;90m"; // BLACK
-    //high intensity backgrounds
+    public static final String RED_BOLD_BRIGHT = "\033[1;91m";   // RED
+    public static final String GREEN_BOLD_BRIGHT = "\033[1;92m"; // GREEN
+    public static final String YELLOW_BOLD_BRIGHT = "\033[1;93m";// YELLOW
+    public static final String BLUE_BOLD_BRIGHT = "\033[1;94m";  // BLUE
+    public static final String PURPLE_BOLD_BRIGHT = "\033[1;95m";// PURPLE
+    public static final String CYAN_BOLD_BRIGHT = "\033[1;96m";  // CYAN
+    public static final String WHITE_BOLD_BRIGHT = "\033[1;97m"; // WHITE
+
+    // High Intensity backgrounds
     public static final String BLACK_BACKGROUND_BRIGHT = "\033[0;100m";// BLACK
+    public static final String RED_BACKGROUND_BRIGHT = "\033[0;101m";// RED
+    public static final String GREEN_BACKGROUND_BRIGHT = "\033[0;102m";// GREEN
+    public static final String YELLOW_BACKGROUND_BRIGHT = "\033[0;103m";// YELLOW
+    public static final String BLUE_BACKGROUND_BRIGHT = "\033[0;104m";// BLUE
+    public static final String PURPLE_BACKGROUND_BRIGHT = "\033[0;105m"; // PURPLE
+    public static final String CYAN_BACKGROUND_BRIGHT = "\033[0;106m";  // CYAN
+    public static final String WHITE_BACKGROUND_BRIGHT = "\033[0;107m";   // WHITE
 
     private Field[][] fields;
 
@@ -134,37 +185,29 @@ public class Chessboard {
     //other methods
     public void showChessboard() {
         for (int r = this.fields.length - 1; r >= 0; r--) {
-            System.out.print(r + 1); //numery rzędów
+            System.out.print(r + 1 +"\t"); //numery rzędów
             for (int c = 0; c < fields.length; c++) {
-                System.out.print(ANSI_BLACK + ANSI_BLUE_BACKGROUND + " " + this.fields[c][r].getPieceName() + "\t" + ANSI_RESET);
-                c++;
-                System.out.print(ANSI_BLACK + BLACK_BACKGROUND_BRIGHT + " " + this.fields[c][r].getPieceName() + "\t" + ANSI_RESET);
+                if (this.fields[c][r].getPiece() != null)
+                    System.out.print((c % 2 != 0 ? BLUE_BACKGROUND : WHITE_BACKGROUND) + (char) this.fields[c][r].getPiece().getImage() + "\t" + RESET);
+                else System.out.print((c % 2 != 0 ? BLUE_BACKGROUND : WHITE_BACKGROUND) + "\t" + RESET);
             }
             System.out.println();
             r--; //pola muszą być pokolorowane naprzemiennie
-            System.out.print(r + 1); //numery rzędów
+            System.out.print(r + 1 +"\t"); //numery rzędów
             for (int c = 0; c < this.fields.length; c++) {
-                System.out.print(ANSI_BLACK + BLACK_BACKGROUND_BRIGHT + " " + this.fields[c][r].getPieceName() + "\t" + ANSI_RESET);
-                c++;
-                System.out.print(ANSI_BLACK + ANSI_BLUE_BACKGROUND + " " + this.fields[c][r].getPieceName() + "\t" + ANSI_RESET);
+                if (this.fields[c][r].getPiece() != null) {
+                    System.out.print((c % 2 != 0 ? WHITE_BACKGROUND : BLUE_BACKGROUND) + (char) this.fields[c][r].getPiece().getImage() + "\t" + RESET);
+                } else System.out.print((c % 2 != 0 ? WHITE_BACKGROUND : BLUE_BACKGROUND) + "\t" + RESET);
             }
             System.out.println();
         }
-        System.out.println("  A\t B\t C\t D\t E\t F\t G\t H");
+        System.out.println("\tA\t B\t C\t D\t E\t F\t G\t H");
     }
 
-    public void showReverseChessboard() {
-        for (int r = 0; r <= fields.length - 1; r++) {
-            for (int c = fields.length - 1; c >= 0; c--) {
-                System.out.print(this.fields[c][r].getFieldNameOrPiece() + "\t");
-            }
-            System.out.println();
-        }
-    }
 
     public boolean makeMove(String move, boolean whitesMove) {
         //np. d3, Ra4, Nc3 (Nac3), Bb2, Qf6 (Qcd3), Kh4
-        System.out.println(ANSI_CYAN_BACKGROUND + "ehe" + ANSI_RESET);
+
 
         if (move.length() == 2 || move.length() == 4) { //jeśli d3, czyli pion
             return movePawn(move.toUpperCase(Locale.ROOT), whitesMove);
@@ -181,6 +224,8 @@ public class Chessboard {
                 return moveOrFight(ourColumn, ourRow, opponentsColumn, opponentsRow);
             if (piece.equals("R") && availableRooksMoves(ourColumn, ourRow, whitesMove).contains(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)]))
                 return moveOrFight(ourColumn, ourRow, opponentsColumn, opponentsRow);
+            if (piece.equals("N") && availableKnightsMoves(ourColumn, ourRow, whitesMove).contains(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)]))
+                return moveOrFight(ourColumn, ourRow, opponentsColumn, opponentsRow);
 
             return false;
         } else {
@@ -190,26 +235,31 @@ public class Chessboard {
     }
 
     public Set<Field> availableQueensMoves(String ourColumn, int ourRow, boolean whitesMove) { //bierki z ourColumn i ourRow
-        return availableMoves(ourColumn, ourRow, true, true, true, "Q", whitesMove);
+        return availableMoves(ourColumn, ourRow, true, true, true, false, "Q", whitesMove);
     }
 
     public Set<Field> availableBishopsMoves(String ourColumn, int ourRow, boolean whitesMove) { //bierki z ourColumn i ourRow
-        return availableMoves(ourColumn, ourRow, false, false, true, "B", whitesMove);
+        return availableMoves(ourColumn, ourRow, false, false, true, false,"B", whitesMove);
     }
 
     public Set<Field> availableRooksMoves(String ourColumn, int ourRow, boolean whitesMove) { //bierki z ourColumn i ourRow
-        return availableMoves(ourColumn, ourRow, true, true, false, "R", whitesMove);
+        return availableMoves(ourColumn, ourRow, true, true, false,false, "R", whitesMove);
     }
 
-    public Set<Field> availableMoves(String ourColumn, int ourRow, boolean horizontal, boolean vertical, boolean diagonal, String piece, boolean whitesMove) {
+    public Set<Field> availableKnightsMoves(String ourColumn, int ourRow, boolean whitesMove) { //bierki z ourColumn i ourRow
+        return availableMoves(ourColumn, ourRow, false, false, false,true, "N", whitesMove);
+    }
+
+    public Set<Field> availableMoves(String ourColumn, int ourRow, boolean horizontal, boolean vertical, boolean diagonal, boolean leaping, String piece, boolean whitesMove) {
         List<Field> availableHorizontalFields = new ArrayList<>();
         List<Field> availableVerticalFields = new ArrayList<>();
         List<Field> availableRisingDiagonalFields = new ArrayList<>();
         List<Field> availableFallingDiagonalFields = new ArrayList<>();
+        List<Field> availableLeapingFields = new ArrayList<>();
         Set<Field> availableFields = new HashSet<>(); //używamy setu aby wyeliminować powtarzające się pola królowej
 
         if (this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece() != null && this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece().getName().equals(piece) && whitesMove != this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece().isPieceBlack) {
-            System.out.println("Znaleziona: " + this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece().getName() + " na polu: " + this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getFieldName() + " może wykonać ruchy: ");
+            System.out.println("Znaleziona bierka: " + this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece().getName() + " na polu: " + this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getFieldName() + " może wykonać ruchy: ");
 
             //poziomo
             if (horizontal) {
@@ -262,6 +312,21 @@ public class Chessboard {
                 //ustalamy zakres dostępnych pól z skośnie opadających pól
                 availableFallingDiagonalFields = skippingObstacles(this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)], availableFallingDiagonalFields, ourPositionInTheList, counter, whitesMove);
             }
+
+            //skoczek
+            if(leaping){
+                for (int cc = 0; cc < 8; cc++) {
+                    for (int rr = 0; rr < 8; rr++) {
+                        if (Math.abs(cc - columnToNumber(ourColumn)) + Math.abs(rr - rowToArrayRow(ourRow)) == 3 && //z tw. talesa oraz w konkretnych ćwiartkach układu wsp
+                                Math.abs(cc - columnToNumber(ourColumn)) > 0 && Math.abs(cc - columnToNumber(ourColumn)) < 3 &&
+                                Math.abs(rr - rowToArrayRow(ourRow)) > 0 && Math.abs(rr - rowToArrayRow(ourRow)) < 3 &&
+                                (this.fields[cc][rr].getPiece() == null || this.fields[cc][rr].getPiece() != null &&
+                                whitesMove == this.fields[cc][rr].getPiece().isPieceBlack)) {
+                            availableLeapingFields.add(this.fields[cc][rr]);
+                        }
+                    }
+                }
+            }
         }
 
         //finally
@@ -269,9 +334,13 @@ public class Chessboard {
         availableFields.addAll(availableVerticalFields);
         availableFields.addAll(availableRisingDiagonalFields);
         availableFields.addAll(availableFallingDiagonalFields);
+        availableFields.addAll(availableLeapingFields);
 
-//        for (Field i : availableFields) System.out.println(i.getFieldName());
-        System.out.println("Wszystkich możliwych ruchów: " + availableFields.size());
+
+        System.out.print("Wszystkich możliwych ruchów: " + availableFields.size() + ": ");
+        for (Field i : availableFields) System.out.print(i.getFieldName() + ", ");
+        System.out.println();
+
         return availableFields;
     }
 

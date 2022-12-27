@@ -2,6 +2,7 @@ package com.slaweklida;
 
 public abstract class Piece {
     protected String name;
+    protected int image;
     protected int sidewaysRange;
     protected int forwardRange;
     protected int backwardRange;
@@ -10,8 +11,9 @@ public abstract class Piece {
     protected boolean isPieceBlack;
 
     //constructor
-    public Piece(String name, int sidewaysRange, int forwardRange, int backwardRange, int diagonallyForwardRange, int diagonallyBackwardRange, boolean isPieceBlack) {
+    public Piece(String name, int image, int sidewaysRange, int forwardRange, int backwardRange, int diagonallyForwardRange, int diagonallyBackwardRange, boolean isPieceBlack) {
         this.name = name;
+        this.image = image;
         this.sidewaysRange = sidewaysRange;
         this.forwardRange = forwardRange;
         this.backwardRange = backwardRange;
@@ -23,6 +25,10 @@ public abstract class Piece {
     //getters
     public String getName() {
         return name;
+    }
+
+    public int getImage() {
+        return image;
     }
 
     public int getSidewaysRange() {

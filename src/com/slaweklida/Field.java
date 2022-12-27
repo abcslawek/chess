@@ -40,28 +40,10 @@ public class Field {
     }
 
     //other methods
-    public String getFieldNameOrPiece() {
-        try {
-            if (this.piece.isPieceBlack()) return this.piece.getName().toUpperCase(Locale.ROOT);
-            else return this.piece.getName().toLowerCase(Locale.ROOT);
-        } catch (NullPointerException e) { //jeśli na polu nie ma bierki
-            if (this.isFieldBlack) return ("" + this.column + Integer.toString(this.row)).toUpperCase(Locale.ROOT);
-            else return ("" + this.column + Integer.toString(this.row)).toLowerCase(Locale.ROOT);
-        }
-    }
-
     public String getFieldName() {
         return "" + this.column + Integer.toString(this.row);
     }
 
-    public String getPieceName(){
-        try {
-            if (this.piece.isPieceBlack()) return this.piece.getName().toUpperCase(Locale.ROOT);
-            else return this.piece.getName().toLowerCase(Locale.ROOT);
-        } catch (NullPointerException e) { //jeśli na polu nie ma bierki
-            return "";
-        }
-    }
 
 
 
