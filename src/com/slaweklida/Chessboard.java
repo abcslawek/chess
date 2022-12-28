@@ -226,7 +226,8 @@ public class Chessboard {
                 return moveOrFight(ourColumn, ourRow, opponentsColumn, opponentsRow);
             if (piece.equals("N") && availableKnightsMoves(ourColumn, ourRow, whitesMove).contains(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)]))
                 return moveOrFight(ourColumn, ourRow, opponentsColumn, opponentsRow);
-
+            if (piece.equals("K") && availableKingsMoves(ourColumn, ourRow, whitesMove).contains(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)]))
+                return moveOrFight(ourColumn, ourRow, opponentsColumn, opponentsRow);
             return false;
         } else {
             System.out.println("makeMove() -> nie weszło do żadnej kategorii metody (move.length() == ?)");
@@ -235,27 +236,32 @@ public class Chessboard {
     }
 
     public Set<Field> availableQueensMoves(String ourColumn, int ourRow, boolean whitesMove) { //bierki z ourColumn i ourRow
-        return availableMoves(ourColumn, ourRow, true, true, true, false, "Q", whitesMove);
+        return availableMoves(ourColumn, ourRow, true, true, true, false, false, "Q", whitesMove);
     }
 
     public Set<Field> availableBishopsMoves(String ourColumn, int ourRow, boolean whitesMove) { //bierki z ourColumn i ourRow
-        return availableMoves(ourColumn, ourRow, false, false, true, false,"B", whitesMove);
+        return availableMoves(ourColumn, ourRow, false, false, true, false,false,"B", whitesMove);
     }
 
     public Set<Field> availableRooksMoves(String ourColumn, int ourRow, boolean whitesMove) { //bierki z ourColumn i ourRow
-        return availableMoves(ourColumn, ourRow, true, true, false,false, "R", whitesMove);
+        return availableMoves(ourColumn, ourRow, true, true, false,false,false, "R", whitesMove);
     }
 
     public Set<Field> availableKnightsMoves(String ourColumn, int ourRow, boolean whitesMove) { //bierki z ourColumn i ourRow
-        return availableMoves(ourColumn, ourRow, false, false, false,true, "N", whitesMove);
+        return availableMoves(ourColumn, ourRow, false, false, false,true,false, "N", whitesMove);
     }
 
-    public Set<Field> availableMoves(String ourColumn, int ourRow, boolean horizontal, boolean vertical, boolean diagonal, boolean leaping, String piece, boolean whitesMove) {
+    public Set<Field> availableKingsMoves(String ourColumn, int ourRow, boolean whitesMove) { //bierki z ourColumn i ourRow
+        return availableMoves(ourColumn, ourRow, false, false, false,false,true, "K", whitesMove);
+    }
+
+    public Set<Field> availableMoves(String ourColumn, int ourRow, boolean horizontal, boolean vertical, boolean diagonal, boolean leaping, boolean kingy, String piece, boolean whitesMove) {
         List<Field> availableHorizontalFields = new ArrayList<>();
         List<Field> availableVerticalFields = new ArrayList<>();
         List<Field> availableRisingDiagonalFields = new ArrayList<>();
         List<Field> availableFallingDiagonalFields = new ArrayList<>();
         List<Field> availableLeapingFields = new ArrayList<>();
+        List<Field> availableKingyFields = new ArrayList<>();
         Set<Field> availableFields = new HashSet<>(); //używamy setu aby wyeliminować powtarzające się pola królowej
 
         if (this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece() != null && this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece().getName().equals(piece) && whitesMove != this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece().isPieceBlack) {
@@ -327,6 +333,20 @@ public class Chessboard {
                     }
                 }
             }
+
+            if(kingy){
+                for (int cc = 0; cc < 8; cc++) {
+                    for (int rr = 0; rr < 8; rr++) {
+                        if (Math.abs(cc - columnToNumber(ourColumn)) + Math.abs(rr - rowToArrayRow(ourRow)) <= 2 && //z tw. talesa oraz w konkretnych ćwiartkach układu wsp
+                                Math.abs(cc - columnToNumber(ourColumn)) >= 0 && Math.abs(cc - columnToNumber(ourColumn)) <= 1 &&
+                                Math.abs(rr - rowToArrayRow(ourRow)) >= 0 && Math.abs(rr - rowToArrayRow(ourRow)) <= 1 &&
+                                (this.fields[cc][rr].getPiece() == null || this.fields[cc][rr].getPiece() != null &&
+                                        whitesMove == this.fields[cc][rr].getPiece().isPieceBlack)) {
+                            availableKingyFields.add(this.fields[cc][rr]);
+                        }
+                    }
+                }
+            }
         }
 
         //finally
@@ -335,6 +355,7 @@ public class Chessboard {
         availableFields.addAll(availableRisingDiagonalFields);
         availableFields.addAll(availableFallingDiagonalFields);
         availableFields.addAll(availableLeapingFields);
+        availableFields.addAll(availableKingyFields);
 
 
         System.out.print("Wszystkich możliwych ruchów: " + availableFields.size() + ": ");
