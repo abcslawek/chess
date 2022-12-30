@@ -80,8 +80,11 @@ public class Chessboard {
     public static final String WHITE_BACKGROUND_BRIGHT = "\033[0;107m";   // WHITE
 
     private Field[][] fields;
+    private List<Piece> whitePieces = new ArrayList<>();
+    private List<Piece> blackPieces = new ArrayList<>();
 
-//        constructor
+
+    //        constructor
     public Chessboard(boolean whitesFirst) {
         this.fields = new Field[8][8];
         //REMEMBER THAT e.g. D5 is [3][4] in arrays
@@ -141,6 +144,18 @@ public class Chessboard {
         this.fields[5][7] = new Field(new Bishop(true), 'F', 8, true);
         this.fields[6][7] = new Field(new Knight(true), 'G', 8, false);
         this.fields[7][7] = new Field(new Rook(true), 'H', 8, true);
+
+        //adding pieces to lists
+        for (int cc = 0; cc < 8; cc++) {
+            for (int rr = 0; rr < 8; rr++) {
+                if (this.fields[cc][rr].getPiece() != null) {
+                    if (this.fields[cc][rr].getPiece().isPieceBlack)
+                        this.blackPieces.add(this.fields[cc][rr].getPiece());
+                    else this.whitePieces.add(this.fields[cc][rr].getPiece());
+                }
+            }
+        }
+        System.out.println("hello");
     }
 
 //    //test chessboard
@@ -217,17 +232,17 @@ public class Chessboard {
             String piece = this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece().getName();
 
             if (piece.equals("Q") && availableQueensMoves(ourColumn, ourRow, whitesMove).contains(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)]))
-                return moveOrFight(ourColumn, ourRow, opponentsColumn, opponentsRow);
+                return moveOrFight(whitesMove, ourColumn, ourRow, opponentsColumn, opponentsRow);
             if (piece.equals("B") && availableBishopsMoves(ourColumn, ourRow, whitesMove).contains(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)]))
-                return moveOrFight(ourColumn, ourRow, opponentsColumn, opponentsRow);
+                return moveOrFight(whitesMove, ourColumn, ourRow, opponentsColumn, opponentsRow);
             if (piece.equals("R") && availableRooksMoves(ourColumn, ourRow, whitesMove).contains(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)]))
-                return moveOrFight(ourColumn, ourRow, opponentsColumn, opponentsRow);
+                return moveOrFight(whitesMove, ourColumn, ourRow, opponentsColumn, opponentsRow);
             if (piece.equals("N") && availableKnightsMoves(ourColumn, ourRow, whitesMove).contains(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)]))
-                return moveOrFight(ourColumn, ourRow, opponentsColumn, opponentsRow);
+                return moveOrFight(whitesMove, ourColumn, ourRow, opponentsColumn, opponentsRow);
             if (piece.equals("K") && availableKingsMoves(ourColumn, ourRow, whitesMove).contains(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)]))
-                return moveOrFight(ourColumn, ourRow, opponentsColumn, opponentsRow);
+                return moveOrFight(whitesMove, ourColumn, ourRow, opponentsColumn, opponentsRow);
             if (piece.equals("P") && availablePawnsMoves(ourColumn, ourRow, whitesMove).contains(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)]))
-                return moveOrFight(ourColumn, ourRow, opponentsColumn, opponentsRow);
+                return moveOrFight(whitesMove, ourColumn, ourRow, opponentsColumn, opponentsRow);
         } else {
             System.out.println("makeMove() -> nie weszło do żadnej kategorii metody (move.length() == ?)");
         }
@@ -406,14 +421,26 @@ public class Chessboard {
         return availableFields;
     }
 
-    public boolean isCheck() {
+    public boolean isOpponentsCheck() {
+
         return true;
     }
 
-    public boolean moveOrFight(String ourColumn, int ourRow, String opponentsColumn, int opponentsRow) {
-        System.out.println("Weszliśśmy do moveOrFight()");
+    public boolean moveOrFight(boolean whitesMove, String ourColumn, int ourRow, String opponentsColumn, int opponentsRow) {
+        System.out.println("Weszliśmy do moveOrFight()");
+        if(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].getPiece() != null) {
+            if (whitesMove) {
+                this.blackPieces.remove(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].getPiece());
+                System.out.println("Usunęliśmy czarną bierkę z listy czarnych");
+            } else {
+                this.whitePieces.remove(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].getPiece());
+                System.out.println("Usunęliśmy białą bierkę z listy białych");
+            }
+        }
         this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].setPiece(this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece()); //we wskazanym miejscu wstawiamy piona ze starego pola
         this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].setPiece(null); //kasujemy piona ze starego piona
+
+        //zmiana range'u pionka
         if (this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].getPiece().getName().equals("P"))
             this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].getPiece().setForwardRange(1); //jeśli pionek ruszył to zmieńmy jego range na 1
         return true;
