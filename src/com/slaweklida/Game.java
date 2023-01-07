@@ -25,6 +25,8 @@ public class Game {
                 while (!shouldContinue) {
                     if (whitesMove) chessboard.showChessboard();
                     else chessboard.showChessboard();
+
+
                     System.out.println("1. Wykonaj ruch");
                     System.out.println("2. Wyświetl szachownicę");
                     System.out.println("3. Wyjdź z gry");
@@ -42,6 +44,18 @@ public class Game {
                             if (!whitesMove) whitesMove = true;
                             else whitesMove = false;
                             System.out.println("Zmiana zawodnika na " + (whitesMove ? "białego" : "czarnego"));
+
+                            //czy mat
+                            if(chessboard.isWhitesWon()){
+                                System.out.println("Białe wygrały");
+                                shouldContinue = true;
+                                chessboard.showChessboard();
+                            }else if(chessboard.isBlacksWon()) {
+                                System.out.println("Czarne wygrały");
+                                shouldContinue = true;
+                                chessboard.showChessboard();
+                            }
+
                             break;
                         case 2:
                             chessboard.showChessboard();
