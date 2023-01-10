@@ -448,15 +448,17 @@ public class Chessboard {
                 if (this.fields[cc][rr].getPiece() != null && whitesMove == this.fields[cc][rr].getPiece().isPieceBlack) {
                     tempSet = availablePiecesMoves(this.fields[cc][rr].getPiece().getName(), numberToColumn(cc), arrayRowToRow(rr), !whitesMove);
                     for (Field f : tempSet) {
-                        if (isOurKingCheckedAfterOurMove(numberToColumn(cc), arrayRowToRow(rr), "" + f.getColumn(), f.getRow(), !whitesMove)) {
-                            System.out.println("MAT");
-                            return true;
+                        if (!isOurKingCheckedAfterOurMove(numberToColumn(cc), arrayRowToRow(rr), "" + f.getColumn(), f.getRow(), !whitesMove)) {
+                            //dla każdej figury sprawdza czy jeśli figura wykona dany ruch to czy ich król jest dalej czekowany
+                            //czyli jeśli jakaś figura wykona ruch po której ich król nie będzie czekowany to nie ma mata
+                            return false;
                         }
                     }
                 }
             }
         }
-        return false;
+        System.out.println("MAT");
+        return true;
     }
 
     public boolean isOurKingCheckedAfterOurMove(String ourColumn, int ourRow, String opponentsColumn, int opponentsRow, boolean whitesMove) {
