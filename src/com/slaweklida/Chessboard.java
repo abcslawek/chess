@@ -86,6 +86,7 @@ public class Chessboard {
     private String checkedMatedField = "";
     private boolean whitesWon = false;
     private boolean blacksWon = false;
+    private boolean stalemate = false;
 
     public boolean isWhitesWon() {
         return whitesWon;
@@ -93,6 +94,10 @@ public class Chessboard {
 
     public boolean isBlacksWon() {
         return blacksWon;
+    }
+
+    public boolean isStalemate() {
+        return stalemate;
     }
 
     //            constructor
@@ -166,7 +171,6 @@ public class Chessboard {
                 }
             }
         }
-        System.out.println("hello");
     }
 
 //    //test chessboard
@@ -191,11 +195,13 @@ public class Chessboard {
 //            }
 //        }
 //        //our pieces
-//        this.fields[3][3].setPiece(new King(true));
-//        this.fields[0][7].setPiece(new King(false));
+//        this.fields[3][4].setPiece(new King(false));
+//        this.fields[6][1].setPiece(new King(true));
 //
-//        this.fields[5][3].setPiece(new Pawn(true));
+//        this.fields[7][4].setPiece(new Queen(false));
 //        this.fields[7][3].setPiece(new Queen(false));
+//        this.fields[1][0].setPiece(new Queen(false));
+//        this.fields[4][0].setPiece(new Queen(false));
 //
 //    }
 
@@ -214,8 +220,10 @@ public class Chessboard {
             System.out.print(r + 1 + "\t"); //numery rzędów
             for (int c = 0; c < fields.length; c++) {
                 if (this.fields[c][r].getFieldName().equals(this.checkedField)) { //sprawdzamy czy to pole nie jest checkowane
-                    if(this.isBlacksWon() || this.isWhitesWon())System.out.print(GREEN_BACKGROUND + (char) this.fields[c][r].getPiece().getImage() + "\t" + RESET); //jeśli MAT  to kolorujemy je na zielono
-                    else System.out.print(RED_BACKGROUND + (char) this.fields[c][r].getPiece().getImage() + "\t" + RESET); //jeśli tak to kolorujemy je na czerwono
+                    if (this.isBlacksWon() || this.isWhitesWon())
+                        System.out.print(GREEN_BACKGROUND + (char) this.fields[c][r].getPiece().getImage() + "\t" + RESET); //jeśli MAT to kolorujemy je na zielono
+                    else
+                        System.out.print(RED_BACKGROUND + (char) this.fields[c][r].getPiece().getImage() + "\t" + RESET); //jeśli nie to kolorujemy je na czerwono
                 } else {
                     if (this.fields[c][r].getPiece() != null)
                         System.out.print((c % 2 != 0 ? BLUE_BACKGROUND : WHITE_BACKGROUND) + (char) this.fields[c][r].getPiece().getImage() + "\t" + RESET);
@@ -227,8 +235,10 @@ public class Chessboard {
             System.out.print(r + 1 + "\t"); //numery rzędów
             for (int c = 0; c < this.fields.length; c++) {
                 if (this.fields[c][r].getFieldName().equals(this.checkedField)) { //sprawdzamy czy to pole nie jest checkowane
-                    if(this.isBlacksWon() || this.isWhitesWon())System.out.print(GREEN_BACKGROUND + (char) this.fields[c][r].getPiece().getImage() + "\t" + RESET); //jeśli MAT  to kolorujemy je na zielono
-                    else System.out.print(RED_BACKGROUND + (char) this.fields[c][r].getPiece().getImage() + "\t" + RESET); //jeśli tak to kolorujemy je na czerwono
+                    if (this.isBlacksWon() || this.isWhitesWon())
+                        System.out.print(GREEN_BACKGROUND + (char) this.fields[c][r].getPiece().getImage() + "\t" + RESET); //jeśli MAT  to kolorujemy je na zielono
+                    else
+                        System.out.print(RED_BACKGROUND + (char) this.fields[c][r].getPiece().getImage() + "\t" + RESET); //jeśli nie to kolorujemy je na czerwono
                 } else {
                     if (this.fields[c][r].getPiece() != null) {
                         System.out.print((c % 2 != 0 ? WHITE_BACKGROUND : BLUE_BACKGROUND) + (char) this.fields[c][r].getPiece().getImage() + "\t" + RESET);
@@ -271,6 +281,26 @@ public class Chessboard {
         return false;
     }
 
+    public Set<String> everyAvailableMove(boolean whitesMove) {
+        Set<String> availableStringMoves = new HashSet<>();
+        for (int cc = 0; cc < 8; cc++) {
+            for (int rr = 0; rr < 8; rr++) {
+                if (this.fields[cc][rr].getPiece() != null && whitesMove != this.fields[cc][rr].getPiece().isPieceBlack) {
+                    Set<Field> temp = availablePiecesMoves(this.fields[cc][rr].getPiece().getName(), numberToColumn(cc), arrayRowToRow(rr), whitesMove);
+                    System.out.print(this.fields[cc][rr].getFieldName() + " : ");
+                    for (Field f : temp) {
+                        if (!isOurKingCheckedAfterOurMove(numberToColumn(cc), arrayRowToRow(rr), "" + f.getColumn(), f.getRow(), whitesMove)) {
+                            availableStringMoves.add(this.fields[cc][rr].getFieldName() + ":" + f.getFieldName()); //dodajemy każdy możliwy ruch
+                            System.out.print(f.getFieldName() + ", ");
+                        }
+                    }
+                    System.out.println();
+                }
+            }
+        }
+        return availableStringMoves;
+    }
+
     public Set<Field> availablePiecesMoves(String piece, String ourColumn, int ourRow, boolean whitesMove) {
         if (piece.equals("Q"))
             return availableMoves(ourColumn, ourRow, true, true, true, false, false, false, "Q", whitesMove);
@@ -298,7 +328,7 @@ public class Chessboard {
         Set<Field> availableFields = new HashSet<>(); //używamy setu aby wyeliminować powtarzające się pola
 
         if (this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece() != null && this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece().getName().equals(piece) && whitesMove != this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece().isPieceBlack) {
-            System.out.println("Znaleziona bierka: " + this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece().getName() + " na polu: " + this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getFieldName() + " może wykonać ruchy: ");
+//            System.out.println("Znaleziona bierka: " + this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece().getName() + " na polu: " + this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getFieldName() + " może wykonać ruchy: ");
 
             //poziomo
             if (horizontal) {
@@ -408,12 +438,6 @@ public class Chessboard {
         availableFields.addAll(availableKingyFields);
         availableFields.addAll(availablePawnyFields);
 
-        System.out.print("Wszystkich możliwych ruchów bierki: " + piece + " na polu: " + this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getFieldName() + " jest: " + availableFields.size() + ": ");
-        for (Field i : availableFields) {
-            System.out.print(i.getFieldName() + ", ");
-        }
-        System.out.println();
-
         return availableFields;
     }
 
@@ -440,7 +464,8 @@ public class Chessboard {
         return availableFields;
     }
 
-    public boolean isOurCheckMate(boolean whitesMove) { //szachujemy i sprawdzamy czy ten szach jest matem
+    public boolean isOurCheckMate(boolean whitesMove) {
+        //szachujemy i sprawdzamy czy ten szach jest matem
         //sprawdzamy dostępne ruchy przeciwnika po tym ruchu
         Set<Field> tempSet;
         for (int cc = 0; cc < 8; cc++) {
@@ -449,20 +474,26 @@ public class Chessboard {
                     tempSet = availablePiecesMoves(this.fields[cc][rr].getPiece().getName(), numberToColumn(cc), arrayRowToRow(rr), !whitesMove);
                     for (Field f : tempSet) {
                         if (!isOurKingCheckedAfterOurMove(numberToColumn(cc), arrayRowToRow(rr), "" + f.getColumn(), f.getRow(), !whitesMove)) {
-                            //dla każdej figury sprawdza czy jeśli figura wykona dany ruch to czy ich król jest dalej czekowany
-                            //czyli jeśli jakaś figura wykona ruch po której ich król nie będzie czekowany to nie ma mata
                             return false;
                         }
                     }
                 }
             }
         }
-        System.out.println("MAT");
+//        System.out.println("MAT");
         return true;
     }
 
+    public boolean isItStalemate(boolean whitesMove) { //jeśli nie ma żadnych dostępnych ruchów
+        if (everyAvailableMove(whitesMove).isEmpty()) {
+            this.stalemate = true;
+            return true;
+        }
+        return false;
+    }
+
     public boolean isOurKingCheckedAfterOurMove(String ourColumn, int ourRow, String opponentsColumn, int opponentsRow, boolean whitesMove) {
-        System.out.println("Weszliśmy do isOurKingCheckedAfterOurMove()");
+//        System.out.println("Weszliśmy do isOurKingCheckedAfterOurMove()");
         Piece ourTemp = null;
         Piece opponentsTemp = null;
 
@@ -470,7 +501,7 @@ public class Chessboard {
             ourTemp = this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece(); //przechowujemy bierkę którą przesuwamy na inne pole
         if (this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].getPiece() != null)
             opponentsTemp = this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].getPiece(); //przechowujemy bierkę z pola na które idziemy
-        moveOrFight(whitesMove, ourColumn, ourRow, opponentsColumn, opponentsRow); //tymczasowo przesuwamy bierkę i sprawdzamy czy król wtedy jest atakowany
+        testingMoveOrFight(whitesMove, ourColumn, ourRow, opponentsColumn, opponentsRow); //tymczasowo przesuwamy bierkę i sprawdzamy czy król wtedy jest atakowany
         Set<Field> tempSet;
 
         //szukam naszego króla i zapisuję go
@@ -481,7 +512,7 @@ public class Chessboard {
                 if (this.fields[cc][rr].getPiece() != null && this.fields[cc][rr].getPiece().getName().equals("K") && whitesMove != this.fields[cc][rr].getPiece().isPieceBlack) {
                     kingsColumn = cc;
                     kingsRow = rr;
-                    System.out.println("Znaleźliśmy naszego króla na: " + this.fields[cc][rr].getFieldName());
+//                    System.out.println("Znaleźliśmy naszego króla na: " + this.fields[cc][rr].getFieldName());
                 }
             }
         }
@@ -491,10 +522,10 @@ public class Chessboard {
         for (int cc = 0; cc < 8; cc++) {
             for (int rr = 0; rr < 8; rr++) {
                 if (this.fields[cc][rr].getPiece() != null && this.fields[cc][rr].getPiece().getName().equals("Q") && whitesMove == this.fields[cc][rr].getPiece().isPieceBlack) {
-                    System.out.println("Znaleziono wrogą królową na polu: " + this.fields[cc][rr].getFieldName());
+//                    System.out.println("Znaleziono wrogą królową na polu: " + this.fields[cc][rr].getFieldName());
                     tempSet = availablePiecesMoves("Q", numberToColumn(cc), arrayRowToRow(rr), !whitesMove);
                     if (tempSet.contains(this.fields[kingsColumn][kingsRow])) {
-                        System.out.println("Wroga królowa na: " + this.fields[cc][rr].getFieldName() + " widzi naszego króla z pola: " + this.fields[kingsColumn][kingsRow].getFieldName() + " po tym ruchu");
+//                        System.out.println("Wroga królowa na: " + this.fields[cc][rr].getFieldName() + " widzi naszego króla z pola: " + this.fields[kingsColumn][kingsRow].getFieldName() + " po tym ruchu");
                         this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].setPiece(ourTemp); //przesuwamy naszą bierkę na poprzednie pole
                         this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].setPiece(opponentsTemp); //przywracamy wykasowaną bierkę
                         tempSet.clear();
@@ -502,10 +533,10 @@ public class Chessboard {
                     }
                 }
                 if (this.fields[cc][rr].getPiece() != null && this.fields[cc][rr].getPiece().getName().equals("R") && whitesMove == this.fields[cc][rr].getPiece().isPieceBlack) {
-                    System.out.println("Znaleziono wrogą wieżę na polu: " + this.fields[cc][rr].getFieldName());
+//                    System.out.println("Znaleziono wrogą wieżę na polu: " + this.fields[cc][rr].getFieldName());
                     tempSet = availablePiecesMoves("R", numberToColumn(cc), arrayRowToRow(rr), !whitesMove);
                     if (tempSet.contains(this.fields[kingsColumn][kingsRow])) {
-                        System.out.println("Wroga wieża na: " + this.fields[cc][rr].getFieldName() + "widzi naszego króla po tym ruchu");
+//                        System.out.println("Wroga wieża na: " + this.fields[cc][rr].getFieldName() + "widzi naszego króla po tym ruchu");
                         this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].setPiece(ourTemp); //przesuwamy naszą bierkę na poprzednie pole
                         this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].setPiece(opponentsTemp); //przywracamy wykasowaną bierkę
                         tempSet.clear();
@@ -513,10 +544,10 @@ public class Chessboard {
                     }
                 }
                 if (this.fields[cc][rr].getPiece() != null && this.fields[cc][rr].getPiece().getName().equals("B") && whitesMove == this.fields[cc][rr].getPiece().isPieceBlack) {
-                    System.out.println("Znaleziono wrogiego gońca na polu: " + this.fields[cc][rr].getFieldName());
+//                    System.out.println("Znaleziono wrogiego gońca na polu: " + this.fields[cc][rr].getFieldName());
                     tempSet = availablePiecesMoves("B", numberToColumn(cc), arrayRowToRow(rr), !whitesMove);
                     if (tempSet.contains(this.fields[kingsColumn][kingsRow])) {
-                        System.out.println("Wrogi goniec na: " + this.fields[cc][rr].getFieldName() + " widzi naszego króla po tym ruchu");
+//                        System.out.println("Wrogi goniec na: " + this.fields[cc][rr].getFieldName() + " widzi naszego króla po tym ruchu");
                         this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].setPiece(ourTemp); //przesuwamy naszą bierkę na poprzednie pole
                         this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].setPiece(opponentsTemp); //przywracamy wykasowaną bierkę
                         tempSet.clear();
@@ -524,10 +555,10 @@ public class Chessboard {
                     }
                 }
                 if (this.fields[cc][rr].getPiece() != null && this.fields[cc][rr].getPiece().getName().equals("N") && whitesMove == this.fields[cc][rr].getPiece().isPieceBlack) {
-                    System.out.println("Znaleziono wrogiego skoczka na polu: " + this.fields[cc][rr].getFieldName());
+//                    System.out.println("Znaleziono wrogiego skoczka na polu: " + this.fields[cc][rr].getFieldName());
                     tempSet = availablePiecesMoves("N", numberToColumn(cc), arrayRowToRow(rr), !whitesMove);
                     if (tempSet.contains(this.fields[kingsColumn][kingsRow])) {
-                        System.out.println("Wrogi skoczek na: " + this.fields[cc][rr].getFieldName() + " widzi naszego króla po tym ruchu");
+//                        System.out.println("Wrogi skoczek na: " + this.fields[cc][rr].getFieldName() + " widzi naszego króla po tym ruchu");
                         this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].setPiece(ourTemp); //przesuwamy naszą bierkę na poprzednie pole
                         this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].setPiece(opponentsTemp); //przywracamy wykasowaną bierkę
                         tempSet.clear();
@@ -535,10 +566,10 @@ public class Chessboard {
                     }
                 }
                 if (this.fields[cc][rr].getPiece() != null && this.fields[cc][rr].getPiece().getName().equals("P") && whitesMove == this.fields[cc][rr].getPiece().isPieceBlack) {
-                    System.out.println("Znaleziono wrogiego piona na polu: " + this.fields[cc][rr].getFieldName());
+//                    System.out.println("Znaleziono wrogiego piona na polu: " + this.fields[cc][rr].getFieldName());
                     tempSet = availablePiecesMoves("P", numberToColumn(cc), arrayRowToRow(rr), !whitesMove);
                     if (tempSet.contains(this.fields[kingsColumn][kingsRow])) {
-                        System.out.println("Wrogi pion na: " + this.fields[cc][rr].getFieldName() + " widzi naszego króla po tym ruchu");
+//                        System.out.println("Wrogi pion na: " + this.fields[cc][rr].getFieldName() + " widzi naszego króla po tym ruchu");
                         this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].setPiece(ourTemp); //przesuwamy naszą bierkę na poprzednie pole
                         this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].setPiece(opponentsTemp); //przywracamy wykasowaną bierkę
                         tempSet.clear();
@@ -554,14 +585,10 @@ public class Chessboard {
 
     public Field findKingsField(boolean whitesKing) {
         //szukam wrogiego króla i zapisuję go
-        int kingsColumn = 0;
-        int kingsRow = 0;
         for (int cc = 0; cc < 8; cc++) {
             for (int rr = 0; rr < 8; rr++) {
                 if (this.fields[cc][rr].getPiece() != null && this.fields[cc][rr].getPiece().getName().equals("K") && whitesKing != this.fields[cc][rr].getPiece().isPieceBlack) {
-                    kingsColumn = cc;
-                    kingsRow = rr;
-                    System.out.println("Znaleźliśmy" + (whitesKing ? " białego " : " czarnego ") + "króla na: " + this.fields[cc][rr].getFieldName());
+//                    System.out.println("Znaleźliśmy" + (whitesKing ? " białego " : " czarnego ") + "króla na: " + this.fields[cc][rr].getFieldName());
                     return this.fields[cc][rr];
                 }
             }
@@ -587,10 +614,10 @@ public class Chessboard {
         if (this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].getPiece() != null) {
             if (whitesMove) {
                 this.blackPieces.remove(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].getPiece());
-                System.out.println("Usunęliśmy czarną bierkę z listy czarnych");
+//                System.out.println("Usunęliśmy czarną bierkę z listy czarnych");
             } else {
                 this.whitePieces.remove(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].getPiece());
-                System.out.println("Usunęliśmy białą bierkę z listy białych");
+//                System.out.println("Usunęliśmy białą bierkę z listy białych");
             }
         }
 
@@ -604,6 +631,14 @@ public class Chessboard {
             this.checkedField = theirKingsCheckedFieldAfterOurMove(opponentsColumn, opponentsRow, whitesMove).getFieldName(); //wskazujemy checkowane pole globalnej zmiennej
         }
 
+
+        return true;
+    }
+
+    public boolean testingMoveOrFight(boolean whitesMove, String ourColumn, int ourRow, String opponentsColumn, int opponentsRow) {
+        //edycja szachownicy
+        this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].setPiece(this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece()); //we wskazanym miejscu wstawiamy piona ze starego pola
+        this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].setPiece(null); //kasujemy bierkę ze starego piona
         return true;
     }
 

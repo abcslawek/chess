@@ -35,7 +35,7 @@ public class Game {
                     scanner.nextLine();
                     switch (option) {
                         case 1:
-                            while(!correctMove) { //sprawdza czy ruch jest poprawny
+                                while (!correctMove) { //sprawdza czy ruch jest poprawny
                                 String move = scanner.nextLine();
                                 correctMove = chessboard.makeMove(move, whitesMove);
                             }
@@ -46,15 +46,20 @@ public class Game {
                             System.out.println("Zmiana zawodnika na " + (whitesMove ? "białego" : "czarnego"));
 
                             //czy mat
-                            if(chessboard.isWhitesWon()){
+                            if (chessboard.isWhitesWon()) {
                                 System.out.println("Białe wygrały");
                                 shouldContinue = true;
                                 chessboard.showChessboard();
-                            }else if(chessboard.isBlacksWon()) {
+                            } else if (chessboard.isBlacksWon()) {
                                 System.out.println("Czarne wygrały");
                                 shouldContinue = true;
                                 chessboard.showChessboard();
+                            } else if(chessboard.isItStalemate(whitesMove)){
+                                System.out.println("Pat");
+                                shouldContinue = true;
+                                chessboard.showChessboard();
                             }
+
 
                             break;
                         case 2:
