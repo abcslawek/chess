@@ -9,76 +9,14 @@ public class Chessboard {
     // Reset
     public static final String RESET = "\033[0m";  // Text Reset
 
-    // Regular Colors
-    public static final String BLACK = "\033[0;30m";   // BLACK
-    public static final String RED = "\033[0;31m";     // RED
-    public static final String GREEN = "\033[0;32m";   // GREEN
-    public static final String YELLOW = "\033[0;33m";  // YELLOW
-    public static final String BLUE = "\033[0;34m";    // BLUE
-    public static final String PURPLE = "\033[0;35m";  // PURPLE
-    public static final String CYAN = "\033[0;36m";    // CYAN
-    public static final String WHITE = "\033[0;37m";   // WHITE
-
-    // Bold
-    public static final String BLACK_BOLD = "\033[1;30m";  // BLACK
-    public static final String RED_BOLD = "\033[1;31m";    // RED
-    public static final String GREEN_BOLD = "\033[1;32m";  // GREEN
-    public static final String YELLOW_BOLD = "\033[1;33m"; // YELLOW
-    public static final String BLUE_BOLD = "\033[1;34m";   // BLUE
-    public static final String PURPLE_BOLD = "\033[1;35m"; // PURPLE
-    public static final String CYAN_BOLD = "\033[1;36m";   // CYAN
-    public static final String WHITE_BOLD = "\033[1;37m";  // WHITE
-
-    // Underline
-    public static final String BLACK_UNDERLINED = "\033[4;30m";  // BLACK
-    public static final String RED_UNDERLINED = "\033[4;31m";    // RED
-    public static final String GREEN_UNDERLINED = "\033[4;32m";  // GREEN
-    public static final String YELLOW_UNDERLINED = "\033[4;33m"; // YELLOW
-    public static final String BLUE_UNDERLINED = "\033[4;34m";   // BLUE
-    public static final String PURPLE_UNDERLINED = "\033[4;35m"; // PURPLE
-    public static final String CYAN_UNDERLINED = "\033[4;36m";   // CYAN
-    public static final String WHITE_UNDERLINED = "\033[4;37m";  // WHITE
-
     // Background
-    public static final String BLACK_BACKGROUND = "\033[40m";  // BLACK
     public static final String RED_BACKGROUND = "\033[41m";    // RED
     public static final String GREEN_BACKGROUND = "\033[42m";  // GREEN
-    public static final String YELLOW_BACKGROUND = "\033[43m"; // YELLOW
     public static final String BLUE_BACKGROUND = "\033[44m";   // BLUE
-    public static final String PURPLE_BACKGROUND = "\033[45m"; // PURPLE
-    public static final String CYAN_BACKGROUND = "\033[46m";   // CYAN
     public static final String WHITE_BACKGROUND = "\033[47m";  // WHITE
 
-    // High Intensity
-    public static final String BLACK_BRIGHT = "\033[0;90m";  // BLACK
-    public static final String RED_BRIGHT = "\033[0;91m";    // RED
-    public static final String GREEN_BRIGHT = "\033[0;92m";  // GREEN
-    public static final String YELLOW_BRIGHT = "\033[0;93m"; // YELLOW
-    public static final String BLUE_BRIGHT = "\033[0;94m";   // BLUE
-    public static final String PURPLE_BRIGHT = "\033[0;95m"; // PURPLE
-    public static final String CYAN_BRIGHT = "\033[0;96m";   // CYAN
-    public static final String WHITE_BRIGHT = "\033[0;97m";  // WHITE
 
-    // Bold High Intensity
-    public static final String BLACK_BOLD_BRIGHT = "\033[1;90m"; // BLACK
-    public static final String RED_BOLD_BRIGHT = "\033[1;91m";   // RED
-    public static final String GREEN_BOLD_BRIGHT = "\033[1;92m"; // GREEN
-    public static final String YELLOW_BOLD_BRIGHT = "\033[1;93m";// YELLOW
-    public static final String BLUE_BOLD_BRIGHT = "\033[1;94m";  // BLUE
-    public static final String PURPLE_BOLD_BRIGHT = "\033[1;95m";// PURPLE
-    public static final String CYAN_BOLD_BRIGHT = "\033[1;96m";  // CYAN
-    public static final String WHITE_BOLD_BRIGHT = "\033[1;97m"; // WHITE
-
-    // High Intensity backgrounds
-    public static final String BLACK_BACKGROUND_BRIGHT = "\033[0;100m";// BLACK
-    public static final String RED_BACKGROUND_BRIGHT = "\033[0;101m";// RED
-    public static final String GREEN_BACKGROUND_BRIGHT = "\033[0;102m";// GREEN
-    public static final String YELLOW_BACKGROUND_BRIGHT = "\033[0;103m";// YELLOW
-    public static final String BLUE_BACKGROUND_BRIGHT = "\033[0;104m";// BLUE
-    public static final String PURPLE_BACKGROUND_BRIGHT = "\033[0;105m"; // PURPLE
-    public static final String CYAN_BACKGROUND_BRIGHT = "\033[0;106m";  // CYAN
-    public static final String WHITE_BACKGROUND_BRIGHT = "\033[0;107m";   // WHITE
-
+    // Pola
     private Field[][] fields;
     private List<Piece> whitePieces = new ArrayList<>();
     private List<Piece> blackPieces = new ArrayList<>();
@@ -88,6 +26,7 @@ public class Chessboard {
     private boolean blacksWon = false;
     private boolean stalemate = false;
 
+    // Metody
     public boolean isWhitesWon() {
         return whitesWon;
     }
@@ -100,7 +39,7 @@ public class Chessboard {
         return stalemate;
     }
 
-    //            constructor
+    // Konstruktor
     public Chessboard(boolean whitesFirst) {
         this.fields = new Field[8][8];
         //REMEMBER THAT e.g. D5 is [3][4] in arrays
@@ -250,33 +189,22 @@ public class Chessboard {
         System.out.println("\tA\t B\t C\t D\t E\t F\t G\t H");
     }
 
-
-    public boolean makeMove(String move, boolean whitesMove) {
-        if (move.length() == 5) { //jeśli np. A4:C7 (figura z A4 idzie na C7)
+    public boolean makeMove(Set<String> everyAvailableMoves, String move, boolean whitesMove) {
+        if (everyAvailableMoves.contains(move.toUpperCase(Locale.ROOT))) { //jeśli lista dostępnych ruchów zawiera ruch, który podaliśmy
+            //rozkładamy podany ruch (stringa) na kolejne zmienne
             String ourColumn = ("" + move.charAt(0)).toUpperCase(Locale.ROOT);
             int ourRow = Integer.parseInt("" + move.charAt(1));
             String opponentsColumn = ("" + move.charAt(3)).toUpperCase(Locale.ROOT);
             int opponentsRow = Integer.parseInt("" + move.charAt(4));
-            String piece = this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece().getName();
 
-            if (piece.equals("Q") && availablePiecesMoves("Q", ourColumn, ourRow, whitesMove).contains(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)]) && !isOurKingCheckedAfterOurMove(ourColumn, ourRow, opponentsColumn, opponentsRow, whitesMove))
-                return moveOrFight(whitesMove, ourColumn, ourRow, opponentsColumn, opponentsRow);
-            if (piece.equals("B") && availablePiecesMoves("B", ourColumn, ourRow, whitesMove).contains(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)]) && !isOurKingCheckedAfterOurMove(ourColumn, ourRow, opponentsColumn, opponentsRow, whitesMove))
-                return moveOrFight(whitesMove, ourColumn, ourRow, opponentsColumn, opponentsRow);
-            if (piece.equals("R") && availablePiecesMoves("R", ourColumn, ourRow, whitesMove).contains(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)]) && !isOurKingCheckedAfterOurMove(ourColumn, ourRow, opponentsColumn, opponentsRow, whitesMove))
-                return moveOrFight(whitesMove, ourColumn, ourRow, opponentsColumn, opponentsRow);
-            if (piece.equals("N") && availablePiecesMoves("N", ourColumn, ourRow, whitesMove).contains(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)]) && !isOurKingCheckedAfterOurMove(ourColumn, ourRow, opponentsColumn, opponentsRow, whitesMove))
-                return moveOrFight(whitesMove, ourColumn, ourRow, opponentsColumn, opponentsRow);
-            if (piece.equals("K") && availablePiecesMoves("K", ourColumn, ourRow, whitesMove).contains(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)]) && !isOurKingCheckedAfterOurMove(ourColumn, ourRow, opponentsColumn, opponentsRow, whitesMove))
-                return moveOrFight(whitesMove, ourColumn, ourRow, opponentsColumn, opponentsRow);
-            if (piece.equals("P") && availablePiecesMoves("P", ourColumn, ourRow, whitesMove).contains(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)]) && !isOurKingCheckedAfterOurMove(ourColumn, ourRow, opponentsColumn, opponentsRow, whitesMove)) {
+            if (this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece().getName().equals("P")) {
                 this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece().setForwardRange(1); //zmiana range'u pionka po ruchu
-                if ((whitesMove && opponentsRow == 8) || (!whitesMove && opponentsRow == 1))
+                if (whitesMove ? (opponentsRow == 8) : (opponentsRow == 1)) //tutaj była zmiana, uproszczenie zapisu
                     this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].setPiece(new Queen(!whitesMove)); //po osiągnięciu ostatniego rzędu pion zmienia się na królową
-                return moveOrFight(whitesMove, ourColumn, ourRow, opponentsColumn, opponentsRow);
             }
+            return moveOrFight(whitesMove, ourColumn, ourRow, opponentsColumn, opponentsRow, false);
         } else {
-            System.out.println("makeMove() -> nie weszło do żadnej kategorii metody (move.length() == ?)");
+            System.out.println("betterMakeMove() -> nie weszło do żadnej kategorii metody (move.length() == ?)");
         }
         return false;
     }
@@ -480,28 +408,18 @@ public class Chessboard {
                 }
             }
         }
-//        System.out.println("MAT");
         return true;
     }
 
-    public boolean isItStalemate(boolean whitesMove) { //jeśli nie ma żadnych dostępnych ruchów
-        if (everyAvailableMove(whitesMove).isEmpty()) {
-            this.stalemate = true;
-            return true;
-        }
-        return false;
-    }
-
     public boolean isOurKingCheckedAfterOurMove(String ourColumn, int ourRow, String opponentsColumn, int opponentsRow, boolean whitesMove) {
-//        System.out.println("Weszliśmy do isOurKingCheckedAfterOurMove()");
+        //zapamiętujemy położenie figur i wykonujemy testowy ruch aby sprawdzić czy nasz król nie będzie po nim szachowany
         Piece ourTemp = null;
         Piece opponentsTemp = null;
-
         if (this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece() != null)
             ourTemp = this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece(); //przechowujemy bierkę którą przesuwamy na inne pole
         if (this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].getPiece() != null)
             opponentsTemp = this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].getPiece(); //przechowujemy bierkę z pola na które idziemy
-        testingMoveOrFight(whitesMove, ourColumn, ourRow, opponentsColumn, opponentsRow); //tymczasowo przesuwamy bierkę i sprawdzamy czy król wtedy jest atakowany
+        moveOrFight(whitesMove, ourColumn, ourRow, opponentsColumn, opponentsRow, true); //tymczasowo przesuwamy bierkę i sprawdzamy czy król wtedy jest atakowany
         Set<Field> tempSet;
 
         //szukam naszego króla i zapisuję go
@@ -512,64 +430,17 @@ public class Chessboard {
                 if (this.fields[cc][rr].getPiece() != null && this.fields[cc][rr].getPiece().getName().equals("K") && whitesMove != this.fields[cc][rr].getPiece().isPieceBlack) {
                     kingsColumn = cc;
                     kingsRow = rr;
-//                    System.out.println("Znaleźliśmy naszego króla na: " + this.fields[cc][rr].getFieldName());
                 }
             }
         }
 
-
-        //sprawdzam czy wroga KRÓLOWA/GONIEC/WIEŻA nie widzi naszego króla (nie posiada jego współrzędnych w dostępnych polach)
+        //sprawdzam czy wroga bierka nie widzi naszego króla (nie posiada jego współrzędnych w dostępnych polach)
         for (int cc = 0; cc < 8; cc++) {
             for (int rr = 0; rr < 8; rr++) {
-                if (this.fields[cc][rr].getPiece() != null && this.fields[cc][rr].getPiece().getName().equals("Q") && whitesMove == this.fields[cc][rr].getPiece().isPieceBlack) {
-//                    System.out.println("Znaleziono wrogą królową na polu: " + this.fields[cc][rr].getFieldName());
-                    tempSet = availablePiecesMoves("Q", numberToColumn(cc), arrayRowToRow(rr), !whitesMove);
+                if (this.fields[cc][rr].getPiece() != null && whitesMove == this.fields[cc][rr].getPiece().isPieceBlack) {
+                    tempSet = availablePiecesMoves(this.fields[cc][rr].getPiece().getName(), numberToColumn(cc), arrayRowToRow(rr), !whitesMove);
                     if (tempSet.contains(this.fields[kingsColumn][kingsRow])) {
-//                        System.out.println("Wroga królowa na: " + this.fields[cc][rr].getFieldName() + " widzi naszego króla z pola: " + this.fields[kingsColumn][kingsRow].getFieldName() + " po tym ruchu");
-                        this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].setPiece(ourTemp); //przesuwamy naszą bierkę na poprzednie pole
-                        this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].setPiece(opponentsTemp); //przywracamy wykasowaną bierkę
-                        tempSet.clear();
-                        return true;
-                    }
-                }
-                if (this.fields[cc][rr].getPiece() != null && this.fields[cc][rr].getPiece().getName().equals("R") && whitesMove == this.fields[cc][rr].getPiece().isPieceBlack) {
-//                    System.out.println("Znaleziono wrogą wieżę na polu: " + this.fields[cc][rr].getFieldName());
-                    tempSet = availablePiecesMoves("R", numberToColumn(cc), arrayRowToRow(rr), !whitesMove);
-                    if (tempSet.contains(this.fields[kingsColumn][kingsRow])) {
-//                        System.out.println("Wroga wieża na: " + this.fields[cc][rr].getFieldName() + "widzi naszego króla po tym ruchu");
-                        this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].setPiece(ourTemp); //przesuwamy naszą bierkę na poprzednie pole
-                        this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].setPiece(opponentsTemp); //przywracamy wykasowaną bierkę
-                        tempSet.clear();
-                        return true;
-                    }
-                }
-                if (this.fields[cc][rr].getPiece() != null && this.fields[cc][rr].getPiece().getName().equals("B") && whitesMove == this.fields[cc][rr].getPiece().isPieceBlack) {
-//                    System.out.println("Znaleziono wrogiego gońca na polu: " + this.fields[cc][rr].getFieldName());
-                    tempSet = availablePiecesMoves("B", numberToColumn(cc), arrayRowToRow(rr), !whitesMove);
-                    if (tempSet.contains(this.fields[kingsColumn][kingsRow])) {
-//                        System.out.println("Wrogi goniec na: " + this.fields[cc][rr].getFieldName() + " widzi naszego króla po tym ruchu");
-                        this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].setPiece(ourTemp); //przesuwamy naszą bierkę na poprzednie pole
-                        this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].setPiece(opponentsTemp); //przywracamy wykasowaną bierkę
-                        tempSet.clear();
-                        return true;
-                    }
-                }
-                if (this.fields[cc][rr].getPiece() != null && this.fields[cc][rr].getPiece().getName().equals("N") && whitesMove == this.fields[cc][rr].getPiece().isPieceBlack) {
-//                    System.out.println("Znaleziono wrogiego skoczka na polu: " + this.fields[cc][rr].getFieldName());
-                    tempSet = availablePiecesMoves("N", numberToColumn(cc), arrayRowToRow(rr), !whitesMove);
-                    if (tempSet.contains(this.fields[kingsColumn][kingsRow])) {
-//                        System.out.println("Wrogi skoczek na: " + this.fields[cc][rr].getFieldName() + " widzi naszego króla po tym ruchu");
-                        this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].setPiece(ourTemp); //przesuwamy naszą bierkę na poprzednie pole
-                        this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].setPiece(opponentsTemp); //przywracamy wykasowaną bierkę
-                        tempSet.clear();
-                        return true;
-                    }
-                }
-                if (this.fields[cc][rr].getPiece() != null && this.fields[cc][rr].getPiece().getName().equals("P") && whitesMove == this.fields[cc][rr].getPiece().isPieceBlack) {
-//                    System.out.println("Znaleziono wrogiego piona na polu: " + this.fields[cc][rr].getFieldName());
-                    tempSet = availablePiecesMoves("P", numberToColumn(cc), arrayRowToRow(rr), !whitesMove);
-                    if (tempSet.contains(this.fields[kingsColumn][kingsRow])) {
-//                        System.out.println("Wrogi pion na: " + this.fields[cc][rr].getFieldName() + " widzi naszego króla po tym ruchu");
+//                        System.out.println("Wroga bierka na: " + this.fields[cc][rr].getFieldName() + " widzi naszego króla z pola: " + this.fields[kingsColumn][kingsRow].getFieldName() + " po tym ruchu");
                         this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].setPiece(ourTemp); //przesuwamy naszą bierkę na poprzednie pole
                         this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].setPiece(opponentsTemp); //przywracamy wykasowaną bierkę
                         tempSet.clear();
@@ -578,8 +449,9 @@ public class Chessboard {
                 }
             }
         }
-        this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].setPiece(ourTemp); //przesuwamy naszą bierkę na poprzednie pole
-        this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].setPiece(opponentsTemp); //przywracamy wykasowaną bierkę
+        //przywracamy stan początkowy
+        this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].setPiece(ourTemp);
+        this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].setPiece(opponentsTemp);
         return false;
     }
 
@@ -588,7 +460,6 @@ public class Chessboard {
         for (int cc = 0; cc < 8; cc++) {
             for (int rr = 0; rr < 8; rr++) {
                 if (this.fields[cc][rr].getPiece() != null && this.fields[cc][rr].getPiece().getName().equals("K") && whitesKing != this.fields[cc][rr].getPiece().isPieceBlack) {
-//                    System.out.println("Znaleźliśmy" + (whitesKing ? " białego " : " czarnego ") + "króla na: " + this.fields[cc][rr].getFieldName());
                     return this.fields[cc][rr];
                 }
             }
@@ -607,17 +478,16 @@ public class Chessboard {
         } else return null;
     }
 
-    public boolean moveOrFight(boolean whitesMove, String ourColumn, int ourRow, String opponentsColumn, int opponentsRow) {
-        this.checkedField = ""; //zerujemy globalną zmienną przechowującą checkowane pole
-
-        //usuwanie bierki z list bierek
-        if (this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].getPiece() != null) {
-            if (whitesMove) {
-                this.blackPieces.remove(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].getPiece());
-//                System.out.println("Usunęliśmy czarną bierkę z listy czarnych");
-            } else {
-                this.whitePieces.remove(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].getPiece());
-//                System.out.println("Usunęliśmy białą bierkę z listy białych");
+    public boolean moveOrFight(boolean whitesMove, String ourColumn, int ourRow, String opponentsColumn, int opponentsRow, boolean test) {
+        if (!test) {
+            this.checkedField = ""; //zerujemy globalną zmienną przechowującą checkowane pole
+            //usuwanie bierki z list bierek
+            if (this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].getPiece() != null) {
+                if (whitesMove) {
+                    this.blackPieces.remove(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].getPiece());
+                } else {
+                    this.whitePieces.remove(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].getPiece());
+                }
             }
         }
 
@@ -625,20 +495,14 @@ public class Chessboard {
         this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].setPiece(this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece()); //we wskazanym miejscu wstawiamy piona ze starego pola
         this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].setPiece(null); //kasujemy bierkę ze starego piona
 
-        //czy po tym ruchu zchekowaliśmy wrogiego króla
-        if (theirKingsCheckedFieldAfterOurMove(opponentsColumn, opponentsRow, whitesMove) != null) {
-            System.out.println("Checkujemy wrogiego," + (whitesMove ? " czarnego " : " białego ") + "króla");
-            this.checkedField = theirKingsCheckedFieldAfterOurMove(opponentsColumn, opponentsRow, whitesMove).getFieldName(); //wskazujemy checkowane pole globalnej zmiennej
+        if (!test) {
+            //czy po tym ruchu zchekowaliśmy wrogiego króla
+            Field theirKingsCheckedFieldAfterOurMove = theirKingsCheckedFieldAfterOurMove(opponentsColumn, opponentsRow, whitesMove);
+            if (theirKingsCheckedFieldAfterOurMove != null) {
+                System.out.println("Checkujemy wrogiego," + (whitesMove ? " czarnego " : " białego ") + "króla");
+                this.checkedField = theirKingsCheckedFieldAfterOurMove.getFieldName(); //wskazujemy checkowane pole globalnej zmiennej
+            }
         }
-
-
-        return true;
-    }
-
-    public boolean testingMoveOrFight(boolean whitesMove, String ourColumn, int ourRow, String opponentsColumn, int opponentsRow) {
-        //edycja szachownicy
-        this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].setPiece(this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece()); //we wskazanym miejscu wstawiamy piona ze starego pola
-        this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].setPiece(null); //kasujemy bierkę ze starego piona
         return true;
     }
 
@@ -673,6 +537,4 @@ public class Chessboard {
     public int arrayRowToRow(int arrayRow) {
         return arrayRow + 1;
     }
-
-
 }
