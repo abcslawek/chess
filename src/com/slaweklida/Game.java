@@ -17,65 +17,61 @@ public class Game {
         Scanner scanner = new Scanner(System.in);
         int choice = scanner.nextInt();
         boolean whitesMove = true;
+        Chessboard chessboard = new Chessboard(true);
+        boolean shouldContinue = false;
 
-        switch (choice) {
-            case 1:
-                Chessboard chessboard = new Chessboard(true);
-                boolean shouldContinue = false;
+        while (!shouldContinue) {
+            if (choice == 1) chessboard.showChessboard();
+            else chessboard.showReverseChessboard();
 
-                while (!shouldContinue) {
-                    if (whitesMove) chessboard.showChessboard();
-                    else chessboard.showChessboard();
+            //set wszystkich dostępnych ruchów do wykonania
+            Set<String> everyAvailableMoves = chessboard.everyAvailableMove(whitesMove);
 
-                    //set wszystkich dostępnych ruchów do wykonania
-                    Set<String> everyAvailableMoves = chessboard.everyAvailableMove(whitesMove);
-
-                    //sprawdza czy jest pat
-                    if (everyAvailableMoves.isEmpty()) {
-                        System.out.println("Pat");
-                        shouldContinue = true;
-                    } else {
-                        System.out.println("1. Wykonaj ruch");
-                        System.out.println("2. Wyświetl szachownicę");
-                        System.out.println("3. Wyjdź z gry");
-                        int option = scanner.nextInt();
-                        boolean correctMove = false;
-                        scanner.nextLine();
-                        switch (option) {
-                            case 1:
-                                while (!correctMove) { //sprawdza czy ruch jest poprawny
-                                    String move = scanner.nextLine();
-                                    correctMove = chessboard.makeMove(everyAvailableMoves, move, whitesMove);
-                                }
-                                //zmiana zawodnika
-                                //trzeba ustalić, że jeśli nie da się wykonać takiego ruchu np. białymi to trzeba próbować aż do skutku
-                                if (!whitesMove) whitesMove = true;
-                                else whitesMove = false;
-                                System.out.println("Zmiana zawodnika na " + (whitesMove ? "białego" : "czarnego"));
-
-                                //czy mat
-                                if (chessboard.isWhitesWon()) {
-                                    System.out.println("Białe wygrały");
-                                    shouldContinue = true;
-                                    chessboard.showChessboard();
-                                } else if (chessboard.isBlacksWon()) {
-                                    System.out.println("Czarne wygrały");
-                                    shouldContinue = true;
-                                    chessboard.showChessboard();
-                                }
-                                break;
-                            case 2:
-                                chessboard.showChessboard();
-                                break;
-                            case 3:
-                                shouldContinue = true;
-                                break;
+            //sprawdza czy jest pat
+            if (everyAvailableMoves.isEmpty()) {
+                System.out.println("Pat");
+                shouldContinue = true;
+            } else {
+                System.out.println("1. Wykonaj ruch");
+                System.out.println("2. Wyświetl szachownicę");
+                System.out.println("3. Wyjdź z gry");
+                int option = scanner.nextInt();
+                boolean correctMove = false;
+                scanner.nextLine();
+                switch (option) {
+                    case 1:
+                        while (!correctMove) { //sprawdza czy ruch jest poprawny
+                            String move = scanner.nextLine();
+                            correctMove = chessboard.makeMove(everyAvailableMoves, move, whitesMove);
                         }
-                    }
+                        //zmiana zawodnika
+                        //trzeba ustalić, że jeśli nie da się wykonać takiego ruchu np. białymi to trzeba próbować aż do skutku
+                        if (!whitesMove) whitesMove = true;
+                        else whitesMove = false;
+                        System.out.println("Zmiana zawodnika na " + (whitesMove ? "białego" : "czarnego"));
+
+                        //czy mat
+                        if (chessboard.isWhitesWon()) {
+                            System.out.println("Białe wygrały");
+                            shouldContinue = true;
+                            if (choice == 1) chessboard.showChessboard();
+                            else chessboard.showReverseChessboard();
+                        } else if (chessboard.isBlacksWon()) {
+                            System.out.println("Czarne wygrały");
+                            shouldContinue = true;
+                            if (choice == 1) chessboard.showChessboard();
+                            else chessboard.showReverseChessboard();
+                        }
+                        break;
+                    case 2:
+                        if (choice == 1) chessboard.showChessboard();
+                        else chessboard.showReverseChessboard();
+                        break;
+                    case 3:
+                        shouldContinue = true;
+                        break;
                 }
-                break;
-            default:
-                break;
+            }
         }
     }
 

@@ -189,6 +189,43 @@ public class Chessboard {
         System.out.println("\tA\t B\t C\t D\t E\t F\t G\t H");
     }
 
+    public void showReverseChessboard() {
+        System.out.println("H\t G\t F\t E\t D\t C\t B\t A");
+        for (int r = 0; r < this.fields.length - 1; r++) {
+            for (int c = fields.length - 1 ; c >= 0; c--) {
+                if (this.fields[c][r].getFieldName().equals(this.checkedField)) { //sprawdzamy czy to pole nie jest checkowane
+                    if (this.isBlacksWon() || this.isWhitesWon())
+                        System.out.print(GREEN_BACKGROUND + (char) this.fields[c][r].getPiece().getImage() + "\t" + RESET); //jeśli MAT to kolorujemy je na zielono
+                    else
+                        System.out.print(RED_BACKGROUND + (char) this.fields[c][r].getPiece().getImage() + "\t" + RESET); //jeśli nie to kolorujemy je na czerwono
+                } else {
+                    if (this.fields[c][r].getPiece() != null)
+                        System.out.print((c % 2 == 0 ? BLUE_BACKGROUND : WHITE_BACKGROUND) + (char) this.fields[c][r].getPiece().getImage() + "\t" + RESET);
+                    else System.out.print((c % 2 == 0 ? BLUE_BACKGROUND : WHITE_BACKGROUND) + "\t" + RESET);
+                }
+            }
+            System.out.print(r + 1 + "\t"); //numery rzędów
+            System.out.println();
+            r++; //pola muszą być pokolorowane naprzemiennie
+
+            for (int c = 0; c < this.fields.length; c++) {
+                if (this.fields[c][r].getFieldName().equals(this.checkedField)) { //sprawdzamy czy to pole nie jest checkowane
+                    if (this.isBlacksWon() || this.isWhitesWon())
+                        System.out.print(GREEN_BACKGROUND + (char) this.fields[c][r].getPiece().getImage() + "\t" + RESET); //jeśli MAT  to kolorujemy je na zielono
+                    else
+                        System.out.print(RED_BACKGROUND + (char) this.fields[c][r].getPiece().getImage() + "\t" + RESET); //jeśli nie to kolorujemy je na czerwono
+                } else {
+                    if (this.fields[c][r].getPiece() != null) {
+                        System.out.print((c % 2 != 0 ? WHITE_BACKGROUND : BLUE_BACKGROUND) + (char) this.fields[c][r].getPiece().getImage() + "\t" + RESET);
+                    } else System.out.print((c % 2 != 0 ? WHITE_BACKGROUND : BLUE_BACKGROUND) + "\t" + RESET);
+                }
+            }
+            System.out.print(r + 1 + "\t"); //numery rzędów
+            System.out.println();
+        }
+
+    }
+
     public boolean makeMove(Set<String> everyAvailableMoves, String move, boolean whitesMove) {
         if (everyAvailableMoves.contains(move.toUpperCase(Locale.ROOT))) { //jeśli lista dostępnych ruchów zawiera ruch, który podaliśmy
             //rozkładamy podany ruch (stringa) na kolejne zmienne
