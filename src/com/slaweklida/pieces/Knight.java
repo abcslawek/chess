@@ -5,8 +5,8 @@ import com.slaweklida.Piece;
 public class Knight extends Piece {
 
     public Knight(boolean isPieceBlack){
-        super("N",(isPieceBlack ? 9822 : 9816),2, 2, 2, 0,0, isPieceBlack); //przekazujemy tylko czy knight jest biały czy czarny
-        System.out.println("Stworzono gońca");
+        super("N",(isPieceBlack ? 9822 : 9816),2, 2, 2, 0,0, isPieceBlack, 30); //przekazujemy tylko czy knight jest biały czy czarny
+        //System.out.println("Stworzono gońca");
     }
 
 

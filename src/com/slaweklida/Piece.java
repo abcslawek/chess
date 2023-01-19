@@ -9,9 +9,10 @@ public abstract class Piece {
     protected int diagonallyForwardRange;
     protected int diagonallyBackwardRange;
     protected boolean isPieceBlack;
+    protected int weight;
 
     //constructor
-    public Piece(String name, int image, int sidewaysRange, int forwardRange, int backwardRange, int diagonallyForwardRange, int diagonallyBackwardRange, boolean isPieceBlack) {
+    public Piece(String name, int image, int sidewaysRange, int forwardRange, int backwardRange, int diagonallyForwardRange, int diagonallyBackwardRange, boolean isPieceBlack, int weight) {
         this.name = name;
         this.image = image;
         this.sidewaysRange = sidewaysRange;
@@ -20,6 +21,7 @@ public abstract class Piece {
         this.diagonallyForwardRange = diagonallyForwardRange;
         this.diagonallyBackwardRange = diagonallyBackwardRange;
         this.isPieceBlack = isPieceBlack;
+        this.weight = weight;
     }
 
     //getters
@@ -49,6 +51,10 @@ public abstract class Piece {
 
     public boolean isPieceBlack() {
         return isPieceBlack;
+    }
+
+    public int getWeight() {
+        return weight;
     }
 
     //setters

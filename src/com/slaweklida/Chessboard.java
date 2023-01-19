@@ -4,7 +4,7 @@ import com.slaweklida.pieces.*;
 
 import java.util.*;
 
-public class Chessboard {
+public class Chessboard implements Cloneable{
 
     // Reset
     public static final String RESET = "\033[0m";  // Text Reset
@@ -18,13 +18,12 @@ public class Chessboard {
 
     // Pola
     private Field[][] fields;
-    private List<Piece> whitePieces = new ArrayList<>();
-    private List<Piece> blackPieces = new ArrayList<>();
     private String checkedField = "";
     private String checkedMatedField = "";
     private boolean whitesWon = false;
     private boolean blacksWon = false;
     private boolean stalemate = false;
+
 
     // Metody
     public boolean isWhitesWon() {
@@ -39,8 +38,12 @@ public class Chessboard {
         return stalemate;
     }
 
+    public void setFields(Field[][] fields) {
+        this.fields = fields;
+    }
+
     // Konstruktor
-    public Chessboard(boolean whitesFirst) {
+    public Chessboard() {
         this.fields = new Field[8][8];
         //REMEMBER THAT e.g. D5 is [3][4] in arrays
         //making whites
@@ -99,17 +102,6 @@ public class Chessboard {
         this.fields[5][7] = new Field(new Bishop(true), 'F', 8, true);
         this.fields[6][7] = new Field(new Knight(true), 'G', 8, false);
         this.fields[7][7] = new Field(new Rook(true), 'H', 8, true);
-
-        //adding pieces to lists
-        for (int cc = 0; cc < 8; cc++) {
-            for (int rr = 0; rr < 8; rr++) {
-                if (this.fields[cc][rr].getPiece() != null) {
-                    if (this.fields[cc][rr].getPiece().isPieceBlack)
-                        this.blackPieces.add(this.fields[cc][rr].getPiece());
-                    else this.whitePieces.add(this.fields[cc][rr].getPiece());
-                }
-            }
-        }
     }
 
 //    //test chessboard
@@ -227,6 +219,7 @@ public class Chessboard {
     }
 
     public boolean makeMove(Set<String> everyAvailableMoves, String move, boolean whitesMove) {
+        //System.out.println("Wyszukany ruch to: " + move);
         if (everyAvailableMoves.contains(move.toUpperCase(Locale.ROOT))) { //jeśli lista dostępnych ruchów zawiera ruch, który podaliśmy
             //rozkładamy podany ruch (stringa) na kolejne zmienne
             String ourColumn = ("" + move.charAt(0)).toUpperCase(Locale.ROOT);
@@ -239,9 +232,10 @@ public class Chessboard {
                 if (whitesMove ? (opponentsRow == 8) : (opponentsRow == 1)) //tutaj była zmiana, uproszczenie zapisu
                     this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].setPiece(new Queen(!whitesMove)); //po osiągnięciu ostatniego rzędu pion zmienia się na królową
             }
+            //System.out.println("Wykonaliśmy ruch: " + move);
             return moveOrFight(whitesMove, ourColumn, ourRow, opponentsColumn, opponentsRow, false);
         } else {
-            System.out.println("betterMakeMove() -> nie weszło do żadnej kategorii metody (move.length() == ?)");
+            System.out.println("makeMove() -> nie weszło do żadnej kategorii metody (move.length() == ?)");
         }
         return false;
     }
@@ -252,17 +246,18 @@ public class Chessboard {
             for (int rr = 0; rr < 8; rr++) {
                 if (this.fields[cc][rr].getPiece() != null && whitesMove != this.fields[cc][rr].getPiece().isPieceBlack) {
                     Set<Field> temp = availablePiecesMoves(this.fields[cc][rr].getPiece().getName(), numberToColumn(cc), arrayRowToRow(rr), whitesMove);
-                    System.out.print(this.fields[cc][rr].getFieldName() + " : ");
+                    //System.out.print(this.fields[cc][rr].getFieldName() + " : ");
                     for (Field f : temp) {
                         if (!isOurKingCheckedAfterOurMove(numberToColumn(cc), arrayRowToRow(rr), "" + f.getColumn(), f.getRow(), whitesMove)) {
                             availableStringMoves.add(this.fields[cc][rr].getFieldName() + ":" + f.getFieldName()); //dodajemy każdy możliwy ruch
-                            System.out.print(f.getFieldName() + ", ");
+                            //System.out.print(f.getFieldName() + ", ");
                         }
                     }
-                    System.out.println();
+                    //System.out.println();
                 }
             }
         }
+        //System.out.println("-----------------------------");
         return availableStringMoves;
     }
 
@@ -518,14 +513,6 @@ public class Chessboard {
     public boolean moveOrFight(boolean whitesMove, String ourColumn, int ourRow, String opponentsColumn, int opponentsRow, boolean test) {
         if (!test) {
             this.checkedField = ""; //zerujemy globalną zmienną przechowującą checkowane pole
-            //usuwanie bierki z list bierek
-            if (this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].getPiece() != null) {
-                if (whitesMove) {
-                    this.blackPieces.remove(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].getPiece());
-                } else {
-                    this.whitePieces.remove(this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].getPiece());
-                }
-            }
         }
 
         //edycja szachownicy
@@ -536,11 +523,28 @@ public class Chessboard {
             //czy po tym ruchu zchekowaliśmy wrogiego króla
             Field theirKingsCheckedFieldAfterOurMove = theirKingsCheckedFieldAfterOurMove(opponentsColumn, opponentsRow, whitesMove);
             if (theirKingsCheckedFieldAfterOurMove != null) {
-                System.out.println("Checkujemy wrogiego," + (whitesMove ? " czarnego " : " białego ") + "króla");
+                //System.out.println("Checkujemy wrogiego," + (whitesMove ? " czarnego " : " białego ") + "króla");
                 this.checkedField = theirKingsCheckedFieldAfterOurMove.getFieldName(); //wskazujemy checkowane pole globalnej zmiennej
             }
         }
         return true;
+    }
+
+    public void showScore(){
+        System.out.println("Wynik białych to: " + score(true));
+        System.out.println("Wynik czarnych to: " + score(false));
+    }
+
+    public int score(boolean whitesScore){
+        int score = 0;
+        for (int cc = 0; cc < 8; cc++) {
+            for (int rr = 0; rr < 8; rr++) {
+                if (this.fields[cc][rr].getPiece() != null && whitesScore != this.fields[cc][rr].getPiece().isPieceBlack) {
+                    score += this.fields[cc][rr].getPiece().getWeight();
+                }
+            }
+        }
+        return score;
     }
 
 
@@ -573,5 +577,9 @@ public class Chessboard {
 
     public int arrayRowToRow(int arrayRow) {
         return arrayRow + 1;
+    }
+
+    public void copy(Chessboard x){
+        this.setFields(x.getFields());
     }
 }
