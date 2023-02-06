@@ -4,7 +4,7 @@ import com.slaweklida.pieces.*;
 
 import java.util.*;
 
-public class Chessboard implements Cloneable{
+public class Chessboard implements Cloneable {
 
     // Reset
     public static final String RESET = "\033[0m";  // Text Reset
@@ -19,10 +19,10 @@ public class Chessboard implements Cloneable{
     // Pola
     private Field[][] fields;
     private String checkedField = "";
-    private String checkedMatedField = "";
     private boolean whitesWon = false;
     private boolean blacksWon = false;
     private boolean stalemate = false;
+    private boolean isCheck = false;
 
 
     // Metody
@@ -42,7 +42,15 @@ public class Chessboard implements Cloneable{
         this.fields = fields;
     }
 
-    // Konstruktor
+    public void setWhitesWon(boolean whitesWon) {
+        this.whitesWon = whitesWon;
+    }
+
+    public void setBlacksWon(boolean blacksWon) {
+        this.blacksWon = blacksWon;
+    }
+
+//    //    // Konstruktor
     public Chessboard() {
         this.fields = new Field[8][8];
         //REMEMBER THAT e.g. D5 is [3][4] in arrays
@@ -104,8 +112,70 @@ public class Chessboard implements Cloneable{
         this.fields[7][7] = new Field(new Rook(true), 'H', 8, true);
     }
 
-//    //test chessboard
-//    public Chessboard(boolean whitesFirst) {
+    //    //    // Konstruktor
+//    public Chessboard() {
+//        this.fields = new Field[8][8];
+//        //REMEMBER THAT e.g. D5 is [3][4] in arrays
+//        //making whites
+//        this.fields[0][0] = new Field(null, 'A', 1, true);
+//        this.fields[1][0] = new Field(null, 'B', 1, false);
+//        this.fields[2][0] = new Field(null, 'C', 1, true);
+//        this.fields[3][0] = new Field(new Queen(false), 'D', 1, false);
+//        this.fields[4][0] = new Field(new King(false), 'E', 1, true);
+//        this.fields[5][0] = new Field(null, 'F', 1, false);
+//        this.fields[6][0] = new Field(null, 'G', 1, true);
+//        this.fields[7][0] = new Field(null, 'H', 1, false);
+//
+//        //making white paws
+//        for (int c = 0; c < 8; c++) {
+//            char letter = (char) (c + 65);
+//            this.fields[c][1] = new Field(null, letter, 2, false);
+//            c++;
+//            letter = (char) (c + 65);
+//            this.fields[c][1] = new Field(null, letter, 2, true);
+//        }
+//
+//        //making battlefield
+//        for (int r = 2; r < 6; r++) {
+//            for (int c = 0; c < 8; c++) {
+//                char letter = (char) (c + 65);
+//                this.fields[c][r] = new Field(null, letter, r + 1, true);
+//                c++;
+//                letter = (char) (c + 65); //musimy zaktualizować literę kolumny
+//                this.fields[c][r] = new Field(null, letter, r + 1, false);
+//            }
+//            r++;
+//            for (int c = 0; c < 8; c++) { //drugi for ze zmienioną kolejnością koloru pól
+//                char letter = (char) (c + 65);
+//                this.fields[c][r] = new Field(null, letter, r + 1, false);
+//                c++;
+//                letter = (char) (c + 65); //musimy zaktualizować literę kolumny
+//                this.fields[c][r] = new Field(null, letter, r + 1, true);
+//            }
+//        }
+//
+//        //making black paws, row loop starts from 0
+//        for (int c = 0; c < 8; c++) {
+//            char letter = (char) (c + 65);
+//            this.fields[c][6] = new Field(null, letter, 7, true);
+//            c++;
+//            letter = (char) (c + 65);
+//            this.fields[c][6] = new Field(null, letter, 7, false);
+//        }
+//
+//        //making blacks
+//        this.fields[0][7] = new Field(new Rook(true), 'A', 8, false);
+//        this.fields[1][7] = new Field(new Knight(true), 'B', 8, true);
+//        this.fields[2][7] = new Field(new Bishop(true), 'C', 8, false);
+//        this.fields[3][7] = new Field(new Queen(true), 'D', 8, true);
+//        this.fields[4][7] = new Field(new King(true), 'E', 8, false);
+//        this.fields[5][7] = new Field(new Bishop(true), 'F', 8, true);
+//        this.fields[6][7] = new Field(new Knight(true), 'G', 8, false);
+//        this.fields[7][7] = new Field(new Rook(true), 'H', 8, true);
+//    }
+
+//    test chessboard pat mat
+//    public Chessboard() {
 //        this.fields = new Field[8][8];
 //        //making battlefield
 //        for (int r = 0; r < 8; r++) {
@@ -136,6 +206,37 @@ public class Chessboard implements Cloneable{
 //
 //    }
 
+    //test chessboard pat mat
+//    public Chessboard() {
+//        this.fields = new Field[8][8];
+//        //making battlefield
+//        for (int r = 0; r < 8; r++) {
+//            for (int c = 0; c < 8; c++) {
+//                char letter = (char) (c + 65);
+//                this.fields[c][r] = new Field(null, letter, r + 1, true);
+//                c++;
+//                letter = (char) (c + 65); //musimy zaktualizować literę kolumny
+//                this.fields[c][r] = new Field(null, letter, r + 1, false);
+//            }
+//            r++;
+//            for (int c = 0; c < 8; c++) { //drugi for ze zmienioną kolejnością koloru pól
+//                char letter = (char) (c + 65);
+//                this.fields[c][r] = new Field(null, letter, r + 1, false);
+//                c++;
+//                letter = (char) (c + 65); //musimy zaktualizować literę kolumny
+//                this.fields[c][r] = new Field(null, letter, r + 1, true);
+//            }
+//        }
+//        //our pieces
+//        this.fields[3][4].setPiece(new King(false));
+//        this.fields[6][1].setPiece(new King(true));
+//
+//
+//        this.fields[0][2].setPiece(new Queen(false));
+//        this.fields[0][3].setPiece(new Queen(false));
+//
+//    }
+
     //getters
     public Field[][] getFields() {
         return this.fields;
@@ -143,6 +244,14 @@ public class Chessboard implements Cloneable{
 
     public Field getField(int c, int r) {
         return this.fields[c][r];
+    }
+
+    public boolean isCheck() {
+        return isCheck;
+    }
+
+    public void setCheck(boolean check) {
+        isCheck = check;
     }
 
     //other methods
@@ -179,12 +288,13 @@ public class Chessboard implements Cloneable{
             System.out.println();
         }
         System.out.println("\tA\t B\t C\t D\t E\t F\t G\t H");
+        //this.checkedField = "";
     }
 
     public void showReverseChessboard() {
         System.out.println("H\t G\t F\t E\t D\t C\t B\t A");
-        for (int r = 0; r < this.fields.length - 1; r++) {
-            for (int c = fields.length - 1 ; c >= 0; c--) {
+        for (int r = 0; r < this.fields.length; r++) {
+            for (int c = fields.length - 1; c >= 0; c--) {
                 if (this.fields[c][r].getFieldName().equals(this.checkedField)) { //sprawdzamy czy to pole nie jest checkowane
                     if (this.isBlacksWon() || this.isWhitesWon())
                         System.out.print(GREEN_BACKGROUND + (char) this.fields[c][r].getPiece().getImage() + "\t" + RESET); //jeśli MAT to kolorujemy je na zielono
@@ -192,15 +302,15 @@ public class Chessboard implements Cloneable{
                         System.out.print(RED_BACKGROUND + (char) this.fields[c][r].getPiece().getImage() + "\t" + RESET); //jeśli nie to kolorujemy je na czerwono
                 } else {
                     if (this.fields[c][r].getPiece() != null)
-                        System.out.print((c % 2 == 0 ? BLUE_BACKGROUND : WHITE_BACKGROUND) + (char) this.fields[c][r].getPiece().getImage() + "\t" + RESET);
-                    else System.out.print((c % 2 == 0 ? BLUE_BACKGROUND : WHITE_BACKGROUND) + "\t" + RESET);
+                        System.out.print((c % 2 != 0 ? BLUE_BACKGROUND : WHITE_BACKGROUND) + (char) this.fields[c][r].getPiece().getImage() + "\t" + RESET);
+                    else System.out.print((c % 2 != 0 ? BLUE_BACKGROUND : WHITE_BACKGROUND) + "\t" + RESET);
                 }
             }
             System.out.print(r + 1 + "\t"); //numery rzędów
             System.out.println();
             r++; //pola muszą być pokolorowane naprzemiennie
 
-            for (int c = 0; c < this.fields.length; c++) {
+            for (int c = fields.length - 1; c >= 0; c--) {
                 if (this.fields[c][r].getFieldName().equals(this.checkedField)) { //sprawdzamy czy to pole nie jest checkowane
                     if (this.isBlacksWon() || this.isWhitesWon())
                         System.out.print(GREEN_BACKGROUND + (char) this.fields[c][r].getPiece().getImage() + "\t" + RESET); //jeśli MAT  to kolorujemy je na zielono
@@ -218,7 +328,11 @@ public class Chessboard implements Cloneable{
 
     }
 
-    public boolean makeMove(Set<String> everyAvailableMoves, String move, boolean whitesMove) {
+    public boolean makeMove(Set<String> everyAvailableMoves, String move, boolean whitesMove, boolean test) {
+        setCheck(false);
+        setWhitesWon(false);
+        setBlacksWon(false);
+
         //System.out.println("Wyszukany ruch to: " + move);
         if (everyAvailableMoves.contains(move.toUpperCase(Locale.ROOT))) { //jeśli lista dostępnych ruchów zawiera ruch, który podaliśmy
             //rozkładamy podany ruch (stringa) na kolejne zmienne
@@ -228,14 +342,14 @@ public class Chessboard implements Cloneable{
             int opponentsRow = Integer.parseInt("" + move.charAt(4));
 
             if (this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece().getName().equals("P")) {
-                this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece().setForwardRange(1); //zmiana range'u pionka po ruchu
-                if (whitesMove ? (opponentsRow == 8) : (opponentsRow == 1)) //tutaj była zmiana, uproszczenie zapisu
+//                this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece().setForwardRange(1); //zmiana range'u pionka po ruchu
+                if ((whitesMove ? (opponentsRow == 8) : (opponentsRow == 1)) && !test) //tutaj była zmiana, uproszczenie zapisu
                     this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].setPiece(new Queen(!whitesMove)); //po osiągnięciu ostatniego rzędu pion zmienia się na królową
             }
             //System.out.println("Wykonaliśmy ruch: " + move);
             return moveOrFight(whitesMove, ourColumn, ourRow, opponentsColumn, opponentsRow, false);
         } else {
-            System.out.println("makeMove() -> nie weszło do żadnej kategorii metody (move.length() == ?)");
+            System.out.println("Ten ruch nie jest możliwy");
         }
         return false;
     }
@@ -246,18 +360,18 @@ public class Chessboard implements Cloneable{
             for (int rr = 0; rr < 8; rr++) {
                 if (this.fields[cc][rr].getPiece() != null && whitesMove != this.fields[cc][rr].getPiece().isPieceBlack) {
                     Set<Field> temp = availablePiecesMoves(this.fields[cc][rr].getPiece().getName(), numberToColumn(cc), arrayRowToRow(rr), whitesMove);
-                    //System.out.print(this.fields[cc][rr].getFieldName() + " : ");
+//                    if (!temp.isEmpty()) System.out.print(this.fields[cc][rr].getFieldName() + " : ");
                     for (Field f : temp) {
                         if (!isOurKingCheckedAfterOurMove(numberToColumn(cc), arrayRowToRow(rr), "" + f.getColumn(), f.getRow(), whitesMove)) {
                             availableStringMoves.add(this.fields[cc][rr].getFieldName() + ":" + f.getFieldName()); //dodajemy każdy możliwy ruch
-                            //System.out.print(f.getFieldName() + ", ");
+//                            System.out.print(f.getFieldName() + ", ");
                         }
                     }
-                    //System.out.println();
+//                    if (!temp.isEmpty()) System.out.println();
                 }
             }
         }
-        //System.out.println("-----------------------------");
+//        System.out.println("-");
         return availableStringMoves;
     }
 
@@ -381,6 +495,9 @@ public class Chessboard implements Cloneable{
                         rowsDiff = rr - rowToArrayRow(ourRow);
                         ourRange = this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece().getForwardRange();
 
+                        if ((whitesMove && ourRow == 2) || (!whitesMove && ourRow == 7))
+                            ourRange = 2; //jeśli pion się nie ruszył to może pojechać o dwa do przodu
+
                         if (this.fields[cc][rr].getPiece() == null && Math.abs(columnsDiff) == 0 && (whitesMove ? (rowsDiff <= ourRange && rowsDiff > 0) : (rowsDiff >= -ourRange && rowsDiff < 0)) ||
                                 (this.fields[cc][rr].getPiece() != null && whitesMove == this.fields[cc][rr].getPiece().isPieceBlack && Math.abs(columnsDiff) == 1 && (whitesMove ? (rowsDiff == 1) : (rowsDiff == -1)))) {
                             availablePawnyFields.add(this.fields[cc][rr]);
@@ -499,13 +616,13 @@ public class Chessboard implements Cloneable{
         return null;
     }
 
-    public Field theirKingsCheckedFieldAfterOurMove(String ourNewColumn, int ourNewRow, boolean whitesMove) {
+    public Field theirKingsCheckedFieldAfterOurMove(String ourNewColumn, int ourNewRow, boolean whitesMove, boolean test) {
         //zwraca pole z checkowanym królem lub null
         if (availablePiecesMoves(this.fields[columnToNumber(ourNewColumn)][rowToArrayRow(ourNewRow)].getPiece().getName(), ourNewColumn, ourNewRow, whitesMove).contains(findKingsField(!whitesMove))) {
-            if (isOurCheckMate(whitesMove)) { //jeśli ten check jest też matem
-                if (whitesMove) this.whitesWon = true;
-                else this.blacksWon = true;
-            }
+//            if (isOurCheckMate(whitesMove) && !test) { //jeśli ten check jest też matem
+//                if (whitesMove) this.whitesWon = true;
+//                else this.blacksWon = true;
+//            }
             return findKingsField(!whitesMove);
         } else return null;
     }
@@ -514,6 +631,8 @@ public class Chessboard implements Cloneable{
         if (!test) {
             this.checkedField = ""; //zerujemy globalną zmienną przechowującą checkowane pole
         }
+        //zerowanie
+        this.stalemate = false;
 
         //edycja szachownicy
         this.fields[columnToNumber(opponentsColumn)][rowToArrayRow(opponentsRow)].setPiece(this.fields[columnToNumber(ourColumn)][rowToArrayRow(ourRow)].getPiece()); //we wskazanym miejscu wstawiamy piona ze starego pola
@@ -521,21 +640,29 @@ public class Chessboard implements Cloneable{
 
         if (!test) {
             //czy po tym ruchu zchekowaliśmy wrogiego króla
-            Field theirKingsCheckedFieldAfterOurMove = theirKingsCheckedFieldAfterOurMove(opponentsColumn, opponentsRow, whitesMove);
+            Field theirKingsCheckedFieldAfterOurMove = theirKingsCheckedFieldAfterOurMove(opponentsColumn, opponentsRow, whitesMove, test);
             if (theirKingsCheckedFieldAfterOurMove != null) {
                 //System.out.println("Checkujemy wrogiego," + (whitesMove ? " czarnego " : " białego ") + "króla");
                 this.checkedField = theirKingsCheckedFieldAfterOurMove.getFieldName(); //wskazujemy checkowane pole globalnej zmiennej
+                if (isOurCheckMate(whitesMove)) { //jeśli ten check jest też matem
+                    if (whitesMove) this.whitesWon = true;
+                    else this.blacksWon = true;
+                }
+                this.isCheck = true;
             }
+            //sprawdza czy pat
+            Set<String> everyAvailableMoves = everyAvailableMove(!whitesMove);
+            if (everyAvailableMoves.isEmpty()) this.stalemate = true;
         }
         return true;
     }
 
-    public void showScore(){
+    public void showScore() {
         System.out.println("Wynik białych to: " + score(true));
         System.out.println("Wynik czarnych to: " + score(false));
     }
 
-    public int score(boolean whitesScore){
+    public int score(boolean whitesScore) {
         int score = 0;
         for (int cc = 0; cc < 8; cc++) {
             for (int rr = 0; rr < 8; rr++) {
@@ -579,7 +706,7 @@ public class Chessboard implements Cloneable{
         return arrayRow + 1;
     }
 
-    public void copy(Chessboard x){
+    public void copy(Chessboard x) {
         this.setFields(x.getFields());
     }
 }
