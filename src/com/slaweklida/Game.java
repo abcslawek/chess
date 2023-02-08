@@ -176,7 +176,6 @@ public class Game {
             }
         }
     }
-
 }
 
     public int evaluate(Chessboard chessboard, boolean showScore) { //1-white, 2-black

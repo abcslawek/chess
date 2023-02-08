@@ -26,6 +26,10 @@ public class Chessboard implements Cloneable {
 
 
     // Metody
+    public String getCheckedField() {
+        return checkedField;
+    }
+
     public boolean isWhitesWon() {
         return whitesWon;
     }
