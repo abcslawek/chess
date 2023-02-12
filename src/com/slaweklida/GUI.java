@@ -9,6 +9,7 @@ import java.util.Set;
 public class GUI implements ActionListener {
 
     private static JLabel label;
+    private static JLabel chessboardColorLabel;
     private static JPanel chessboardView;
     private static JTextField userText;
     private static JButton[][] guiFields;
@@ -22,6 +23,9 @@ public class GUI implements ActionListener {
     private static JButton playAsBlack;
     private static JButton pause;
     private static JButton test;
+    private static JButton brownColor;
+    private static JButton blueColor;
+    private static JButton greyColor;
     private static Chessboard chessboard;
     private static Game game;
     private static Set<String> everyAvailableMoves;
@@ -34,6 +38,8 @@ public class GUI implements ActionListener {
     private static boolean vsComputer;
     private static boolean movesEnd = true;
     private static boolean isPause = false;
+    private static Color firstColor = new Color(180, 136, 98);
+    private static Color secondColor = new Color(240, 216, 180);
     //private static ImageIcon icon;
 
 
@@ -44,7 +50,6 @@ public class GUI implements ActionListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false); //prevent frame from being resized
         frame.setSize(860, 680);
-
 
 
         //PANEL
@@ -65,6 +70,51 @@ public class GUI implements ActionListener {
 
         //KROPKA
         ImageIcon icon = new ImageIcon("com/slaweklida/point.png");
+
+        //TEKST KOLOR SZACHOWNICY
+        chessboardColorLabel = new JLabel("Wybierz kolor szachownicy");
+        chessboardColorLabel.setBounds(660, 500, 160, 30);
+        chessboardView.add(chessboardColorLabel);
+
+        //PRZYCISK KOLORU SZACHOWNICY
+        brownColor = new JButton(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                firstColor = new Color(180, 136, 98);
+                secondColor = new Color(240, 216, 180);
+                colourFieldsDefault();
+                colourCheckedField();
+            }
+        });
+        brownColor.setBounds(670, 540, 30, 30);
+        brownColor.setBackground(new Color(180, 136, 98));
+        chessboardView.add(brownColor);
+
+        blueColor = new JButton(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                firstColor = new Color(45, 116, 255);
+                secondColor = new Color(162, 188, 239);
+                colourFieldsDefault();
+                colourCheckedField();
+            }
+        });
+        blueColor.setBounds(720, 540, 30, 30);
+        blueColor.setBackground(new Color(45, 116, 255));
+        chessboardView.add(blueColor);
+
+        greyColor = new JButton(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                firstColor = new Color(119, 119, 119);
+                secondColor = new Color(197, 197, 197);
+                colourFieldsDefault();
+                colourCheckedField();
+            }
+        });
+        greyColor.setBounds(770, 540, 30, 30);
+        greyColor.setBackground(new Color(119, 119, 119));
+        chessboardView.add(greyColor);
 
 
         //PRZYCISKI SZACHOWNICY
@@ -157,8 +207,8 @@ public class GUI implements ActionListener {
 //                guiFields[c][r].setForeground(Color.cyan); //zmienia kolor czcionki na przycisku
 //                if ((c + r) % 2 != 0) guiFields[c][r].setBackground(new Color(180, 136, 98));
 //                else guiFields[c][r].setBackground(new Color(240, 216, 180));
-                if ((c + r) % 2 != 0) guiFields[c][r].setBackground(new Color(180, 136, 98));
-                else guiFields[c][r].setBackground(new Color(240, 216, 180));
+                if ((c + r) % 2 != 0) guiFields[c][r].setBackground(firstColor);
+                else guiFields[c][r].setBackground(secondColor);
                 chessboardView.add(guiFields[c][r]);
             }
         }
@@ -356,7 +406,6 @@ public class GUI implements ActionListener {
 //        chessboardView.add(test);
 
 
-
         frame.setVisible(true);
     }
 
@@ -434,8 +483,8 @@ public class GUI implements ActionListener {
     public static void colourFieldsDefault() {
         for (int r = 0; r < 8; r++) {
             for (int c = 0; c < 8; c++) {
-                if ((c + r) % 2 != 0) guiFields[c][r].setBackground(new Color(180, 136, 98));
-                else guiFields[c][r].setBackground(new Color(240, 216, 180));
+                if ((c + r) % 2 != 0) guiFields[c][r].setBackground(firstColor);
+                else guiFields[c][r].setBackground(secondColor);
             }
         }
         label.setText("");
@@ -449,11 +498,11 @@ public class GUI implements ActionListener {
             else guiFields[7 - c][r].setBackground(new Color(171, 234, 129));
         } else {
             if (!reverse) {
-                if ((c + r) % 2 != 0) guiFields[c][7 - r].setBackground(new Color(240, 216, 180));
-                else guiFields[c][7 - r].setBackground(new Color(180, 136, 98));
+                if ((c + r) % 2 != 0) guiFields[c][7 - r].setBackground(secondColor);
+                else guiFields[c][7 - r].setBackground(firstColor);
             } else {
-                if ((c + r) % 2 != 0) guiFields[7 - c][r].setBackground(new Color(240, 216, 180));
-                else guiFields[7 - c][r].setBackground(new Color(180, 136, 98));
+                if ((c + r) % 2 != 0) guiFields[7 - c][r].setBackground(secondColor);
+                else guiFields[7 - c][r].setBackground(firstColor);
             }
         }
         colourCheckedField();
