@@ -21,16 +21,21 @@ public class GUI implements ActionListener {
     private static JButton playAsWhite;
     private static JButton playAsBlack;
     private static JButton pause;
+    private static JButton test;
     private static Chessboard chessboard;
     private static Game game;
     private static Set<String> everyAvailableMoves;
     private static boolean whitesMove;
     private static String hashMove = "";
+    private static String ourField = "";
+    private static String opponentsField = "";
     private static boolean hasFirstField = false;
     private static boolean reverse;
     private static boolean vsComputer;
     private static boolean movesEnd = true;
     private static boolean isPause = false;
+    //private static ImageIcon icon;
+
 
     public static void main(String[] args) {
         //RAMKA
@@ -39,6 +44,8 @@ public class GUI implements ActionListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false); //prevent frame from being resized
         frame.setSize(860, 680);
+
+
 
         //PANEL
         chessboardView = new JPanel();
@@ -56,24 +63,34 @@ public class GUI implements ActionListener {
 //        userText.setBounds(100, 20, 165, 25);
 //        panel.add(userText);
 
+        //KROPKA
+        ImageIcon icon = new ImageIcon("com/slaweklida/point.png");
+
 
         //PRZYCISKI SZACHOWNICY
         guiFields = new JButton[8][8];
         for (int r = 0; r < 8; r++) {
             for (int c = 0; c < 8; c++) {
+
                 guiFields[c][r] = new JButton(new AbstractAction("typeFieldName") {
 
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         movesEnd = false;
                         JButton o = (JButton) e.getSource();
-                        String ourField = o.getName();
-                        System.out.println(ourField);
+
                         if (!hasFirstField) {
+                            ourField = o.getName();
+                            System.out.println(ourField);
                             hashMove = ourField + ":";
                             hasFirstField = true;
+                            colourOneField(ourField, true);
+                            colourFields(ourField, true);
                         } else {
-                            hashMove += ourField;
+                            opponentsField = o.getName();
+                            colourOneField(ourField, false);
+                            colourFields(ourField, false);
+                            hashMove += opponentsField;
                             hasFirstField = false;
                             System.out.println("hashMove to " + hashMove);
                             if (everyAvailableMoves.contains(hashMove)) {
@@ -98,9 +115,10 @@ public class GUI implements ActionListener {
                                 movesEnd = true;
 
                                 //POKOLOROWANIE POLA STARTOWEGO I KONCOWEGO
-                                colourFields(hashMove);
+                                colourTwoFields(hashMove);
 
                             } else {
+                                colourOneField(ourField, false);
                                 System.out.println("Niedostępny ruch");
                             }
                         }
@@ -160,6 +178,7 @@ public class GUI implements ActionListener {
         newGame.setText("Nowa gra");
         newGame.setName("nowaGra");
         newGame.setBounds(660, 60, 160, 30);
+        newGame.setIcon(icon);
         chessboardView.add(newGame);
 
         //PRZYCISK PvP
@@ -202,7 +221,10 @@ public class GUI implements ActionListener {
         playAsWhite = new JButton(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                activateFields(true);
                 pause.setEnabled(true); //po wciśnięciu button się deaktywuje
+                pause.setBackground(null);
+                isPause = false;
                 colourFieldsDefault();
                 label.setText("");
                 reverse = false;
@@ -238,7 +260,10 @@ public class GUI implements ActionListener {
         playAsBlack = new JButton(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                activateFields(true);
                 pause.setEnabled(true); //po wciśnięciu button się deaktywuje
+                pause.setBackground(null);
+                isPause = false;
                 colourFieldsDefault();
                 label.setText("");
                 reverse = true;
@@ -303,7 +328,7 @@ public class GUI implements ActionListener {
 
                 newGame.setEnabled(!isPause); //po wciśnięciu button się deaktywuje
                 activateFields(isPause);
-                if(!isPause) pause.setBackground(new Color(165, 246, 158));
+                if (!isPause) pause.setBackground(new Color(165, 246, 158));
                 else pause.setBackground(null);
                 isPause = !isPause;
             }
@@ -313,6 +338,23 @@ public class GUI implements ActionListener {
         pause.setBounds(700, 320, 80, 30);
         pause.setEnabled(false);
         chessboardView.add(pause);
+
+
+//        //PRZYCISK TEST
+//        test = new JButton(new AbstractAction() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//
+//            }
+//        });
+//        test.setText("Test");
+//        test.setName("test");
+//        test.setBounds(700, 390, 80, 80);
+//        test.setEnabled(true);
+//        test.setIcon(icon);
+//        test.setIconTextGap(-15);
+//        chessboardView.add(test);
+
 
 
         frame.setVisible(true);
@@ -326,7 +368,7 @@ public class GUI implements ActionListener {
         refreshChessboard(reverse);
         if (chessboard.isCheck()) colourCheckedField();
         else colourFieldsDefault();
-        colourFields(bestMove);
+        colourTwoFields(bestMove);
         whitesMove = !whitesMove;
         everyAvailableMoves = chessboard.everyAvailableMove(whitesMove);
         isStalemate();
@@ -399,7 +441,25 @@ public class GUI implements ActionListener {
         label.setText("");
     }
 
-    public static void colourFields(String fields){
+    public static void colourOneField(String field, boolean colour) {
+        int r = Integer.parseInt("" + field.charAt(1)) - 1;
+        int c = columnToNumber("" + field.charAt(0));
+        if (colour) {
+            if (!reverse) guiFields[c][7 - r].setBackground(new Color(171, 234, 129));
+            else guiFields[7 - c][r].setBackground(new Color(171, 234, 129));
+        } else {
+            if (!reverse) {
+                if ((c + r) % 2 != 0) guiFields[c][7 - r].setBackground(new Color(240, 216, 180));
+                else guiFields[c][7 - r].setBackground(new Color(180, 136, 98));
+            } else {
+                if ((c + r) % 2 != 0) guiFields[7 - c][r].setBackground(new Color(240, 216, 180));
+                else guiFields[7 - c][r].setBackground(new Color(180, 136, 98));
+            }
+        }
+        colourCheckedField();
+    }
+
+    public static void colourTwoFields(String fields) {
         int ourRow = Integer.parseInt("" + fields.charAt(1)) - 1;
         int ourColumn = columnToNumber("" + fields.charAt(0));
         int opponentsRow = Integer.parseInt("" + fields.charAt(4)) - 1;
@@ -408,12 +468,33 @@ public class GUI implements ActionListener {
         if (!reverse) {
             guiFields[ourColumn][7 - ourRow].setBackground(new Color(234, 233, 129));
             guiFields[opponentsColumn][7 - opponentsRow].setBackground(new Color(234, 233, 129));
-        }
-        else {
+        } else {
             guiFields[7 - ourColumn][ourRow].setBackground(new Color(234, 233, 129));
             guiFields[7 - opponentsColumn][opponentsRow].setBackground(new Color(234, 233, 129));
         }
     }
+
+    public static void colourFields(String ourField, boolean colour) {
+        for (String s : everyAvailableMoves) {
+            if (s.startsWith(ourField)) {
+                colourOneField(s.substring(3), colour);
+                //iconOneField(s);
+            }
+        }
+    }
+
+//    public static void iconOneField(String field){
+//        int opponentsRow = Integer.parseInt("" + field.charAt(4)) - 1;
+//        int opponentsColumn = columnToNumber("" + field.charAt(3));
+//        if (!reverse) {
+//            //guiFields[opponentsColumn][7 - opponentsRow].setIcon(icon);
+//            //guiFields[opponentsColumn][7 - opponentsRow].setIconTextGap(-15);
+//        }
+//        else {
+//            //guiFields[7 - opponentsColumn][opponentsRow].setIcon(icon);
+//            //guiFields[7 - opponentsColumn][opponentsRow].setIconTextGap(-15);
+//        }
+//    }
 
     public static void isStalemate() {
         if (everyAvailableMoves.isEmpty() && !chessboard.isWhitesWon() && !chessboard.isBlacksWon()) {
