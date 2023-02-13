@@ -6,13 +6,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Set;
 
 public class GUI implements ActionListener {
 
+    private static JDBCDemo jdbcDemo;
     private static JLabel label;
     private static JLabel chessboardColorLabel;
     private static JPanel chessboardView;
@@ -31,6 +30,7 @@ public class GUI implements ActionListener {
     private static JButton brownColor;
     private static JButton blueColor;
     private static JButton greyColor;
+    private static JButton addNickname;
     private static Chessboard chessboard;
     private static Game game;
     private static Set<String> everyAvailableMoves;
@@ -39,6 +39,7 @@ public class GUI implements ActionListener {
     private static String ourField = "";
     private static String opponentsField = "";
     private static String bestMove = "";
+    private static String nickname = "";
     private static boolean hasFirstField = false;
     private static boolean reverse;
     private static boolean vsComputer;
@@ -47,11 +48,16 @@ public class GUI implements ActionListener {
     private static boolean computerIsThinking;
     private static Color firstColor = new Color(180, 136, 98);
     private static Color secondColor = new Color(240, 216, 180);
-    //private static ImageIcon icon;
+    private static TextField nicknameField;
+
 
 
 
     public static void main(String[] args) throws UnsupportedAudioFileException, IOException, LineUnavailableException{
+
+        //JDBC
+        jdbcDemo = new JDBCDemo();
+
         //RAMKA
         frame = new JFrame();
         frame.setTitle("Chess");
@@ -59,11 +65,37 @@ public class GUI implements ActionListener {
         frame.setResizable(false); //prevent frame from being resized
         frame.setSize(860, 680);
 
-
         //PANEL
         chessboardView = new JPanel();
         chessboardView.setLayout(null);
         frame.add(chessboardView);
+
+        //IKONA
+        ImageIcon icon = new ImageIcon("D:\\Java\\Projekty\\Chess\\src\\com\\slaweklida\\point.png");
+        ImageIcon okIcon = new ImageIcon("D:\\Java\\Projekty\\Chess\\src\\com\\slaweklida\\okIcon.png");
+
+        //NICKNAME FIELD
+        nicknameField = new TextField();
+        nicknameField.setBounds(660, 20, 120, 30);
+        nicknameField.setFont(new Font("", Font.BOLD, 20));
+        nicknameField.setBackground(Color.WHITE);
+        chessboardView.add(nicknameField);
+
+        //PRZYCISK DODAJ NICK GRACZA
+        addNickname = new JButton(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                newGame.setEnabled(true);
+                nicknameField.setEnabled(false);
+                addNickname.setEnabled(false);
+                nickname = nicknameField.getText();
+                System.out.println("nickname to " + nickname);
+            }
+        });
+        addNickname.setBounds(790, 20, 30, 30);
+        addNickname.setFont(new Font("", Font.BOLD, 10));
+        addNickname.setIcon(okIcon);
+        chessboardView.add(addNickname);
 
         //LABEL
         label = new JLabel("");
@@ -76,8 +108,7 @@ public class GUI implements ActionListener {
 //        userText.setBounds(100, 20, 165, 25);
 //        panel.add(userText);
 
-        //KROPKA
-        ImageIcon icon = new ImageIcon("com/slaweklida/point.png");
+
 
         //TEKST KOLOR SZACHOWNICY
         chessboardColorLabel = new JLabel("Wybierz kolor szachownicy");
@@ -255,10 +286,10 @@ public class GUI implements ActionListener {
                 playerVsComputer.setEnabled(true); //po wciśnięciu button się aktywuje
             }
         });
+        newGame.setEnabled(false);
         newGame.setText("Nowa gra");
         newGame.setName("nowaGra");
         newGame.setBounds(660, 60, 160, 30);
-        newGame.setIcon(icon);
         chessboardView.add(newGame);
 
         //PRZYCISK PvP
@@ -430,20 +461,18 @@ public class GUI implements ActionListener {
         chessboardView.add(pause);
 
 
-//        //PRZYCISK TEST
-//        test = new JButton(new AbstractAction() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//
-//            }
-//        });
-//        test.setText("Test");
-//        test.setName("test");
-//        test.setBounds(700, 390, 80, 80);
-//        test.setEnabled(true);
-//        test.setIcon(icon);
-//        test.setIconTextGap(-15);
-//        chessboardView.add(test);
+        //PRZYCISK TEST
+        test = new JButton(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jdbcDemo.showHighscore();
+            }
+        });
+        test.setText("Highscore");
+        test.setName("test");
+        test.setBounds(660, 390, 160, 30);
+        test.setEnabled(true);
+        chessboardView.add(test);
 
 
         frame.setVisible(true);
