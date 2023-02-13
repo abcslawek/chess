@@ -1,9 +1,14 @@
 package com.slaweklida;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Set;
 
 public class GUI implements ActionListener {
@@ -45,7 +50,8 @@ public class GUI implements ActionListener {
     //private static ImageIcon icon;
 
 
-    public static void main(String[] args) {
+
+    public static void main(String[] args) throws UnsupportedAudioFileException, IOException, LineUnavailableException{
         //RAMKA
         frame = new JFrame();
         frame.setTitle("Chess");
@@ -154,6 +160,14 @@ public class GUI implements ActionListener {
                                 if (everyAvailableMoves.contains(hashMove)) {
                                     colourFieldsDefault();
                                     chessboard.makeMove(everyAvailableMoves, hashMove, whitesMove, false);
+
+                                    //DŹWIĘK
+                                    try {
+                                        playSound("D:\\Java\\Projekty\\Chess\\src\\moveSound.wav");
+                                    } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
+                                        ex.printStackTrace();
+                                    }
+
                                     refreshChessboard(reverse);
 
                                     //CZY SZACH
@@ -197,6 +211,14 @@ public class GUI implements ActionListener {
                                             ex.printStackTrace();
                                         }
                                         computersMove();
+
+                                        //DŹWIĘK
+                                        try {
+                                            playSound("D:\\Java\\Projekty\\Chess\\src\\moveSound.wav");
+                                        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
+                                            ex.printStackTrace();
+                                        }
+
                                         computerIsThinking = false;
                                     }
                                 }
@@ -279,6 +301,7 @@ public class GUI implements ActionListener {
         playAsWhite = new JButton(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                hashMove = "";
                 activateFields(true);
                 pause.setEnabled(true); //po wciśnięciu button się deaktywuje
                 pause.setBackground(null);
@@ -318,6 +341,7 @@ public class GUI implements ActionListener {
         playAsBlack = new JButton(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                hashMove = "";
                 activateFields(true);
                 pause.setEnabled(true); //po wciśnięciu button się deaktywuje
                 pause.setBackground(null);
@@ -363,6 +387,12 @@ public class GUI implements ActionListener {
                                         ex.printStackTrace();
                                     }
                                     computersMove();
+                                    //DŹWIĘK
+                                    try {
+                                        playSound("D:\\Java\\Projekty\\Chess\\src\\moveSound.wav");
+                                    } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
+                                        ex.printStackTrace();
+                                    }
                                     label.setText("");
                                     //activateFields(true);
                                 }
@@ -454,6 +484,15 @@ public class GUI implements ActionListener {
         else return 7; //H
     }
 
+    public static void playSound(String path) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+        File file = new File(path);
+        AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
+        Clip clip = AudioSystem.getClip();
+        clip.open(audioStream);
+
+        clip.start();
+    }
+
     public static void refreshChessboard(boolean reverse) {
         for (int r = 0; r < 8; r++) {
             for (int c = 0; c < 8; c++) {
@@ -481,6 +520,13 @@ public class GUI implements ActionListener {
             if (chessboard.isWhitesWon() || chessboard.isBlacksWon()) {
                 if (!reverse) guiFields[c][7 - r].setBackground(Color.GREEN);
                 else guiFields[7 - c][r].setBackground(Color.GREEN);
+
+                try{
+                    playSound("D:\\Java\\Projekty\\Chess\\src\\gameOverSound.wav");
+                } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
+                    ex.printStackTrace();
+                }
+
                 newGame.setEnabled(true);
                 label.setText("Wygrana " + (chessboard.isWhitesWon() ? "białych" : "czarnych"));
                 pause.setEnabled(false);
