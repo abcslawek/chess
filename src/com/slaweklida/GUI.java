@@ -33,11 +33,13 @@ public class GUI implements ActionListener {
     private static String hashMove = "";
     private static String ourField = "";
     private static String opponentsField = "";
+    private static String bestMove = "";
     private static boolean hasFirstField = false;
     private static boolean reverse;
     private static boolean vsComputer;
     private static boolean movesEnd = true;
     private static boolean isPause = false;
+    private static boolean computerIsThinking;
     private static Color firstColor = new Color(180, 136, 98);
     private static Color secondColor = new Color(240, 216, 180);
     //private static ImageIcon icon;
@@ -84,6 +86,8 @@ public class GUI implements ActionListener {
                 secondColor = new Color(240, 216, 180);
                 colourFieldsDefault();
                 colourCheckedField();
+                if(!vsComputer) colourTwoFields(hashMove);
+                else colourTwoFields(bestMove); //do poprawy
             }
         });
         brownColor.setBounds(670, 540, 30, 30);
@@ -97,6 +101,8 @@ public class GUI implements ActionListener {
                 secondColor = new Color(162, 188, 239);
                 colourFieldsDefault();
                 colourCheckedField();
+                if(!vsComputer) colourTwoFields(hashMove);
+                else colourTwoFields(bestMove); //do poprawy
             }
         });
         blueColor.setBounds(720, 540, 30, 30);
@@ -110,6 +116,8 @@ public class GUI implements ActionListener {
                 secondColor = new Color(197, 197, 197);
                 colourFieldsDefault();
                 colourCheckedField();
+                if(!vsComputer) colourTwoFields(hashMove);
+                else colourTwoFields(bestMove); //do poprawy
             }
         });
         greyColor.setBounds(770, 540, 30, 30);
@@ -128,48 +136,49 @@ public class GUI implements ActionListener {
                     public void actionPerformed(ActionEvent e) {
                         movesEnd = false;
                         JButton o = (JButton) e.getSource();
-
-                        if (!hasFirstField) {
-                            ourField = o.getName();
-                            System.out.println(ourField);
-                            hashMove = ourField + ":";
-                            hasFirstField = true;
-                            colourOneField(ourField, true);
-                            colourFields(ourField, true);
-                        } else {
-                            opponentsField = o.getName();
-                            colourOneField(ourField, false);
-                            colourFields(ourField, false);
-                            hashMove += opponentsField;
-                            hasFirstField = false;
-                            System.out.println("hashMove to " + hashMove);
-                            if (everyAvailableMoves.contains(hashMove)) {
-                                colourFieldsDefault();
-                                chessboard.makeMove(everyAvailableMoves, hashMove, whitesMove, false);
-                                refreshChessboard(reverse);
-
-                                //CZY SZACH
-                                if (chessboard.isCheck()) colourCheckedField();
-                                else colourFieldsDefault();
-
-                                //ZMIANA GRACZA
-                                whitesMove = !whitesMove;
-
-                                //DOSTĘPNE RUCHY NOWEGO GRACZA
-                                everyAvailableMoves = chessboard.everyAvailableMove(whitesMove);
-
-                                //CZY PAT
-                                isStalemate();
-
-                                //KONIEC RUCHU
-                                movesEnd = true;
-
-                                //POKOLOROWANIE POLA STARTOWEGO I KONCOWEGO
-                                colourTwoFields(hashMove);
-
+                        if(!computerIsThinking) {
+                            if (!hasFirstField) {
+                                ourField = o.getName();
+                                System.out.println(ourField);
+                                hashMove = ourField + ":";
+                                hasFirstField = true;
+                                colourOneField(ourField, true);
+                                colourFields(ourField, true);
                             } else {
+                                opponentsField = o.getName();
                                 colourOneField(ourField, false);
-                                System.out.println("Niedostępny ruch");
+                                colourFields(ourField, false);
+                                hashMove += opponentsField;
+                                hasFirstField = false;
+                                System.out.println("hashMove to " + hashMove);
+                                if (everyAvailableMoves.contains(hashMove)) {
+                                    colourFieldsDefault();
+                                    chessboard.makeMove(everyAvailableMoves, hashMove, whitesMove, false);
+                                    refreshChessboard(reverse);
+
+                                    //CZY SZACH
+                                    if (chessboard.isCheck()) colourCheckedField();
+                                    else colourFieldsDefault();
+
+                                    //ZMIANA GRACZA
+                                    whitesMove = !whitesMove;
+
+                                    //DOSTĘPNE RUCHY NOWEGO GRACZA
+                                    everyAvailableMoves = chessboard.everyAvailableMove(whitesMove);
+
+                                    //CZY PAT
+                                    isStalemate();
+
+                                    //KONIEC RUCHU
+                                    movesEnd = true;
+
+                                    //POKOLOROWANIE POLA STARTOWEGO I KONCOWEGO
+                                    colourTwoFields(hashMove);
+
+                                } else {
+                                    colourOneField(ourField, false);
+                                    System.out.println("Niedostępny ruch");
+                                }
                             }
                         }
 
@@ -180,7 +189,7 @@ public class GUI implements ActionListener {
                                 public void run() {
                                     //RUCH KOMPUTERA
                                     if (vsComputer && movesEnd) {
-                                        //activateFields(false);
+                                        computerIsThinking = true;
                                         label.setText("Komputer myśli");
                                         try {
                                             Thread.sleep(600);
@@ -188,8 +197,7 @@ public class GUI implements ActionListener {
                                             ex.printStackTrace();
                                         }
                                         computersMove();
-
-                                        //activateFields(true);
+                                        computerIsThinking = false;
                                     }
                                 }
                             });
@@ -203,7 +211,7 @@ public class GUI implements ActionListener {
                 guiFields[c][r].setText("");
                 guiFields[c][r].setBounds(80 * c, 80 * r, 80, 80);
                 guiFields[c][r].addActionListener(new GUI());
-                guiFields[c][r].setFont(new Font("Comic Sans", Font.BOLD, 45)); //zmienia czcionkę tekstu na przycisku
+                guiFields[c][r].setFont(new Font("Serif", Font.BOLD, 45)); //zmienia czcionkę tekstu na przycisku
 //                guiFields[c][r].setForeground(Color.cyan); //zmienia kolor czcionki na przycisku
 //                if ((c + r) % 2 != 0) guiFields[c][r].setBackground(new Color(180, 136, 98));
 //                else guiFields[c][r].setBackground(new Color(240, 216, 180));
@@ -340,6 +348,7 @@ public class GUI implements ActionListener {
 
                 //TUTAJ WYKONAJ RUCH KOMPUTERA DLA BIALYCH **************************
                 if (vsComputer) {
+                    computerIsThinking = true;
                     if (!chessboard.isBlacksWon() && !chessboard.isWhitesWon()) {
                         Thread t2 = new Thread(new Runnable() {
                             @Override
@@ -361,6 +370,7 @@ public class GUI implements ActionListener {
                         });
                         t2.start();
                     }
+                    computerIsThinking = false;
                 }
             }
         });
@@ -410,8 +420,7 @@ public class GUI implements ActionListener {
     }
 
     public static void computersMove() {
-
-        String bestMove = game.minimax(chessboard, 2, Integer.MIN_VALUE, Integer.MAX_VALUE, whitesMove, 1).getBestMove();
+        bestMove = game.minimax(chessboard, 2, Integer.MIN_VALUE, Integer.MAX_VALUE, whitesMove, 1).getBestMove();
         chessboard.makeMove(chessboard.everyAvailableMove(whitesMove), bestMove, whitesMove, false);
         colourFieldsDefault();
         refreshChessboard(reverse);
