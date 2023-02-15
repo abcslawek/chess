@@ -89,13 +89,23 @@ public class GUI implements ActionListener {
                 nicknameField.setEnabled(false);
                 addNickname.setEnabled(false);
                 nickname = nicknameField.getText();
-                System.out.println("nickname to " + nickname);
+                System.out.println("Nickname to " + nickname);
+
+                //SPRAWDZENIE CZY GRACZ JEST W BAZIE DANYCH, JESLI NIE TO UTWÓRZ NOWEGO
+                if(jdbcDemo.isPlayerInDatabase(nickname)) {
+                    System.out.println(nickname + " jest już w bazie");
+                }else {
+                    jdbcDemo.addPlayer(nickname);
+                    System.out.println(nickname + " został dodany");
+                }
+
             }
         });
         addNickname.setBounds(790, 20, 30, 30);
         addNickname.setFont(new Font("", Font.BOLD, 10));
         addNickname.setIcon(okIcon);
         chessboardView.add(addNickname);
+
 
         //LABEL
         label = new JLabel("");
@@ -558,6 +568,10 @@ public class GUI implements ActionListener {
 
                 newGame.setEnabled(true);
                 label.setText("Wygrana " + (chessboard.isWhitesWon() ? "białych" : "czarnych"));
+
+                //ZAPIS DO BAZY DANYCH
+                if ((vsComputer && !reverse && chessboard.isWhitesWon()) || (vsComputer && reverse && chessboard.isBlacksWon())) jdbcDemo.saveScore(nickname);
+
                 pause.setEnabled(false);
             } else label.setText("");
 
