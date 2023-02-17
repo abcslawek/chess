@@ -14,6 +14,7 @@ public class GUI implements ActionListener {
     private static JDBCDemo jdbcDemo;
     private static JLabel label;
     private static JLabel chessboardColorLabel;
+    private static JLabel enterNick;
     private static JPanel chessboardView;
     private static JTextField userText;
     private static JButton[][] guiFields;
@@ -49,6 +50,7 @@ public class GUI implements ActionListener {
     private static Color firstColor = new Color(180, 136, 98);
     private static Color secondColor = new Color(240, 216, 180);
     private static TextField nicknameField;
+    private static final int yy = 30;
 
 
 
@@ -76,7 +78,7 @@ public class GUI implements ActionListener {
 
         //NICKNAME FIELD
         nicknameField = new TextField();
-        nicknameField.setBounds(660, 20, 120, 30);
+        nicknameField.setBounds(660, 20 + yy, 120, 30);
         nicknameField.setFont(new Font("", Font.BOLD, 20));
         nicknameField.setBackground(Color.WHITE);
         chessboardView.add(nicknameField);
@@ -101,28 +103,26 @@ public class GUI implements ActionListener {
 
             }
         });
-        addNickname.setBounds(790, 20, 30, 30);
+        addNickname.setBounds(790, 20 + yy, 30, 30);
         addNickname.setFont(new Font("", Font.BOLD, 10));
         addNickname.setIcon(okIcon);
         chessboardView.add(addNickname);
 
 
+        //LABEL ENTER NICK
+        enterNick = new JLabel("Enter nick...");
+        enterNick.setBounds(660, 5 + yy, 160, 15);
+        chessboardView.add(enterNick);
+
         //LABEL
         label = new JLabel("");
-        label.setBounds(660, 360, 160, 30);
-//        label.setHorizontalTextPosition(JLabel.CENTER);
-//        label.setVerticalTextPosition(JLabel.TOP);
+        label.setBounds(660, 360 + yy, 160, 30);
         chessboardView.add(label);
-
-//        userText = new JTextField(20);
-//        userText.setBounds(100, 20, 165, 25);
-//        panel.add(userText);
-
 
 
         //TEKST KOLOR SZACHOWNICY
-        chessboardColorLabel = new JLabel("Wybierz kolor szachownicy");
-        chessboardColorLabel.setBounds(660, 500, 160, 30);
+        chessboardColorLabel = new JLabel("Choose chessboard's color");
+        chessboardColorLabel.setBounds(660, 500 + yy, 160, 30);
         chessboardView.add(chessboardColorLabel);
 
         //PRZYCISK KOLORU SZACHOWNICY
@@ -137,7 +137,7 @@ public class GUI implements ActionListener {
                 else colourTwoFields(bestMove); //do poprawy
             }
         });
-        brownColor.setBounds(670, 540, 30, 30);
+        brownColor.setBounds(670, 540 + yy, 30, 30);
         brownColor.setBackground(new Color(180, 136, 98));
         chessboardView.add(brownColor);
 
@@ -152,7 +152,7 @@ public class GUI implements ActionListener {
                 else colourTwoFields(bestMove); //do poprawy
             }
         });
-        blueColor.setBounds(720, 540, 30, 30);
+        blueColor.setBounds(720, 540 + yy, 30, 30);
         blueColor.setBackground(new Color(45, 116, 255));
         chessboardView.add(blueColor);
 
@@ -167,7 +167,7 @@ public class GUI implements ActionListener {
                 else colourTwoFields(bestMove); //do poprawy
             }
         });
-        greyColor.setBounds(770, 540, 30, 30);
+        greyColor.setBounds(770, 540 + yy, 30, 30);
         greyColor.setBackground(new Color(119, 119, 119));
         chessboardView.add(greyColor);
 
@@ -245,7 +245,7 @@ public class GUI implements ActionListener {
                                     //RUCH KOMPUTERA
                                     if (vsComputer && movesEnd) {
                                         computerIsThinking = true;
-                                        label.setText("Komputer myśli");
+                                        label.setText("PC is thinking...");
                                         try {
                                             Thread.sleep(600);
                                         } catch (InterruptedException ex) {
@@ -297,9 +297,9 @@ public class GUI implements ActionListener {
             }
         });
         newGame.setEnabled(false);
-        newGame.setText("Nowa gra");
+        newGame.setText("New game");
         newGame.setName("nowaGra");
-        newGame.setBounds(660, 60, 160, 30);
+        newGame.setBounds(660, 60 + yy, 160, 30);
         chessboardView.add(newGame);
 
         //PRZYCISK PvP
@@ -315,7 +315,7 @@ public class GUI implements ActionListener {
         });
         playerVsPlayer.setText("Player vs Player");
         playerVsPlayer.setName("playerVsPlayer");
-        playerVsPlayer.setBounds(660, 120, 160, 30);
+        playerVsPlayer.setBounds(660, 120 + yy, 160, 30);
         playerVsPlayer.setEnabled(false);
         chessboardView.add(playerVsPlayer);
 
@@ -332,9 +332,9 @@ public class GUI implements ActionListener {
 
             }
         });
-        playerVsComputer.setText("Player vs Computer");
+        playerVsComputer.setText("Player vs PC");
         playerVsComputer.setName("playerVsComputer");
-        playerVsComputer.setBounds(660, 160, 160, 30);
+        playerVsComputer.setBounds(660, 160 + yy, 160, 30);
         playerVsComputer.setEnabled(false);
         chessboardView.add(playerVsComputer);
 
@@ -372,9 +372,9 @@ public class GUI implements ActionListener {
                 playAsBlack.setEnabled(false); //po wciśnięciu button się deaktywuje
             }
         });
-        playAsWhite.setText("Gra białymi");
+        playAsWhite.setText("as whites");
         playAsWhite.setName("playAsWhite");
-        playAsWhite.setBounds(660, 220, 160, 30);
+        playAsWhite.setBounds(660, 220 + yy, 160, 30);
         playAsWhite.setEnabled(false);
         chessboardView.add(playAsWhite);
 
@@ -421,7 +421,7 @@ public class GUI implements ActionListener {
                                 //RUCH KOMPUTERA JESLI JEST CZARNY
                                 if (vsComputer && movesEnd) {
                                     //activateFields(false);
-                                    label.setText("Komputer myśli");
+                                    label.setText("PC is thinking...");
                                     try {
                                         Thread.sleep(600);
                                     } catch (InterruptedException ex) {
@@ -445,9 +445,9 @@ public class GUI implements ActionListener {
                 }
             }
         });
-        playAsBlack.setText("Gra czarnymi");
+        playAsBlack.setText("as blacks");
         playAsBlack.setName("playAsBlack");
-        playAsBlack.setBounds(660, 260, 160, 30);
+        playAsBlack.setBounds(660, 260 + yy, 160, 30);
         playAsBlack.setEnabled(false);
         chessboardView.add(playAsBlack);
 
@@ -466,12 +466,12 @@ public class GUI implements ActionListener {
         });
         pause.setText("Pause");
         pause.setName("pause");
-        pause.setBounds(700, 320, 80, 30);
+        pause.setBounds(700, 320 + yy, 80, 30);
         pause.setEnabled(false);
         chessboardView.add(pause);
 
 
-        //PRZYCISK TEST
+        //PRZYCISK HIGHSCORE
         test = new JButton(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -480,7 +480,7 @@ public class GUI implements ActionListener {
         });
         test.setText("Highscore");
         test.setName("test");
-        test.setBounds(660, 390, 160, 30);
+        test.setBounds(660, 390 + yy, 160, 30);
         test.setEnabled(true);
         chessboardView.add(test);
 
@@ -548,7 +548,7 @@ public class GUI implements ActionListener {
 
     public static void colourCheckedField() {
         String checkedField = chessboard.getCheckedField();
-        if (!checkedField.equals("")) {
+        if (!checkedField.equals("") && !isPause) {
             int r = Integer.parseInt("" + checkedField.charAt(1)) - 1;
             int c = columnToNumber("" + checkedField.charAt(0));
             if (!reverse) guiFields[c][7 - r].setBackground(Color.RED);
@@ -556,9 +556,11 @@ public class GUI implements ActionListener {
 
 
             //CZY TEŻ JEST MAT?
-            if (chessboard.isWhitesWon() || chessboard.isBlacksWon()) {
+            if ((chessboard.isWhitesWon() || chessboard.isBlacksWon()) ) {
                 if (!reverse) guiFields[c][7 - r].setBackground(Color.GREEN);
                 else guiFields[7 - c][r].setBackground(Color.GREEN);
+
+                isPause = true;
 
                 try{
                     playSound("D:\\Java\\Projekty\\Chess\\src\\gameOverSound.wav");
@@ -567,7 +569,7 @@ public class GUI implements ActionListener {
                 }
 
                 newGame.setEnabled(true);
-                label.setText("Wygrana " + (chessboard.isWhitesWon() ? "białych" : "czarnych"));
+                label.setText((chessboard.isWhitesWon() ? "Whites" : "Blacks") + " won");
 
                 //ZAPIS DO BAZY DANYCH
                 if ((vsComputer && !reverse && chessboard.isWhitesWon()) || (vsComputer && reverse && chessboard.isBlacksWon())) jdbcDemo.saveScore(nickname);
@@ -646,7 +648,7 @@ public class GUI implements ActionListener {
     public static void isStalemate() {
         if (everyAvailableMoves.isEmpty() && !chessboard.isWhitesWon() && !chessboard.isBlacksWon()) {
             newGame.setEnabled(true);
-            label.setText("Pat");
+            label.setText("Stalemate");
         }
     }
 
