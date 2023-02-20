@@ -57,7 +57,7 @@ public class Chessboard implements Cloneable {
 //    //    // Konstruktor
     public Chessboard() {
         this.fields = new Field[8][8];
-        //REMEMBER THAT e.g. D5 is [3][4] in arrays
+
         //making whites
         this.fields[0][0] = new Field(new Rook(false), 'A', 1, true);
         this.fields[1][0] = new Field(new Knight(false), 'B', 1, false);

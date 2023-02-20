@@ -6,7 +6,6 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Chess");
-//        GUI gui = new GUI();
         while (true) {
             System.out.println("Wybierz jedną z opcji:");
             System.out.println("1. Nowa gra");

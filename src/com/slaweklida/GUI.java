@@ -20,11 +20,8 @@ public class GUI implements ActionListener {
     private static JLabel chessboardColorLabel;
     private static JLabel enterNick;
     private static JPanel chessboardView;
-    private static JTextField userText;
     private static JButton[][] guiFields;
     private static JFrame frame;
-    private static JButton mainMenu;
-    private static JButton quit;
     private static JButton newGame;
     private static JButton playerVsPlayer;
     private static JButton playerVsComputer;
@@ -69,7 +66,8 @@ public class GUI implements ActionListener {
         frame = new JFrame();
         frame.setTitle("Chess");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(false); //prevent frame from being resized
+        frame.setResizable(false);
+        frame.setIconImage(icon.getImage());
         frame.setSize(860, 680);
 
         //PANEL
@@ -94,9 +92,9 @@ public class GUI implements ActionListener {
                     }
 
                 } else /*if (evt.getKeyChar() >= '0' && evt.getKeyChar() <= '9')*/ {
-                    if(length <= 8) {
+                    if (length <= 8) {
                         nicknameField.setEditable(true);
-                    }else{
+                    } else {
                         nicknameField.setEditable(false);
                         Toolkit.getDefaultToolkit().beep();
                     }
@@ -109,17 +107,19 @@ public class GUI implements ActionListener {
             public void changedUpdate(DocumentEvent e) {
                 changed();
             }
+
             public void removeUpdate(DocumentEvent e) {
                 changed();
             }
+
             public void insertUpdate(DocumentEvent e) {
                 changed();
             }
+
             public void changed() {
-                if (nicknameField.getText().equals("") || nicknameField.getText().length() >= 10){
+                if (nicknameField.getText().equals("") || nicknameField.getText().length() >= 10) {
                     addNickname.setEnabled(false);
-                }
-                else {
+                } else {
                     addNickname.setEnabled(true);
                 }
             }
@@ -153,9 +153,8 @@ public class GUI implements ActionListener {
         addNickname.setEnabled(false);
         chessboardView.add(addNickname);
 
-
         //LABEL ENTER NICK
-        enterNick = new JLabel("Enter nick");
+        enterNick = new JLabel("Enter your nick");
         enterNick.setBounds(660, 0 + yy, 160, 15);
         chessboardView.add(enterNick);
 
@@ -163,7 +162,6 @@ public class GUI implements ActionListener {
         label = new JLabel("");
         label.setBounds(660, 360 + yy, 160, 30);
         chessboardView.add(label);
-
 
         //TEKST KOLOR SZACHOWNICY
         chessboardColorLabel = new JLabel("Choose chessboard's color");
@@ -215,7 +213,6 @@ public class GUI implements ActionListener {
         greyColor.setBounds(770, 540 + yy, 30, 30);
         greyColor.setBackground(new Color(119, 119, 119));
         chessboardView.add(greyColor);
-
 
         //PRZYCISKI SZACHOWNICY
         guiFields = new JButton[8][8];
@@ -305,32 +302,25 @@ public class GUI implements ActionListener {
                                         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
                                             ex.printStackTrace();
                                         }
-
                                         computerIsThinking = false;
                                     }
                                 }
                             });
                             t.start();
-
                         }
                         //*****************************************************
                     }
                 });
-
-                //guiFields[c][r].setIcon(icon);
                 guiFields[c][r].setText("");
                 guiFields[c][r].setBounds(80 * c, 80 * r, 80, 80);
                 guiFields[c][r].addActionListener(new GUI());
                 guiFields[c][r].setFont(new Font("Serif", Font.BOLD, 45)); //zmienia czcionkę tekstu na przycisku
 //                guiFields[c][r].setForeground(Color.cyan); //zmienia kolor czcionki na przycisku
-//                if ((c + r) % 2 != 0) guiFields[c][r].setBackground(new Color(180, 136, 98));
-//                else guiFields[c][r].setBackground(new Color(240, 216, 180));
                 if ((c + r) % 2 != 0) guiFields[c][r].setBackground(firstColor);
                 else guiFields[c][r].setBackground(secondColor);
                 chessboardView.add(guiFields[c][r]);
             }
         }
-
 
         //PRZYCISK NOWA GRA
         newGame = new JButton(new AbstractAction() {
@@ -366,7 +356,6 @@ public class GUI implements ActionListener {
         playerVsPlayer.setEnabled(false);
         chessboardView.add(playerVsPlayer);
 
-
         //PRZYCISK PvC
         playerVsComputer = new JButton(new AbstractAction() {
             @Override
@@ -376,7 +365,6 @@ public class GUI implements ActionListener {
                 playAsWhite.setEnabled(true);
                 playAsBlack.setEnabled(true);
                 vsComputer = true;
-
             }
         });
         playerVsComputer.setText("Player vs PC");
@@ -389,6 +377,7 @@ public class GUI implements ActionListener {
         playAsWhite = new JButton(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                bestMove = "";
                 hashMove = "";
                 activateFields(true);
                 pause.setEnabled(true); //po wciśnięciu button się deaktywuje
@@ -414,7 +403,6 @@ public class GUI implements ActionListener {
                     }
                 }
 
-
                 playAsWhite.setEnabled(false); //po wciśnięciu button się deaktywuje
                 playAsBlack.setEnabled(false); //po wciśnięciu button się deaktywuje
             }
@@ -429,6 +417,7 @@ public class GUI implements ActionListener {
         playAsBlack = new JButton(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                bestMove = "";
                 hashMove = "";
                 activateFields(true);
                 pause.setEnabled(true); //po wciśnięciu button się deaktywuje
@@ -453,7 +442,6 @@ public class GUI implements ActionListener {
                         guiFields[c][r].setName(numberToColumn(7 - c) + (r + 1));
                     }
                 }
-
 
                 playAsBlack.setEnabled(false); //po wciśnięciu button się deaktywuje
                 playAsWhite.setEnabled(false); //po wciśnięciu button się deaktywuje
@@ -482,7 +470,6 @@ public class GUI implements ActionListener {
                                         ex.printStackTrace();
                                     }
                                     label.setText("");
-                                    //activateFields(true);
                                 }
                             }
                         });
@@ -498,12 +485,10 @@ public class GUI implements ActionListener {
         playAsBlack.setEnabled(false);
         chessboardView.add(playAsBlack);
 
-
         //PRZYCISK PAUZA
         pause = new JButton(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 newGame.setEnabled(!isPause); //po wciśnięciu button się deaktywuje
                 activateFields(isPause);
                 if (!isPause) pause.setBackground(new Color(165, 246, 158));
@@ -516,7 +501,6 @@ public class GUI implements ActionListener {
         pause.setBounds(700, 320 + yy, 80, 30);
         pause.setEnabled(false);
         chessboardView.add(pause);
-
 
         //PRZYCISK HIGHSCORE
         highscore = new JButton(new AbstractAction() {
@@ -531,7 +515,6 @@ public class GUI implements ActionListener {
         highscore.setBounds(660, 390 + yy, 160, 30);
         highscore.setEnabled(true);
         chessboardView.add(highscore);
-
 
         frame.setVisible(true);
     }
@@ -601,7 +584,6 @@ public class GUI implements ActionListener {
             int c = columnToNumber("" + checkedField.charAt(0));
             if (!reverse) guiFields[c][7 - r].setBackground(Color.RED);
             else guiFields[7 - c][r].setBackground(Color.RED);
-
 
             //CZY TEŻ JEST MAT?
             if ((chessboard.isWhitesWon() || chessboard.isBlacksWon())) {
@@ -676,7 +658,6 @@ public class GUI implements ActionListener {
         for (String s : everyAvailableMoves) {
             if (s.startsWith(ourField)) {
                 colourOneField(s.substring(3), colour);
-                //iconOneField(s);
             }
         }
     }
@@ -686,10 +667,8 @@ public class GUI implements ActionListener {
         int opponentsColumn = columnToNumber("" + field.charAt(3));
         if (!reverse) {
             guiFields[opponentsColumn][7 - opponentsRow].setIcon(icon);
-            //guiFields[opponentsColumn][7 - opponentsRow].setIconTextGap(-15);
         } else {
             guiFields[7 - opponentsColumn][opponentsRow].setIcon(icon);
-            //guiFields[7 - opponentsColumn][opponentsRow].setIconTextGap(-15);
         }
     }
 
@@ -708,33 +687,8 @@ public class GUI implements ActionListener {
         }
     }
 
-    /*
-        private void jTextFieldKeyPressed(KeyEvent evt) {
-            String nickname = nicknameField.getText();
-            int length = nickname.length();
-
-            //char c = evt.getKeyChar();
-
-            if (evt.getKeyChar() >= '0' && evt.getKeyChar() <= '9') {
-                if (length < 10) {
-                    nicknameField.setEditable(true);
-                } else {
-                    nicknameField.setEditable(false);
-                }
-            } else {
-                //allow keys 'backspace' and 'delete' for edit
-                if (evt.getExtendedKeyCode() == KeyEvent.VK_BACK_SPACE || evt.getExtendedKeyCode() == KeyEvent.VK_DELETE) {
-                    nicknameField.setEditable(true);
-                } else {
-                    nicknameField.setEditable(false);
-                }
-            }
-        }
-    */
     @Override
     public void actionPerformed(ActionEvent e) {
 
     }
-
-
 }

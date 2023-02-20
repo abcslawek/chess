@@ -74,14 +74,6 @@ public class Game {
 
         //POKAZANIE SZACHOWNICY
         chessboard.showChessboard();
-//
-//        //KASUJEMY CHECK
-//        chessboard.setCheck(false);
-//        chessboard.setWhitesWon(false);
-//        chessboard.setBlacksWon(false);
-
-        //CZY MAT
-//        shouldContinue = isStalemate(chessboard, choice) || isMate(chessboard, choice);
 
         if (choice == 1) {
             while (!shouldContinue) {
@@ -317,13 +309,9 @@ public class Game {
     public boolean isMate(Chessboard chessboard, int choice) {
         if (chessboard.isWhitesWon()) {
             System.out.println("Białe wygrały");
-//            if (choice == 1) chessboard.showChessboard();
-//            else chessboard.showReverseChessboard();
             return true;
         } else if (chessboard.isBlacksWon()) {
             System.out.println("Czarne wygrały");
-//            if (choice == 1) chessboard.showChessboard();
-//            else chessboard.showReverseChessboard();
             return true;
         } else return false;
     }
@@ -331,8 +319,6 @@ public class Game {
     public boolean isStalemate(Chessboard chessboard, int choice) {
         if (chessboard.isStalemate()) {
             System.out.println("Pat");
-//            if (choice == 1) chessboard.showChessboard();
-//            else chessboard.showReverseChessboard();
             return true;
         } else return false;
     }

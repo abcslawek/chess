@@ -9,21 +9,10 @@ import java.awt.event.WindowEvent;
 public class HighscoreWindow {
 
     JFrame frame = new JFrame();
-    public static JLabel first = new JLabel();
-    public static JLabel second = new JLabel();
-    public static JLabel third = new JLabel();
-    public static JLabel iconLabel = new JLabel();
     public static JTable table;
     public static JScrollPane scrollPane;
-    private static JPanel panel = new JPanel();
-    private static ImageIcon icon = new ImageIcon("D:\\Java\\Projekty\\Chess\\src\\com\\slaweklida\\crownIcon.png");
-
 
     public HighscoreWindow(JDBCDemo jdbcDemo) {
-//        String[][] data = {{"101", "Amit", "670000"},
-//                {"102", "Jai", "780000"},
-//                {"101", "Sachin", "700000xxxxxxxxxxxxxxxxxxxxxxxxxxxx"}};
-
         String[][] data = jdbcDemo.highscore();
         String[] column = {"POSITION", "NICK", "WINS AGAINST PC"};
         table = new JTable(data, column);
@@ -38,7 +27,6 @@ public class HighscoreWindow {
 
         //DOSTOSOWANIE SZEROKOSCI KOLUMNY DO TEKSTU
         table.getColumnModel().getColumn(0).setPreferredWidth(10);
-        //table.getColumnModel().getColumn(2).setPreferredWidth(10);
 
         scrollPane = new JScrollPane(table);
         scrollPane.setBounds(0, 0, 480, 500);
@@ -50,7 +38,6 @@ public class HighscoreWindow {
         frame.setResizable(false);
         frame.setBounds(170, 100, 480, 500);
 
-
         //PO ZAMKNIĘCIU OKNA PRZYCISK HIGHSCORE AKTYWUJE SIĘ
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
@@ -59,6 +46,4 @@ public class HighscoreWindow {
             }
         });
     }
-
-
 }
