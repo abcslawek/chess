@@ -5,6 +5,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
@@ -27,7 +29,7 @@ public class GUI implements ActionListener {
     private static JButton playAsWhite;
     private static JButton playAsBlack;
     private static JButton pause;
-    private static JButton test;
+    public static JButton test;
     private static JButton brownColor;
     private static JButton blueColor;
     private static JButton greyColor;
@@ -49,13 +51,14 @@ public class GUI implements ActionListener {
     private static boolean computerIsThinking;
     private static Color firstColor = new Color(180, 136, 98);
     private static Color secondColor = new Color(240, 216, 180);
-    private static TextField nicknameField;
+    private static JTextField nicknameField;
     private static final int yy = 30;
+    //IKONA
+    private static ImageIcon icon = new ImageIcon("D:\\Java\\Projekty\\Chess\\src\\com\\slaweklida\\point.png");
+    private static ImageIcon okIcon = new ImageIcon("D:\\Java\\Projekty\\Chess\\src\\com\\slaweklida\\okIcon.png");
 
 
-
-
-    public static void main(String[] args) throws UnsupportedAudioFileException, IOException, LineUnavailableException{
+    public static void main(String[] args) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
 
         //JDBC
         jdbcDemo = new JDBCDemo();
@@ -72,21 +75,37 @@ public class GUI implements ActionListener {
         chessboardView.setLayout(null);
         frame.add(chessboardView);
 
-        //IKONA
-        ImageIcon icon = new ImageIcon("D:\\Java\\Projekty\\Chess\\src\\com\\slaweklida\\point.png");
-        ImageIcon okIcon = new ImageIcon("D:\\Java\\Projekty\\Chess\\src\\com\\slaweklida\\okIcon.png");
-
         //NICKNAME FIELD
-        nicknameField = new TextField();
+        nicknameField = new JTextField();
         nicknameField.setBounds(660, 20 + yy, 120, 30);
         nicknameField.setFont(new Font("", Font.BOLD, 20));
         nicknameField.setBackground(Color.WHITE);
+        nicknameField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent evt) {
+                int length = nicknameField.getText().length();
+
+                if (evt.getKeyCode() == KeyEvent.VK_BACK_SPACE || evt.getKeyCode() == KeyEvent.VK_DELETE) {
+                    if (!nicknameField.isEditable()) {
+                        nicknameField.setEditable(true);
+                    }
+                } else /*if (evt.getKeyChar() >= '0' && evt.getKeyChar() <= '9')*/ {
+                    if(length <= 9) {
+                        nicknameField.setEditable(true);
+                    }else{
+                        nicknameField.setEditable(false);
+                        Toolkit.getDefaultToolkit().beep();
+                    }
+                }
+            }
+        });
         chessboardView.add(nicknameField);
 
         //PRZYCISK DODAJ NICK GRACZA
         addNickname = new JButton(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 newGame.setEnabled(true);
                 nicknameField.setEnabled(false);
                 addNickname.setEnabled(false);
@@ -94,14 +113,14 @@ public class GUI implements ActionListener {
                 System.out.println("Nickname to " + nickname);
 
                 //SPRAWDZENIE CZY GRACZ JEST W BAZIE DANYCH, JESLI NIE TO UTWÓRZ NOWEGO
-                if(jdbcDemo.isPlayerInDatabase(nickname)) {
+                if (jdbcDemo.isPlayerInDatabase(nickname)) {
                     System.out.println(nickname + " jest już w bazie");
-                }else {
+                } else {
                     jdbcDemo.addPlayer(nickname);
                     System.out.println(nickname + " został dodany");
                 }
-
             }
+
         });
         addNickname.setBounds(790, 20 + yy, 30, 30);
         addNickname.setFont(new Font("", Font.BOLD, 10));
@@ -110,8 +129,8 @@ public class GUI implements ActionListener {
 
 
         //LABEL ENTER NICK
-        enterNick = new JLabel("Enter nick...");
-        enterNick.setBounds(660, 5 + yy, 160, 15);
+        enterNick = new JLabel("Enter nick");
+        enterNick.setBounds(660, 0 + yy, 160, 15);
         chessboardView.add(enterNick);
 
         //LABEL
@@ -133,7 +152,7 @@ public class GUI implements ActionListener {
                 secondColor = new Color(240, 216, 180);
                 colourFieldsDefault();
                 colourCheckedField();
-                if(!vsComputer) colourTwoFields(hashMove);
+                if (!vsComputer) colourTwoFields(hashMove);
                 else colourTwoFields(bestMove); //do poprawy
             }
         });
@@ -148,7 +167,7 @@ public class GUI implements ActionListener {
                 secondColor = new Color(162, 188, 239);
                 colourFieldsDefault();
                 colourCheckedField();
-                if(!vsComputer) colourTwoFields(hashMove);
+                if (!vsComputer) colourTwoFields(hashMove);
                 else colourTwoFields(bestMove); //do poprawy
             }
         });
@@ -163,7 +182,7 @@ public class GUI implements ActionListener {
                 secondColor = new Color(197, 197, 197);
                 colourFieldsDefault();
                 colourCheckedField();
-                if(!vsComputer) colourTwoFields(hashMove);
+                if (!vsComputer) colourTwoFields(hashMove);
                 else colourTwoFields(bestMove); //do poprawy
             }
         });
@@ -183,7 +202,7 @@ public class GUI implements ActionListener {
                     public void actionPerformed(ActionEvent e) {
                         movesEnd = false;
                         JButton o = (JButton) e.getSource();
-                        if(!computerIsThinking) {
+                        if (!computerIsThinking) {
                             if (!hasFirstField) {
                                 ourField = o.getName();
                                 System.out.println(ourField);
@@ -191,6 +210,7 @@ public class GUI implements ActionListener {
                                 hasFirstField = true;
                                 colourOneField(ourField, true);
                                 colourFields(ourField, true);
+
                             } else {
                                 opponentsField = o.getName();
                                 colourOneField(ourField, false);
@@ -271,6 +291,7 @@ public class GUI implements ActionListener {
                     }
                 });
 
+                //guiFields[c][r].setIcon(icon);
                 guiFields[c][r].setText("");
                 guiFields[c][r].setBounds(80 * c, 80 * r, 80, 80);
                 guiFields[c][r].addActionListener(new GUI());
@@ -476,9 +497,11 @@ public class GUI implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 jdbcDemo.showHighscore();
+                test.setEnabled(false);
+                HighscoreWindow highscoreWindow = new HighscoreWindow();
             }
         });
-        test.setText("Highscore");
+        test.setText("Top 3 Players");
         test.setName("test");
         test.setBounds(660, 390 + yy, 160, 30);
         test.setEnabled(true);
@@ -556,13 +579,13 @@ public class GUI implements ActionListener {
 
 
             //CZY TEŻ JEST MAT?
-            if ((chessboard.isWhitesWon() || chessboard.isBlacksWon()) ) {
+            if ((chessboard.isWhitesWon() || chessboard.isBlacksWon())) {
                 if (!reverse) guiFields[c][7 - r].setBackground(Color.GREEN);
                 else guiFields[7 - c][r].setBackground(Color.GREEN);
 
                 isPause = true;
 
-                try{
+                try {
                     playSound("D:\\Java\\Projekty\\Chess\\src\\gameOverSound.wav");
                 } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
                     ex.printStackTrace();
@@ -572,7 +595,8 @@ public class GUI implements ActionListener {
                 label.setText((chessboard.isWhitesWon() ? "Whites" : "Blacks") + " won");
 
                 //ZAPIS DO BAZY DANYCH
-                if ((vsComputer && !reverse && chessboard.isWhitesWon()) || (vsComputer && reverse && chessboard.isBlacksWon())) jdbcDemo.saveScore(nickname);
+                if ((vsComputer && !reverse && chessboard.isWhitesWon()) || (vsComputer && reverse && chessboard.isBlacksWon()))
+                    jdbcDemo.saveScore(nickname);
 
                 pause.setEnabled(false);
             } else label.setText("");
@@ -632,18 +656,17 @@ public class GUI implements ActionListener {
         }
     }
 
-//    public static void iconOneField(String field){
-//        int opponentsRow = Integer.parseInt("" + field.charAt(4)) - 1;
-//        int opponentsColumn = columnToNumber("" + field.charAt(3));
-//        if (!reverse) {
-//            //guiFields[opponentsColumn][7 - opponentsRow].setIcon(icon);
-//            //guiFields[opponentsColumn][7 - opponentsRow].setIconTextGap(-15);
-//        }
-//        else {
-//            //guiFields[7 - opponentsColumn][opponentsRow].setIcon(icon);
-//            //guiFields[7 - opponentsColumn][opponentsRow].setIconTextGap(-15);
-//        }
-//    }
+    public static void iconOneField(String field) {
+        int opponentsRow = Integer.parseInt("" + field.charAt(4)) - 1;
+        int opponentsColumn = columnToNumber("" + field.charAt(3));
+        if (!reverse) {
+            guiFields[opponentsColumn][7 - opponentsRow].setIcon(icon);
+            //guiFields[opponentsColumn][7 - opponentsRow].setIconTextGap(-15);
+        } else {
+            guiFields[7 - opponentsColumn][opponentsRow].setIcon(icon);
+            //guiFields[7 - opponentsColumn][opponentsRow].setIconTextGap(-15);
+        }
+    }
 
     public static void isStalemate() {
         if (everyAvailableMoves.isEmpty() && !chessboard.isWhitesWon() && !chessboard.isBlacksWon()) {
@@ -660,8 +683,33 @@ public class GUI implements ActionListener {
         }
     }
 
+    /*
+        private void jTextFieldKeyPressed(KeyEvent evt) {
+            String nickname = nicknameField.getText();
+            int length = nickname.length();
+
+            //char c = evt.getKeyChar();
+
+            if (evt.getKeyChar() >= '0' && evt.getKeyChar() <= '9') {
+                if (length < 10) {
+                    nicknameField.setEditable(true);
+                } else {
+                    nicknameField.setEditable(false);
+                }
+            } else {
+                //allow keys 'backspace' and 'delete' for edit
+                if (evt.getExtendedKeyCode() == KeyEvent.VK_BACK_SPACE || evt.getExtendedKeyCode() == KeyEvent.VK_DELETE) {
+                    nicknameField.setEditable(true);
+                } else {
+                    nicknameField.setEditable(false);
+                }
+            }
+        }
+    */
     @Override
     public void actionPerformed(ActionEvent e) {
 
     }
+
+
 }
