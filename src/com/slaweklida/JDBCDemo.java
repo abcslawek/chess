@@ -1,6 +1,7 @@
 package com.slaweklida;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class JDBCDemo {
     private static String url;
@@ -13,25 +14,30 @@ public class JDBCDemo {
         password = "";
     }
 
-    public static void showHighscore() {
+    public static String[][] highscore() {
+        ArrayList<String[]> dataList = new ArrayList<>();
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection(url, username, password);
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT nick, wins FROM players ORDER BY wins DESC;");
+            ResultSet resultSet = statement.executeQuery("SELECT id, nick, wins FROM players ORDER BY wins DESC;");
             int i = 1;
             while (resultSet.next()) {
-                System.out.println(i + ". " + resultSet.getString(1) + ": " + resultSet.getInt(2));
-                if(i==1) HighscoreWindow.first.setText(i+". " + resultSet.getString(1) + ": " + resultSet.getInt(2));
-                if(i==2) HighscoreWindow.second.setText(i+". " + resultSet.getString(1) + ": " + resultSet.getInt(2));
-                if(i==3) HighscoreWindow.third.setText(i+". " + resultSet.getString(1) + ": " + resultSet.getInt(2));
+                System.out.println(resultSet.getInt(1) + ": " + resultSet.getString(2) + ": " + resultSet.getInt(3));
+                String[] data = {Integer.toString(i), resultSet.getString(2), Integer.toString(resultSet.getInt(3))};
+                dataList.add(data);
                 i++;
             }
-
             connection.close();
         } catch (Exception e) {
             System.out.println(e);
         }
+
+        String[][] data = new String[dataList.size()][];
+        for (int i = 0; i < dataList.size(); i++) {
+            data[i] = dataList.get(i);
+        }
+        return data;
     }
 
     public static void saveScore(String nickname) {
@@ -49,13 +55,13 @@ public class JDBCDemo {
         }
     }
 
-    public static boolean isPlayerInDatabase(String nickname){
+    public static boolean isPlayerInDatabase(String nickname) {
         int result = 2;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection(url, username, password);
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT EXISTS(SELECT 1 FROM players WHERE nick = '" + nickname +"')");
+            ResultSet resultSet = statement.executeQuery("SELECT EXISTS(SELECT 1 FROM players WHERE nick = '" + nickname + "')");
 
             while (resultSet.next()) {
                 result = resultSet.getInt(1);

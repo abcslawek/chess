@@ -2,6 +2,8 @@ package com.slaweklida;
 
 import javax.sound.sampled.*;
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,7 +31,7 @@ public class GUI implements ActionListener {
     private static JButton playAsWhite;
     private static JButton playAsBlack;
     private static JButton pause;
-    public static JButton test;
+    public static JButton highscore;
     private static JButton brownColor;
     private static JButton blueColor;
     private static JButton greyColor;
@@ -80,22 +82,45 @@ public class GUI implements ActionListener {
         nicknameField.setBounds(660, 20 + yy, 120, 30);
         nicknameField.setFont(new Font("", Font.BOLD, 20));
         nicknameField.setBackground(Color.WHITE);
+
+        //LIMIT POLA TEKSTOWEGO, BACKSPACE/DELETE SĄ DOZWOLONE
         nicknameField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent evt) {
                 int length = nicknameField.getText().length();
-
                 if (evt.getKeyCode() == KeyEvent.VK_BACK_SPACE || evt.getKeyCode() == KeyEvent.VK_DELETE) {
                     if (!nicknameField.isEditable()) {
                         nicknameField.setEditable(true);
                     }
+
                 } else /*if (evt.getKeyChar() >= '0' && evt.getKeyChar() <= '9')*/ {
-                    if(length <= 9) {
+                    if(length <= 8) {
                         nicknameField.setEditable(true);
                     }else{
                         nicknameField.setEditable(false);
                         Toolkit.getDefaultToolkit().beep();
                     }
+                }
+            }
+        });
+
+        //AKTYWATOR I DEAKTYWATOR PRZYCISKU 'DODAJ GRACZA'
+        nicknameField.getDocument().addDocumentListener(new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void changed() {
+                if (nicknameField.getText().equals("") || nicknameField.getText().length() >= 10){
+                    addNickname.setEnabled(false);
+                }
+                else {
+                    addNickname.setEnabled(true);
                 }
             }
         });
@@ -125,6 +150,7 @@ public class GUI implements ActionListener {
         addNickname.setBounds(790, 20 + yy, 30, 30);
         addNickname.setFont(new Font("", Font.BOLD, 10));
         addNickname.setIcon(okIcon);
+        addNickname.setEnabled(false);
         chessboardView.add(addNickname);
 
 
@@ -493,19 +519,18 @@ public class GUI implements ActionListener {
 
 
         //PRZYCISK HIGHSCORE
-        test = new JButton(new AbstractAction() {
+        highscore = new JButton(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                jdbcDemo.showHighscore();
-                test.setEnabled(false);
-                HighscoreWindow highscoreWindow = new HighscoreWindow();
+                highscore.setEnabled(false);
+                HighscoreWindow highscoreWindow = new HighscoreWindow(jdbcDemo);
             }
         });
-        test.setText("Top 3 Players");
-        test.setName("test");
-        test.setBounds(660, 390 + yy, 160, 30);
-        test.setEnabled(true);
-        chessboardView.add(test);
+        highscore.setText("Highscore");
+        highscore.setName("test");
+        highscore.setBounds(660, 390 + yy, 160, 30);
+        highscore.setEnabled(true);
+        chessboardView.add(highscore);
 
 
         frame.setVisible(true);
