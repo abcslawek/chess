@@ -12,6 +12,8 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
+import java.awt.Font;
+
 
 public class GUI implements ActionListener {
 
@@ -51,13 +53,14 @@ public class GUI implements ActionListener {
     private static Color firstColor = new Color(180, 136, 98);
     private static Color secondColor = new Color(240, 216, 180);
     private static JTextField nicknameField;
+    private static Font font;
     private static final int yy = 30;
     //IKONA
-    private static ImageIcon icon = new ImageIcon("D:\\Java\\Projekty\\Chess\\src\\com\\slaweklida\\point.png");
-    private static ImageIcon okIcon = new ImageIcon("D:\\Java\\Projekty\\Chess\\src\\com\\slaweklida\\okIcon.png");
+    private static ImageIcon icon = new ImageIcon("src/com/slaweklida/point.png");
+    private static ImageIcon okIcon = new ImageIcon("src/com/slaweklida/okIcon.png");
 
 
-    public static void main(String[] args) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+    public static void main(String[] args) throws UnsupportedAudioFileException, IOException, LineUnavailableException, FontFormatException {
 
         //JDBC
         jdbcDemo = new JDBCDemo();
@@ -175,9 +178,11 @@ public class GUI implements ActionListener {
                 firstColor = new Color(180, 136, 98);
                 secondColor = new Color(240, 216, 180);
                 colourFieldsDefault();
-                colourCheckedField();
+
                 if (!vsComputer) colourTwoFields(hashMove);
-                else colourTwoFields(bestMove); //do poprawy
+                else if (hashMove.isEmpty()) colourTwoFields(bestMove); //do poprawy
+                else colourTwoFields(hashMove);
+                colourCheckedField();
             }
         });
         brownColor.setBounds(670, 540 + yy, 30, 30);
@@ -190,9 +195,11 @@ public class GUI implements ActionListener {
                 firstColor = new Color(45, 116, 255);
                 secondColor = new Color(162, 188, 239);
                 colourFieldsDefault();
-                colourCheckedField();
+
                 if (!vsComputer) colourTwoFields(hashMove);
-                else colourTwoFields(bestMove); //do poprawy
+                else if (hashMove.isEmpty()) colourTwoFields(bestMove); //do poprawy
+                else colourTwoFields(hashMove);
+                colourCheckedField();
             }
         });
         blueColor.setBounds(720, 540 + yy, 30, 30);
@@ -205,9 +212,11 @@ public class GUI implements ActionListener {
                 firstColor = new Color(119, 119, 119);
                 secondColor = new Color(197, 197, 197);
                 colourFieldsDefault();
-                colourCheckedField();
+
                 if (!vsComputer) colourTwoFields(hashMove);
-                else colourTwoFields(bestMove); //do poprawy
+                else if (hashMove.isEmpty()) colourTwoFields(bestMove); //do poprawy
+                else colourTwoFields(hashMove);
+                colourCheckedField();
             }
         });
         greyColor.setBounds(770, 540 + yy, 30, 30);
@@ -225,7 +234,7 @@ public class GUI implements ActionListener {
                     public void actionPerformed(ActionEvent e) {
                         movesEnd = false;
                         JButton o = (JButton) e.getSource();
-                        if (!computerIsThinking) {
+                        if (!computerIsThinking && !isPause) {
                             if (!hasFirstField) {
                                 ourField = o.getName();
                                 System.out.println(ourField);
@@ -247,7 +256,7 @@ public class GUI implements ActionListener {
 
                                     //DŹWIĘK
                                     try {
-                                        playSound("D:\\Java\\Projekty\\Chess\\src\\moveSound.wav");
+                                        playSound("src/moveSound.wav");
                                     } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
                                         ex.printStackTrace();
                                     }
@@ -298,11 +307,12 @@ public class GUI implements ActionListener {
 
                                         //DŹWIĘK
                                         try {
-                                            playSound("D:\\Java\\Projekty\\Chess\\src\\moveSound.wav");
+                                            playSound("src/moveSound.wav");
                                         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
                                             ex.printStackTrace();
                                         }
                                         computerIsThinking = false;
+                                        hashMove = "";
                                     }
                                 }
                             });
@@ -314,7 +324,12 @@ public class GUI implements ActionListener {
                 guiFields[c][r].setText("");
                 guiFields[c][r].setBounds(80 * c, 80 * r, 80, 80);
                 guiFields[c][r].addActionListener(new GUI());
-                guiFields[c][r].setFont(new Font("Serif", Font.BOLD, 45)); //zmienia czcionkę tekstu na przycisku
+                //guiFields[c][r].setFont(new Font("Serif", Font.BOLD, 45)); //zmienia czcionkę tekstu na przycisku
+
+                //ZALADOWANIE NOWEJ CZCIONKI
+                font = Font.createFont(Font.TRUETYPE_FONT, new File("src/com/slaweklida/CASEFONT.TTF"));
+                guiFields[c][r].setFont(font.deriveFont(Font.BOLD, 45)); //zmienia czcionkę tekstu na przycisku
+
 //                guiFields[c][r].setForeground(Color.cyan); //zmienia kolor czcionki na przycisku
                 if ((c + r) % 2 != 0) guiFields[c][r].setBackground(firstColor);
                 else guiFields[c][r].setBackground(secondColor);
@@ -465,7 +480,7 @@ public class GUI implements ActionListener {
                                     computersMove();
                                     //DŹWIĘK
                                     try {
-                                        playSound("D:\\Java\\Projekty\\Chess\\src\\moveSound.wav");
+                                        playSound("src/moveSound.wav");
                                     } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
                                         ex.printStackTrace();
                                     }
@@ -579,7 +594,7 @@ public class GUI implements ActionListener {
 
     public static void colourCheckedField() {
         String checkedField = chessboard.getCheckedField();
-        if (!checkedField.equals("") && !isPause) {
+        if (!checkedField.equals("") /*&& !isPause*/) {
             int r = Integer.parseInt("" + checkedField.charAt(1)) - 1;
             int c = columnToNumber("" + checkedField.charAt(0));
             if (!reverse) guiFields[c][7 - r].setBackground(Color.RED);
@@ -590,21 +605,22 @@ public class GUI implements ActionListener {
                 if (!reverse) guiFields[c][7 - r].setBackground(Color.GREEN);
                 else guiFields[7 - c][r].setBackground(Color.GREEN);
 
-                isPause = true;
 
-                try {
-                    playSound("D:\\Java\\Projekty\\Chess\\src\\gameOverSound.wav");
-                } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
-                    ex.printStackTrace();
+                if (!isPause) {
+                    try {
+                        playSound("src/gameOverSound.wav");
+                    } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
+                        ex.printStackTrace();
+                    }
+
+                    newGame.setEnabled(true);
+                    label.setText((chessboard.isWhitesWon() ? "Whites" : "Blacks") + " won");
+
+                    //ZAPIS DO BAZY DANYCH
+                    if ((vsComputer && !reverse && chessboard.isWhitesWon()) || (vsComputer && reverse && chessboard.isBlacksWon()))
+                        jdbcDemo.saveScore(nickname);
                 }
-
-                newGame.setEnabled(true);
-                label.setText((chessboard.isWhitesWon() ? "Whites" : "Blacks") + " won");
-
-                //ZAPIS DO BAZY DANYCH
-                if ((vsComputer && !reverse && chessboard.isWhitesWon()) || (vsComputer && reverse && chessboard.isBlacksWon()))
-                    jdbcDemo.saveScore(nickname);
-
+                isPause = true;
                 pause.setEnabled(false);
             } else label.setText("");
 
@@ -662,7 +678,7 @@ public class GUI implements ActionListener {
         }
     }
 
-    public static void iconOneField(String field) {
+    /*public static void iconOneField(String field) {
         int opponentsRow = Integer.parseInt("" + field.charAt(4)) - 1;
         int opponentsColumn = columnToNumber("" + field.charAt(3));
         if (!reverse) {
@@ -670,7 +686,7 @@ public class GUI implements ActionListener {
         } else {
             guiFields[7 - opponentsColumn][opponentsRow].setIcon(icon);
         }
-    }
+    }*/
 
     public static void isStalemate() {
         if (everyAvailableMoves.isEmpty() && !chessboard.isWhitesWon() && !chessboard.isBlacksWon()) {
