@@ -9,15 +9,20 @@ public class JDBCDemo {
     private static String password;
 
     public JDBCDemo() {
-        url = "jdbc:mysql://localhost:3306/jdbcdemo";
-        username = "root";
-        password = "";
+//        url = "jdbc:mysql://localhost:3306/jdbcdemo";
+//        username = "root";
+//        password = "";
+        url = "jdbc:mysql://s129.cyber-folks.pl:3306/abcslawek_jdbc";
+        username = "abcslawek_abcslawek";
+        password = "Chess6767@";
     }
 
     public static String[][] highscore() {
         ArrayList<String[]> dataList = new ArrayList<>();
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+//            Class.forName("com.mysql.cj.jdbc.Driver");
+//            Class.forName("com.mysql.jdbc.Driver");
+
             Connection connection = DriverManager.getConnection(url, username, password);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT id, nick, wins FROM players ORDER BY wins DESC;");
@@ -31,6 +36,7 @@ public class JDBCDemo {
             connection.close();
         } catch (Exception e) {
             System.out.println(e);
+            GUI.highscoreWindow.setNoConnectionText();
         }
 
         String[][] data = new String[dataList.size()][];
@@ -42,7 +48,7 @@ public class JDBCDemo {
 
     public static void saveScore(String nickname) {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+//            Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection(url, username, password);
             String sql = "UPDATE players SET wins = wins + 1 WHERE nick = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -58,7 +64,7 @@ public class JDBCDemo {
     public static boolean isPlayerInDatabase(String nickname) {
         int result = 2;
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+//            Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection(url, username, password);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT EXISTS(SELECT 1 FROM players WHERE nick = '" + nickname + "')");
@@ -76,7 +82,7 @@ public class JDBCDemo {
 
     public static void addPlayer(String nickname) {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+//            Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection(url, username, password);
 
             String sql = " INSERT INTO players (nick, wins) VALUES (?, 0)";

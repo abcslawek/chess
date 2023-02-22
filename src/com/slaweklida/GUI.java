@@ -55,6 +55,7 @@ public class GUI implements ActionListener {
     private static JTextField nicknameField;
     private static Font font;
     private static final int yy = 30;
+    public static HighscoreWindow highscoreWindow;
     //IKONA
     private static ImageIcon icon = new ImageIcon("src/com/slaweklida/point.png");
     private static ImageIcon okIcon = new ImageIcon("src/com/slaweklida/okIcon.png");
@@ -522,7 +523,7 @@ public class GUI implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 highscore.setEnabled(false);
-                HighscoreWindow highscoreWindow = new HighscoreWindow(jdbcDemo);
+                highscoreWindow = new HighscoreWindow(jdbcDemo);
             }
         });
         highscore.setText("Highscore");
