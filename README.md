@@ -1,4 +1,4 @@
-# Chess - gui game
+# Chess - GUI game
 > I created a chess game that you can play with a friend or against a computer, you can climb in the ranking of the best players.
 
 
@@ -47,7 +47,7 @@ List the ready features here:
 
 
 ## Setup
-To run the game, download the chessApp.zip file from this [_link_](https://drive.google.com/file/d/1rT61F4QzCgNy8VcVufDLv9T5wnjhrNJe/view?usp=sharing), then extract it, the Chess.exe boot file is in the chessApp/bin/folder.
+To run the game, download the chessApp.zip file from my google drive [_link_](https://drive.google.com/file/d/1rT61F4QzCgNy8VcVufDLv9T5wnjhrNJe/view?usp=sharing) (LFS couldn't push JRE to this repository), then extract it, the Chess.exe boot file is in the chessApp/bin/folder.</br></br>
 ![chessFolderScreenshot](https://user-images.githubusercontent.com/56951671/220777815-38a15a68-f325-46d9-8786-f1be04494df6.png)
 
 
