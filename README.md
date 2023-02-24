@@ -24,7 +24,7 @@
 
 ## Technologies Used
 - Java SE Development Kit 17.0.2
-- MySQL
+- SQL
 
 
 ## Features
