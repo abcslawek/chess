@@ -28,7 +28,6 @@
 
 
 ## Features
-List the ready features here:
 - Nickname introduction
 - Plays against another player locally
 - Playing against the computer
