@@ -40,7 +40,8 @@
 
 
 ## Screenshots
-![chessRecorded](https://user-images.githubusercontent.com/56951671/231247532-4d8a43aa-5946-4c5a-a9f4-b3b7a38b275a.gif)
+![chessRecorded](https://user-images.githubusercontent.com/56951671/231248676-5451cfa9-4701-438b-adbb-d13ec22cdb96.gif)
+
 
 
 
